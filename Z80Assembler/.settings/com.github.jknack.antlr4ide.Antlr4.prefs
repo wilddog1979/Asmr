@@ -1,0 +1,13 @@
+antlr4.antlrRegisteredTools=4.4@/var/folders/fg/jmy_htc138q6qxg2k1d5pm100000gp/T/antlr-4.4-complete.jar\:4.7@/Volumes/Store/VMShare/Sources/antlr-4.7-complete.jar
+antlr4.antlrToolPath=/Volumes/Store/VMShare/Sources/antlr-4.7-complete.jar
+antlr4.encoding=UTF-8
+antlr4.listener=false
+antlr4.visitor=true
+antlr4.vmArgs=
+antlr4ide.is_project_specific=true
+autobuilding=true
+eclipse.preferences.version=1
+is_project_specific=
+outlet.DEFAULT_OUTPUT.cleanupDerived=true
+outlet.DEFAULT_OUTPUT.derived=true
+outlet.DEFAULT_OUTPUT.directory=./gensrc

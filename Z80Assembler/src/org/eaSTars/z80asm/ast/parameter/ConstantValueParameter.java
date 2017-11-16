@@ -1,0 +1,42 @@
+package org.eaSTars.z80asm.ast.parameter;
+
+import java.util.Optional;
+
+public class ConstantValueParameter extends Parameter {
+
+	private Integer intValue;
+	
+	private String value;
+	
+	public ConstantValueParameter() {
+	}
+	
+	public ConstantValueParameter(String value) {
+		this.value = value;
+	}
+	
+	public ConstantValueParameter(int intvalue) {
+		this.intValue = intvalue;
+	}
+	
+	@Override
+	public String getAssembly() {
+		return Optional.ofNullable(intValue).map(i -> String.format("%xh", intValue)).orElseGet(() -> value);
+	}
+
+	public Integer getIntValue() {
+		return intValue;
+	}
+
+	public void setIntValue(Integer intValue) {
+		this.intValue = intValue;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
+}

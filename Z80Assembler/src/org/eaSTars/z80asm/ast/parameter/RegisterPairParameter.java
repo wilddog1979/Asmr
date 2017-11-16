@@ -1,0 +1,26 @@
+package org.eaSTars.z80asm.ast.parameter;
+
+public class RegisterPairParameter extends Parameter {
+
+	private RegisterPair registerPair;
+
+	public RegisterPairParameter() {
+	}
+	
+	public RegisterPairParameter(RegisterPair registerPair) {
+		this.registerPair = registerPair;
+	}
+	
+	@Override
+	public String getAssembly() {
+		return registerPair.getValue();
+	}
+	
+	public RegisterPair getRegisterPair() {
+		return registerPair;
+	}
+
+	public void setRegisterPair(RegisterPair registerPair) {
+		this.registerPair = registerPair;
+	}
+}
