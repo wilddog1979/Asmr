@@ -11,10 +11,6 @@ public class ORGDirectiveVisitor extends Z80AssemblerBaseVisitor<ORG> {
 	}
 	
 	public ORG visitORG(ORGContext ctx) {
-		ORG org = new ORG();
-		
-		org.setValue(parseHexValue(ctx.Hex16Bits().getText()));
-		
-		return org;
+		return new ORG(parseHexValue(ctx.Hex16Bits().getText()));
 	};
 }

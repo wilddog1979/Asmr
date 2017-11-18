@@ -14,7 +14,8 @@ z80directives
 	;
 
 directive
-	: ('.org' WS+ Hex16Bits)								# ORG
+	: ('org' WS+ Hex16Bits)								# ORG
+	| (LABEL ':' WS* 'equ' WS* expression)				# EQU
 	;
 
 z80assemblerline

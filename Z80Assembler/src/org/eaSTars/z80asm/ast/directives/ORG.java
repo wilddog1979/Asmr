@@ -7,12 +7,20 @@ public class ORG extends Z80Directive {
 
 	private Integer value;
 
+	public ORG() {
+	}
+	
+	public ORG(Integer value) {
+		setValue(value);
+	}
+	
 	@Override
 	public void apply(CompilationUnit cu) {
 		cu.setAddresscounter(value);
 	}
 	
-	public Integer getValue() {
+	@Override
+	public int getValue(CompilationUnit compilationUnit) {
 		return value;
 	}
 
@@ -20,5 +28,9 @@ public class ORG extends Z80Directive {
 		this.value = value;
 	}
 	
+	@Override
+	public String toString() {
+		return String.format("org %xh", getValue(null));
+	}
 	
 }

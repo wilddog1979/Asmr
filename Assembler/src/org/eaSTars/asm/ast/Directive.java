@@ -1,6 +1,19 @@
 package org.eaSTars.asm.ast;
 
-public interface Directive {
+public abstract class Directive {
 
-	public void apply(CompilationUnit cu);
+	private String label;
+	
+	public abstract void apply(CompilationUnit cu);
+	
+	public abstract int getValue(CompilationUnit compilationUnit);
+
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
+	}
+	
 }

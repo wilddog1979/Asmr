@@ -7,9 +7,11 @@ import java.util.stream.Collectors;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eaSTars.asm.ast.Directive;
+import org.eaSTars.z80asm.assembler.visitors.directive.EQUDirectiveVisitor;
 import org.eaSTars.z80asm.assembler.visitors.directive.ORGDirectiveVisitor;
 import org.eaSTars.z80asm.ast.Z80Directive;
 import org.eaSTars.z80asm.parser.Z80AssemblerBaseVisitor;
+import org.eaSTars.z80asm.parser.Z80AssemblerParser.EQUContext;
 import org.eaSTars.z80asm.parser.Z80AssemblerParser.ORGContext;
 
 public class Z80DirectivesVisitor extends Z80AssemblerBaseVisitor<Directive> {
@@ -33,7 +35,8 @@ public class Z80DirectivesVisitor extends Z80AssemblerBaseVisitor<Directive> {
 	
 	private Map<Class<? extends ParserRuleContext>, VisitorInvokation> visitorMap =
 			Arrays.asList(
-					new VisitorMapEntry(ORGContext.class, t -> new ORGDirectiveVisitor().visitORG((ORGContext) t))
+					new VisitorMapEntry(ORGContext.class, t -> new ORGDirectiveVisitor().visitORG((ORGContext) t)),
+					new VisitorMapEntry(EQUContext.class, t -> new EQUDirectiveVisitor().visitEQU((EQUContext) t))
 					)
 			.stream().collect(Collectors.toMap(e -> e.context, e -> e.invokation));
 	

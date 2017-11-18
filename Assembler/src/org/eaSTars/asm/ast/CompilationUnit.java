@@ -33,7 +33,15 @@ public class CompilationUnit {
 	
 	public int getLabelValue(String label) {
 		return lines.stream().filter(l -> label.equals(l.getLabel()))
-				.findFirst().map(l -> l.getAddress())
+				.findFirst().map(l -> {
+					if (l instanceof InstructionLine) {
+						return l.getAddress();
+					} else if (l instanceof DirectiveLine) {
+						return ((DirectiveLine)l).getDirective().getValue(this);
+					} else {
+						return 0;
+					}
+				})
 				.orElseThrow(() -> {throw new LabelNotFoundException(label);});
 	}
 	
