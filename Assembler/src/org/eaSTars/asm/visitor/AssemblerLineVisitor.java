@@ -17,7 +17,7 @@ public class AssemblerLineVisitor {
 	}
 	
 	public AssemblerLineVisitor(AbstractParseTreeVisitor<? extends Instruction> instructionVisitor) {
-		this.instructionVisitor = instructionVisitor;
+		setInstructionVisitor(instructionVisitor);
 	}
 	
 	public AssemblerLine visitAssemblerLine(TerminalNode label, ParserRuleContext instruction, TerminalNode comment) {

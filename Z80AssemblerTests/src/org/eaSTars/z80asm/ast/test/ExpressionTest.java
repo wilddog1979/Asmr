@@ -9,24 +9,17 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.stream.Stream;
 
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.Lexer;
-import org.antlr.v4.runtime.TokenStream;
+import org.eaSTars.asm.AbstractTester;
 import org.eaSTars.asm.assember.LabelNotFoundException;
 import org.eaSTars.asm.assember.MismatchingParameterSizeException;
 import org.eaSTars.asm.ast.CompilationUnit;
 import org.eaSTars.asm.ast.InstructionLine;
-import org.eaSTars.z80asm.assembler.visitors.ExpressionVisitor;
 import org.eaSTars.z80asm.ast.expression.ConstantValueExpression;
 import org.eaSTars.z80asm.ast.expression.Expression;
 import org.eaSTars.z80asm.ast.expression.OneParameterExpression;
 import org.eaSTars.z80asm.ast.expression.TwoOperandExpression;
 import org.eaSTars.z80asm.ast.parameter.ConstantValueParameter;
 import org.eaSTars.z80asm.ast.parameter.ExpressionParameter;
-import org.eaSTars.z80asm.parser.Z80AssemblerLexer;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -34,7 +27,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
-public class ExpressionTest {
+public class ExpressionTest extends AbstractTester {
 
 	private static class OneParameterExpressionArgumentProvider implements ArgumentsProvider {
 
@@ -70,7 +63,7 @@ public class ExpressionTest {
 	@ParameterizedTest
 	@ArgumentsSource(TwoParameterExpressionArgumentProvider.class)
 	public void testTwoParameterExpressions(String testexpression, TwoOperandExpression.Operation operation, int leftValue, int rightValue, int evaluated, String assembly) {
-		Expression result = invokeParser(testexpression);
+		Expression result = getExpression(testexpression);
 		
 		assertNotNull(result, "Instruction must be recognized");
 		assertTrue(result instanceof TwoOperandExpression, "Test expression must be an instance of TwoOperandExpression");
@@ -90,7 +83,7 @@ public class ExpressionTest {
 	@ParameterizedTest
 	@ArgumentsSource(OneParameterExpressionArgumentProvider.class)
 	public void testOneParameterExpressions(String testexpression, OneParameterExpression.Operation operation, int intvalue, int evaluated, String assembly) {
-		Expression result = invokeParser(testexpression);
+		Expression result = getExpression(testexpression);
 		
 		assertNotNull(result, "Instruction must be recognized");
 		assertTrue(result instanceof OneParameterExpression, "Test expression must be an instance of OneOperandExpression");
@@ -124,7 +117,7 @@ public class ExpressionTest {
 	
 	@Test
 	public void testConstantValueExpressionWithValue() {
-		Expression result = invokeParser("0045h");
+		Expression result = getExpression("0045h");
 		
 		assertNotNull(result, "Instruction must be recognized");
 		assertTrue(result instanceof ConstantValueExpression, "Test expression must be an instance of ConstantValueExpression");
@@ -146,7 +139,7 @@ public class ExpressionTest {
 	
 	@Test
 	public void testConstantValueExpressionWithLabelFound() {
-		Expression result = invokeParser("@testlabel12");
+		Expression result = getExpression("@testlabel12");
 		
 		assertNotNull(result, "Instruction must be recognized");
 		assertTrue(result instanceof ConstantValueExpression, "Test expression must be an instance of ConstantValueExpression");
@@ -171,7 +164,7 @@ public class ExpressionTest {
 	
 	@Test
 	public void testConstantValueExpressionWithLabelNotFound() {
-		Expression result = invokeParser("@testlabel12");
+		Expression result = getExpression("@testlabel12");
 		
 		assertNotNull(result, "Instruction must be recognized");
 		assertTrue(result instanceof ConstantValueExpression, "Test expression must be an instance of ConstantValueExpression");
@@ -196,7 +189,7 @@ public class ExpressionTest {
 	
 	@Test
 	public void testGrouping() {
-		Expression result = invokeParser("(0045h)");
+		Expression result = getExpression("(0045h)");
 		
 		assertNotNull(result, "Instruction must be recognized");
 		assertTrue(result instanceof ConstantValueExpression, "Test expression must be an instance of ConstantValueExpression");
@@ -214,7 +207,7 @@ public class ExpressionTest {
 	
 	@Test
 	public void testNoMismatchingParameterSize() {
-		Expression expression = invokeParser("0021h");
+		Expression expression = getExpression("0021h");
 		ExpressionParameter parameter = new ExpressionParameter(expression, 8);
 		
 		try {
@@ -227,18 +220,10 @@ public class ExpressionTest {
 	
 	@Test
 	public void testMismatchingParameterSize() {
-		Expression result = invokeParser("2100h");
+		Expression result = getExpression("2100h");
 		ExpressionParameter parameter = new ExpressionParameter(result, 8);
 		
 		assertThrows(MismatchingParameterSizeException.class, () -> parameter.getExpressionValue(null), "MismatchingParameterSizeException expected");
 	}
 	
-	private Expression invokeParser(String content) {
-		CharStream charStream = CharStreams.fromString(content);
-		Lexer lexer = new Z80AssemblerLexer(charStream);
-		TokenStream tokenStream = new CommonTokenStream(lexer);
-		Z80AssemblerParser parser = new Z80AssemblerParser(tokenStream);
-		
-		return new ExpressionVisitor().visitExpression(parser.expression());
-	}
 }

@@ -319,7 +319,7 @@ public class TwoParamTest extends InstructionTester {
 			Class<? extends Parameter> targetparameterclass, String targetparameterstring,
 			Class<? extends Parameter> sourceparameterclass, String sourceparameterstring,
 			byte[] opcode) {
-		Z80Instruction result = invokeParser(testinstruction);
+		Z80Instruction result = getZ80Instruction(testinstruction);
 
 		assertNotNull(result, "Instruction must be recognized");
 		assertTrue(result.getClass().isAssignableFrom(instructionclass), () -> String.format("Test instruction must be an instance of %s", instructionclass.getName()));

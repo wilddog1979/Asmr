@@ -21,26 +21,30 @@ public class CompilationUnit {
 		this.addresscounter = addresscounter;
 	}
 	
+	public void increaseAddresscounter(int value) {
+		this.addresscounter += value;
+	}
+	
 	public void addLine(AssemblerLine line) {
 		Optional.ofNullable(line.getLabel()).ifPresent(label -> lines.stream()
 				.filter(l -> label.equals(l.getLabel())).findFirst()
 				.ifPresent(l -> {throw new LabelAlreadyDefinedException(label);}));
 		
-		line.setAddress(addresscounter);
+		line.setAddress(getAddresscounter());
 		lines.add(line);
-		addresscounter += line.getRenderedLength(this);
+		increaseAddresscounter(line.getRenderedLength(this));
 	}
 	
 	public int getLabelValue(String label) {
 		return lines.stream().filter(l -> label.equals(l.getLabel()))
 				.findFirst().map(l -> {
+					int result = 0;
 					if (l instanceof InstructionLine) {
-						return l.getAddress();
+						result = l.getAddress();
 					} else if (l instanceof DirectiveLine) {
-						return ((DirectiveLine)l).getDirective().getValue(this);
-					} else {
-						return 0;
+						result = ((DirectiveLine)l).getDirective().getValue(this);
 					}
+					return result;
 				})
 				.orElseThrow(() -> {throw new LabelNotFoundException(label);});
 	}

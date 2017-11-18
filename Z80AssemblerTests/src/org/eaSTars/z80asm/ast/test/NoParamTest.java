@@ -103,7 +103,7 @@ public class NoParamTest extends InstructionTester {
 	@ParameterizedTest
 	@ArgumentsSource(InstructionArgumentProvider.class)
 	public void testNoParameterInstructions(String testinstruction, Class<? extends Z80Instruction> instructionclass, byte[] opcode) {
-		Z80Instruction result = invokeParser(testinstruction);
+		Z80Instruction result = getZ80Instruction(testinstruction);
 		
 		assertNotNull(result, "Instruction must be recognized");
 		assertTrue(result.getClass().isAssignableFrom(instructionclass), () -> String.format("Test instruction must be an instance of %s", instructionclass.getName()));

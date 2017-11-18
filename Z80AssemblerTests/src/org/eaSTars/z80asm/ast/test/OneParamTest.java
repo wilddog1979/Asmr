@@ -246,7 +246,7 @@ public class OneParamTest extends InstructionTester {
 	@ArgumentsSource(InstructionArgumentProvider.class)
 	public void testOneParameterInstructions(String testinstruction, Class<? extends OneParameterInstruction> instructionclass,
 			Class<? extends Parameter> parameterclass, String parameterstring, byte[] opcode) {
-		Z80Instruction result = invokeParser(testinstruction);
+		Z80Instruction result = getZ80Instruction(testinstruction);
 
 		assertNotNull(result, "Instruction must be recognized");
 		assertTrue(result.getClass().isAssignableFrom(instructionclass), () -> String.format("Test instruction must be an instance of %s", instructionclass.getName()));
