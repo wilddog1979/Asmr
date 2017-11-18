@@ -28,9 +28,9 @@ public class TwoOperandExpression implements Expression {
 	}
 	
 	public TwoOperandExpression(Expression left, Operation operation, Expression right) {
-		this.leftOperand = left;
-		this.operation = operation;
-		this.rightOperand = right;
+		setLeftOperand(left);
+		setOperation(operation);
+		setRightOperand(right);
 	}
 	
 	@Override

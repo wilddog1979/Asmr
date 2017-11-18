@@ -10,8 +10,8 @@ public class IndexedAddressingParameter extends AddressingParameter {
 	}
 	
 	public IndexedAddressingParameter(RegisterPair registerPair, ExpressionParameter displacement) {
-		this.registerPair = registerPair;
-		this.displacement = displacement;
+		setRegisterPair(registerPair);
+		setDisplacement(displacement);
 	}
 	
 	@Override

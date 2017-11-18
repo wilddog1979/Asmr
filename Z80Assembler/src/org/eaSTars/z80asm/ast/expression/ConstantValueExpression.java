@@ -14,7 +14,7 @@ public class ConstantValueExpression implements Expression {
 	}
 	
 	public ConstantValueExpression(ConstantValueParameter contantValueParameter) {
-		this.contantValueParameter = contantValueParameter;
+		setContantValueParameter(contantValueParameter);
 	}
 	
 	@Override

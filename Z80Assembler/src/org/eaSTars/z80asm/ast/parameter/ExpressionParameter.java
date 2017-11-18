@@ -14,8 +14,8 @@ public class ExpressionParameter extends Parameter {
 	}
 	
 	public ExpressionParameter(Expression expression, int expectedBitCount) {
-		this.expression = expression;
-		this.expectedBitCount = expectedBitCount;
+		setExpression(expression);
+		setExpectedBitCount(expectedBitCount);
 	}
 	
 	@Override

@@ -20,10 +20,6 @@ public abstract class TwoParameterInstruction extends Z80Instruction {
 		return getOpcode();
 	}
 	
-	protected byte[] getOpcode() {
-		return null;
-	}
-
 	public Parameter getTarget() {
 		return target;
 	}

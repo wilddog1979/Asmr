@@ -9,11 +9,6 @@ import org.eaSTars.z80asm.ast.parameter.RegisterPair;
 public abstract class BitRotating extends OneParameterInstruction {
 
 	@Override
-	protected byte[] getOpcode() {
-		return null;
-	}
-	
-	@Override
 	public byte[] getOpcode(CompilationUnit compilationUnit) {
 		byte[] result = null;
 		

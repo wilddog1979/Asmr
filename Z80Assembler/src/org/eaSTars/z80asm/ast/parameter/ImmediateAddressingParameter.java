@@ -8,7 +8,7 @@ public class ImmediateAddressingParameter extends AddressingParameter {
 	}
 	
 	public ImmediateAddressingParameter(ExpressionParameter value) {
-		this.value = value;
+		setValue(value);
 	}
 	
 	@Override

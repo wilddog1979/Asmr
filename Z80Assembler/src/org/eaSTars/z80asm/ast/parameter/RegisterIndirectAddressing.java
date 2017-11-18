@@ -8,7 +8,7 @@ public class RegisterIndirectAddressing extends AddressingParameter {
 	}
 	
 	public RegisterIndirectAddressing(RegisterPair registerPair) {
-		this.registerPair = registerPair;
+		setRegisterPair(registerPair);
 	}
 	
 	@Override

@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.stream.Stream;
 
@@ -14,6 +15,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.TokenStream;
 import org.eaSTars.asm.assember.LabelNotFoundException;
+import org.eaSTars.asm.assember.MismatchingParameterSizeException;
 import org.eaSTars.asm.ast.CompilationUnit;
 import org.eaSTars.asm.ast.InstructionLine;
 import org.eaSTars.z80asm.assembler.visitors.ExpressionVisitor;
@@ -22,6 +24,7 @@ import org.eaSTars.z80asm.ast.expression.Expression;
 import org.eaSTars.z80asm.ast.expression.OneParameterExpression;
 import org.eaSTars.z80asm.ast.expression.TwoOperandExpression;
 import org.eaSTars.z80asm.ast.parameter.ConstantValueParameter;
+import org.eaSTars.z80asm.ast.parameter.ExpressionParameter;
 import org.eaSTars.z80asm.parser.Z80AssemblerLexer;
 import org.eaSTars.z80asm.parser.Z80AssemblerParser;
 import org.junit.jupiter.api.Test;
@@ -207,6 +210,27 @@ public class ExpressionTest {
 		assertNull(contantValueParameter.getValue(), "Value of ContantValueParameter should be null");
 		assertNotNull(contantValueParameter.getIntValue(), "IntValue of ConstantValueParameter should not be null");
 		assertEquals(0x45, contantValueParameter.getIntValue().intValue(), "IntValue of ConstantValueParameter should match");
+	}
+	
+	@Test
+	public void testNoMismatchingParameterSize() {
+		Expression expression = invokeParser("0021h");
+		ExpressionParameter parameter = new ExpressionParameter(expression, 8);
+		
+		try {
+			int result = parameter.getExpressionValue(null);
+			assertEquals(0x21, result, "expression value must match");
+		} catch (MismatchingParameterSizeException e) {
+			fail("Unexpected MismatchingParameterSizeException");
+		}
+	}
+	
+	@Test
+	public void testMismatchingParameterSize() {
+		Expression result = invokeParser("2100h");
+		ExpressionParameter parameter = new ExpressionParameter(result, 8);
+		
+		assertThrows(MismatchingParameterSizeException.class, () -> parameter.getExpressionValue(null), "MismatchingParameterSizeException expected");
 	}
 	
 	private Expression invokeParser(String content) {

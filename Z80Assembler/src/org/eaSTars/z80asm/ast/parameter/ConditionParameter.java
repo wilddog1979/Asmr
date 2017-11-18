@@ -8,7 +8,7 @@ public class ConditionParameter extends Parameter {
 	}
 	
 	public ConditionParameter(Condition condition) {
-		this.condition = condition;
+		setCondition(condition);
 	}
 	
 	@Override

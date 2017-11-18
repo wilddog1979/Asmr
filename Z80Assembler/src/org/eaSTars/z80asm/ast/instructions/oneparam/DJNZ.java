@@ -18,11 +18,6 @@ public class DJNZ extends OneParameterInstruction {
 	}
 	
 	@Override
-	protected byte[] getOpcode() {
-		return null;
-	}
-	
-	@Override
 	public byte[] getOpcode(CompilationUnit compilationUnit) {
 		byte[] result = null;
 		

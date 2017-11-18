@@ -9,11 +9,6 @@ import org.eaSTars.z80asm.ast.parameter.RegisterPair;
 
 public abstract class SUBANDXORORCP extends OneParameterInstruction {
 	
-	@Override
-	protected byte[] getOpcode() {
-		return null;
-	}
-	
 	protected byte[] getOpcode(CompilationUnit compilationUnit, byte rh, byte immediate) {
 		byte[] result = null;
 		

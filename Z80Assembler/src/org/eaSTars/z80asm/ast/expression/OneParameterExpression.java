@@ -26,8 +26,8 @@ public class OneParameterExpression implements Expression {
 	}
 	
 	public OneParameterExpression(Operation operation, Expression parameter) {
-		this.operation = operation;
-		this.parameter = parameter;
+		setOperation(operation);
+		setParameter(parameter);
 	}
 	
 	@Override

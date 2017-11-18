@@ -18,8 +18,6 @@ public abstract class OneParameterInstruction extends Z80Instruction {
 		return getOpcode();
 	}
 	
-	protected abstract byte[] getOpcode();
-	
 	public Parameter getParameter() {
 		return parameter;
 	}

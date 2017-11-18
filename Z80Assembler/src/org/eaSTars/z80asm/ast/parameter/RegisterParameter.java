@@ -8,7 +8,7 @@ public class RegisterParameter extends Parameter {
 	}
 	
 	public RegisterParameter(Register register) {
-		this.register = register;
+		setRegister(register);
 	}
 	
 	@Override

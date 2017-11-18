@@ -8,11 +8,6 @@ import org.eaSTars.z80asm.ast.parameter.RegisterPair;
 import org.eaSTars.z80asm.ast.parameter.RegisterPairParameter;
 
 public abstract class INCDEC extends OneParameterInstruction {
-
-	@Override
-	protected byte[] getOpcode() {
-		return null;
-	}
 	
 	protected byte[] getOpcode(CompilationUnit compilationUnit, byte ss, byte rh) {
 		byte[] result = null;

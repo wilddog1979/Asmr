@@ -12,11 +12,6 @@ import org.eaSTars.z80asm.ast.parameter.RegisterParameter;
 
 public abstract class ADCSBC extends TwoParameterInstruction {
 	
-	@Override
-	protected byte[] getOpcode() {
-		return null;
-	}
-	
 	protected byte[] getOpcode(CompilationUnit compilationUnit, byte rh, byte immediate) {
 		byte[] result = null;
 		

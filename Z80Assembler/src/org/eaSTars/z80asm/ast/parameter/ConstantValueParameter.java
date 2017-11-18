@@ -12,11 +12,11 @@ public class ConstantValueParameter extends Parameter {
 	}
 	
 	public ConstantValueParameter(String value) {
-		this.value = value;
+		setValue(value);
 	}
 	
 	public ConstantValueParameter(int intvalue) {
-		this.intValue = intvalue;
+		setIntValue(intvalue);
 	}
 	
 	@Override
