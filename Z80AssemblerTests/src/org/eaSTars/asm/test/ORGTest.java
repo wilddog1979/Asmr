@@ -1,8 +1,8 @@
 package org.eaSTars.asm.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eaSTars.asm.ast.Directive;
 import org.eaSTars.z80asm.ast.directives.ORG;
@@ -14,12 +14,12 @@ public class ORGTest extends DirectiveTest {
 	public void testORGNormal() {
 		Directive result = invokeDirectiveParser(".org 7a00h\n");
 		
-		assertNotNull("ORG directive must be recognized", result);
-		assertTrue("Result must be an instance of ORG", result instanceof ORG);
+		assertNotNull(result, "ORG directive must be recognized");
+		assertTrue(result instanceof ORG, "Result must be an instance of ORG");
 		
 		ORG orgresult = (ORG) result;
 		
-		assertEquals("ORG vaue must be correct", 0x7a00, orgresult.getValue().intValue());
+		assertEquals(0x7a00, orgresult.getValue().intValue(), "ORG vaue must be correct");
 	}
 	
 }

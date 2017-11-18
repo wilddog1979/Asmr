@@ -14,4 +14,5 @@ public class LabelNotFoundException extends RuntimeException {
 	public String getLabel() {
 		return label;
 	}
+	
 }

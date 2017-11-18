@@ -1,9 +1,9 @@
 package org.eaSTars.asm.ast.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.stream.Stream;
 
@@ -38,25 +38,21 @@ public class DirectiveLineTest extends AssemblerLineTester {
 	public void testInstructionLine(String testinstruction, Class<? extends Directive> instruction, String comment, String tostring) {
 		AssemblerLine result = invokeParser(testinstruction);
 		
-		assertTrue("result must be an instance of DirectiveLine", result instanceof DirectiveLine);
+		assertTrue(result instanceof DirectiveLine, "result must be an instance of DirectiveLine");
 		DirectiveLine directiveLineResult = (DirectiveLine) result;
 		
 		if (comment != null) {
-			assertEquals("Comment must match", comment, directiveLineResult.getComment());
+			assertEquals(comment, directiveLineResult.getComment(), "Comment must match");
 		} else {
-			assertNull("Unexpected comment", directiveLineResult.getComment());
+			assertNull(directiveLineResult.getComment(), "Unexpected comment");
 		}
 		
-		assertEquals("toString method result doesn't match", tostring, directiveLineResult.toString());
+		assertEquals(tostring, directiveLineResult.toString(), "toString method result doesn't match");
 	}
 	
 	@Test
 	public void testOrgRepeated() {
-		try {
-			invokeParser(".org 5000h\n\tNOP\n\n.org 7b00h\n\tNOP\n");
-			fail("RecognitionException expceted");
-		} catch (RecognitionException e) {
-			// this exception was expected 
-		}
+		assertThrows(RecognitionException.class, () -> invokeParser(".org 5000h\n\tNOP\n\n.org 7b00h\n\tNOP\n"), "RecognitionException expected");
 	}
+	
 }

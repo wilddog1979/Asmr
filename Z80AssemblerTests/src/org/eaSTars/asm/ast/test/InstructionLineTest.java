@@ -1,15 +1,18 @@
 package org.eaSTars.asm.ast.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.stream.Stream;
 
+import org.eaSTars.asm.assember.LabelAlreadyDefinedException;
 import org.eaSTars.asm.ast.AssemblerLine;
 import org.eaSTars.asm.ast.Instruction;
 import org.eaSTars.asm.ast.InstructionLine;
 import org.eaSTars.z80asm.ast.instructions.noparam.NOP;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -42,31 +45,37 @@ public class InstructionLineTest extends AssemblerLineTester {
 	public void testInstructionLine(String testinstruction, String label, Class<? extends Instruction> instruction, String comment, String tostring) {
 		AssemblerLine result = invokeParser(testinstruction);
 		
-		assertTrue("result must be an instance of InstructionLine", result instanceof InstructionLine);
+		assertTrue(result instanceof InstructionLine, "result must be an instance of InstructionLine");
 		InstructionLine instructionLineResult = (InstructionLine) result;
 		
-		assertEquals("Address must match", 0, instructionLineResult.getAddress());
+		assertEquals(0, instructionLineResult.getAddress(), "Address must match");
 		
 		if (label != null) {
-			assertEquals("Label must match", label, result.getLabel());
+			assertEquals(label, result.getLabel(), "Label must match");
 		} else {
-			assertNull("Unexpected label", instructionLineResult.getLabel());
+			assertNull(instructionLineResult.getLabel(), "Unexpected label");
 		}
 		
 		if (instruction != null) {
-			assertTrue(String.format("Instruction must be subclass of %s",
-					instruction.getName()),instructionLineResult.getInstruction().getClass().isAssignableFrom(instruction));
+			assertTrue(
+					instructionLineResult.getInstruction().getClass().isAssignableFrom(instruction),
+					String.format("Instruction must be subclass of %s", instruction.getName()));
 		} else {
-			assertNull("Unexpected instruction", instructionLineResult.getInstruction());
+			assertNull(instructionLineResult.getInstruction(), "Unexpected instruction");
 		}
 		
 		if (comment != null) {
-			assertEquals("Comment must match", comment, instructionLineResult.getComment());
+			assertEquals(comment, instructionLineResult.getComment(), "Comment must match");
 		} else {
-			assertNull("Unexpected comment", instructionLineResult.getComment());
+			assertNull(instructionLineResult.getComment(), "Unexpected comment");
 		}
 		
-		assertEquals("toString method result doesn't match", tostring, instructionLineResult.toString());
+		assertEquals(tostring, instructionLineResult.toString(), "toString method result doesn't match");
 	}
 
+	@Test
+	public void testRepeatedLabel() {
+		assertThrows(LabelAlreadyDefinedException.class, () -> invokeParser("# some comment\n\tNOP\n@mylabel:\tNOP\n\tNOP\n\t@mylabel:\tNOP\n\tNOP\n"), "LabelAlreadyDefinedException expected");
+	}
+	
 }
