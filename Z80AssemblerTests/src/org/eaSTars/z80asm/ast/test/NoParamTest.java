@@ -94,7 +94,7 @@ public class NoParamTest extends InstructionTester {
 					{"LDDR", LDDR.class, new byte[] {(byte) 0xed, (byte) 0xb8}},
 					{"CPDR", CPDR.class, new byte[] {(byte) 0xed, (byte) 0xb9}},
 					{"INDR", INDR.class, new byte[] {(byte) 0xed, (byte) 0xba}},
-					{"OTDR", OTDR.class, new byte[] {(byte) 0xed, (byte) 0xbb}},
+					{"OTDR", OTDR.class, new byte[] {(byte) 0xed, (byte) 0xbb}}
 			}).map(i -> Arguments.of(i));
 		}
 		

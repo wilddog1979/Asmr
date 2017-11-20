@@ -1,9 +1,17 @@
 package org.eaSTars.z80asm.ast.instructions.oneparam;
 
 import org.eaSTars.asm.ast.CompilationUnit;
+import org.eaSTars.z80asm.ast.parameter.Parameter;
 
 public class CP extends SUBANDXORORCP {
 
+	public CP() {
+	}
+	
+	public CP(Parameter parameter) {
+		setParameter(parameter);
+	}
+	
 	@Override
 	public String getMnemonic() {
 		return "CP";

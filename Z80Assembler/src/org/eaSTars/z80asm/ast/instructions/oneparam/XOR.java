@@ -1,9 +1,17 @@
 package org.eaSTars.z80asm.ast.instructions.oneparam;
 
 import org.eaSTars.asm.ast.CompilationUnit;
+import org.eaSTars.z80asm.ast.parameter.Parameter;
 
 public class XOR extends SUBANDXORORCP {
 
+	public XOR() {
+	}
+	
+	public XOR(Parameter parameter) {
+		setParameter(parameter);
+	}
+	
 	@Override
 	public String getMnemonic() {
 		return "XOR";

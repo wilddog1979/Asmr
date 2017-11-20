@@ -7,6 +7,13 @@ import org.eaSTars.z80asm.ast.parameter.Parameter;
 
 public class DJNZ extends OneParameterInstruction {
 
+	public DJNZ() {
+	}
+	
+	public DJNZ(Parameter parameter) {
+		setParameter(parameter);
+	}
+	
 	@Override
 	public String getMnemonic() {
 		return "DJNZ";

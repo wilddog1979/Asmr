@@ -1,9 +1,17 @@
 package org.eaSTars.z80asm.ast.instructions.oneparam;
 
 import org.eaSTars.asm.ast.CompilationUnit;
+import org.eaSTars.z80asm.ast.parameter.Parameter;
 
 public class OR extends SUBANDXORORCP {
 
+	public OR() {
+	}
+	
+	public OR(Parameter parameter) {
+		setParameter(parameter);
+	}
+	
 	@Override
 	public String getMnemonic() {
 		return "OR";

@@ -1,7 +1,16 @@
 package org.eaSTars.z80asm.ast.instructions.oneparam;
 
+import org.eaSTars.z80asm.ast.parameter.Parameter;
+
 public class RR extends BitRotating {
 
+	public RR() {
+	}
+	
+	public RR(Parameter parameter) {
+		setParameter(parameter);
+	}
+	
 	@Override
 	public String getMnemonic() {
 		return "RR";

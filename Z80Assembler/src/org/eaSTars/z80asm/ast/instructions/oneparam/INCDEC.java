@@ -32,11 +32,11 @@ public abstract class INCDEC extends OneParameterInstruction {
 			RegisterPair registerpair = indexedAddressingParameter.getRegisterPair();
 			if (registerpair == RegisterPair.IX) {
 				result = getRefIXIY();
-				result[3] = (byte) indexedAddressingParameter.getDisplacement().getExpressionValue(compilationUnit);
+				result[2] = (byte) indexedAddressingParameter.getDisplacement().getExpressionValue(compilationUnit);
 			} else if (registerpair == RegisterPair.IY) {
 				result = getRefIXIY();
 				result[0] |= 0x20;
-				result[3] = (byte) indexedAddressingParameter.getDisplacement().getExpressionValue(compilationUnit);
+				result[2] = (byte) indexedAddressingParameter.getDisplacement().getExpressionValue(compilationUnit);
 			}
 		}
 		

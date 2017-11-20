@@ -6,6 +6,13 @@ import org.eaSTars.z80asm.ast.parameter.Parameter;
 
 public class RET extends OneParameterInstruction {
 
+	public RET() {
+	}
+	
+	public RET(Parameter parameter) {
+		setParameter(parameter);
+	}
+	
 	@Override
 	public String getMnemonic() {
 		return "RET";

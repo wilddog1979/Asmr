@@ -1,9 +1,17 @@
 package org.eaSTars.z80asm.ast.instructions.oneparam;
 
 import org.eaSTars.asm.ast.CompilationUnit;
+import org.eaSTars.z80asm.ast.parameter.Parameter;
 
 public class INC extends INCDEC {
 
+	public INC() {
+	}
+	
+	public INC(Parameter parameter) {
+		setParameter(parameter);
+	}
+	
 	@Override
 	public String getMnemonic() {
 		return "INC";
@@ -21,6 +29,6 @@ public class INC extends INCDEC {
 	
 	@Override
 	protected byte[] getRefIXIY() {
-		return new byte[] {(byte) 0xdd, (byte) 0xdd, 0x34, 0x00};
+		return new byte[] {(byte) 0xdd, 0x34, 0x00};
 	}
 }
