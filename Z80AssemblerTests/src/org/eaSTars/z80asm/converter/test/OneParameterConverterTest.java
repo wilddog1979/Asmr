@@ -1,10 +1,16 @@
 package org.eaSTars.z80asm.converter.test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.stream.Stream;
 
+import org.eaSTars.asm.assember.PushbackInputStream;
 import org.eaSTars.z80asm.assembler.converter.OneParameterInstructionConverter;
 import org.eaSTars.z80asm.ast.expression.ConstantValueExpression;
 import org.eaSTars.z80asm.ast.instructions.OneParameterInstruction;
@@ -37,6 +43,7 @@ import org.eaSTars.z80asm.ast.parameter.RegisterIndirectAddressing;
 import org.eaSTars.z80asm.ast.parameter.RegisterPair;
 import org.eaSTars.z80asm.ast.parameter.RegisterPairParameter;
 import org.eaSTars.z80asm.ast.parameter.RegisterParameter;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -249,6 +256,81 @@ public class OneParameterConverterTest {
 		
 		assertNotNull(result, "Converted result expected");
 		assertArrayEquals(assembly, result, "Opcode must be equal");
+	}
+	
+	@ParameterizedTest
+	@ArgumentsSource(ConverterArgumentProvider.class)
+	public void testOneParameterConverterToInstruction(OneParameterInstruction instruction, byte[] assembly) {
+		try {
+			OneParameterInstruction result = new OneParameterInstructionConverter().convert(new PushbackInputStream(new ByteArrayInputStream(assembly)));
+			
+			assertNotNull(result, "Converted result expected");
+			assertEquals(instruction.getClass(), result.getClass(), "Class type must match");
+		} catch (IOException e) {
+			fail("Unexpected exception", e);
+		}
+	}
+	
+	@Test
+	public void testUnknownInstructionOneByte() {
+		try {
+			PushbackInputStream pis = new PushbackInputStream(new ByteArrayInputStream(new byte[] {0x01}));
+			OneParameterInstruction result = new OneParameterInstructionConverter().convert(pis);
+			
+			assertNull(result, "Converted result not expected");
+			assertEquals(0x01, pis.read(), "Rolled back value expected");
+			assertEquals(-1, pis.read(), "End of stream expected");
+		} catch (IOException e) {
+			fail("Unexpected exception", e);
+		}
+	}
+	
+	@Test
+	public void testUnknownInstructionTwoByte() {
+		try {
+			PushbackInputStream pis = new PushbackInputStream(new ByteArrayInputStream(new byte[] {0x01, 0x02}));
+			OneParameterInstruction result = new OneParameterInstructionConverter().convert(pis);
+			
+			assertNull(result, "Converted result not expected");
+			assertEquals(0x01, pis.read(), "First rolled back value expected");
+			assertEquals(0x02, pis.read(), "Second rolled back value expected");
+			assertEquals(-1, pis.read(), "End of stream expected");
+		} catch (IOException e) {
+			fail("Unexpected exception", e);
+		}
+	}
+	
+	@Test
+	public void testUnknownInstructionThreeByte() {
+		try {
+			PushbackInputStream pis = new PushbackInputStream(new ByteArrayInputStream(new byte[] {0x01, 0x02, 0x03}));
+			OneParameterInstruction result = new OneParameterInstructionConverter().convert(pis);
+			
+			assertNull(result, "Converted result not expected");
+			assertEquals(0x01, pis.read(), "First rolled back value expected");
+			assertEquals(0x02, pis.read(), "Second rolled back value expected");
+			assertEquals(0x03, pis.read(), "Third rolled back value expected");
+			assertEquals(-1, pis.read(), "End of stream expected");
+		} catch (IOException e) {
+			fail("Unexpected exception", e);
+		}
+	}
+	
+	@Test
+	public void testUnknownInstructionFourByte() {
+		try {
+			PushbackInputStream pis = new PushbackInputStream(new ByteArrayInputStream(new byte[] {0x01, 0x02, 0x03, 0x04}));
+			OneParameterInstruction result = new OneParameterInstructionConverter().convert(pis);
+			
+			assertNull(result, "Converted result not expected");
+			assertEquals(0x01, pis.read(), "First rolled back value expected");
+			assertEquals(0x02, pis.read(), "Second rolled back value expected");
+			assertEquals(0x03, pis.read(), "Third rolled back value expected");
+			assertEquals(0x04, pis.read(), "Fourth rolled back value expected");
+			assertEquals(-1, pis.read(), "End of stream expected");
+		} catch (IOException e) {
+			fail("Unexpected exception", e);
+		}
 	}
 	
 }

@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.eaSTars.asm.assember.AssemblyConverter;
 import org.eaSTars.asm.ast.Instruction;
-import org.eaSTars.z80asm.ast.instructions.NoParameterInstruction;
 import org.eaSTars.z80asm.ast.parameter.Parameter;
 import org.eaSTars.z80asm.ast.parameter.Register;
 import org.eaSTars.z80asm.ast.parameter.RegisterIndirectAddressing;
@@ -37,7 +36,7 @@ public abstract class Z80InstructionConverter<T extends Instruction> extends Ass
 			null,
 			Register.A);
 	
-	protected NoParameterInstruction instanciate(Class<? extends NoParameterInstruction> clazz) {
+	protected <T2 extends Instruction> T2 instanciate(Class<T2> clazz) {
 		try {
 			return clazz.newInstance();
 		} catch (InstantiationException | IllegalAccessException e) {

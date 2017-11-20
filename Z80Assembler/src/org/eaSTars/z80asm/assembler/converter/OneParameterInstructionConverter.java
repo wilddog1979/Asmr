@@ -39,6 +39,8 @@ import org.eaSTars.z80asm.ast.parameter.RegisterPairParameter;
 public class OneParameterInstructionConverter extends Z80InstructionConverter<OneParameterInstruction> {
 
 	private static class MaskedOpcode {
+		private Class<? extends OneParameterInstruction> instruction;
+		
 		private byte[] mask;
 		
 		private byte[] value;
@@ -60,6 +62,9 @@ public class OneParameterInstructionConverter extends Z80InstructionConverter<On
 		public InstructionEntry(Class<? extends OneParameterInstruction> instruction, MaskedOpcode[] masks, InstructionAssemblyGenerateor generator) {
 			this.instruction = instruction;
 			this.masks = masks;
+			for (MaskedOpcode m : masks) {
+				m.instruction = instruction;
+			}
 			this.generator = generator;
 		}
 		
@@ -161,6 +166,15 @@ public class OneParameterInstructionConverter extends Z80InstructionConverter<On
 	private static Map<Class<? extends OneParameterInstruction>, InstructionEntry> instructions =
 			instructionlist.stream().collect(Collectors.toMap(e -> e.instruction, e -> e));
 	
+	private static Map<Integer, MaskedOpcodeMap<Class<? extends OneParameterInstruction>>> reverse =
+			instructionlist.stream().flatMap(e -> Arrays.asList(e.masks).stream()).collect(Collectors.groupingBy(
+					m -> m.mask.length,
+					Collectors.toMap(
+							m -> new OpcodeMask(m.mask, m.value),
+							m -> m.instruction,
+							(u,v) -> { throw new IllegalStateException(String.format("Duplicate key %s", u)); },
+							MaskedOpcodeMap<Class<? extends OneParameterInstruction>>::new)));
+	
 	@Override
 	public byte[] convert(CompilationUnit compilationUnit, OneParameterInstruction instruction) {
 		byte[] result = null;
@@ -170,11 +184,26 @@ public class OneParameterInstructionConverter extends Z80InstructionConverter<On
 		}
 		return result;
 	}
-
+	
+	private OneParameterInstruction convertRecursive(PushbackInputStream pushbackInputStream, byte[] buffer)  throws IOException{
+		OneParameterInstruction result = null;
+		
+		int current = pushbackInputStream.read();
+		if (current != -1) {
+			byte[] currentbuffer = Arrays.copyOf(buffer, buffer.length + 1);
+			currentbuffer[buffer.length] = (byte) current;
+			Class<? extends OneParameterInstruction> resultclass = reverse.get(currentbuffer.length).getInstruction(currentbuffer);
+			if ((resultclass == null || (result = instanciate(resultclass)) == null) && (result = convertRecursive(pushbackInputStream, currentbuffer)) == null) {
+				pushbackInputStream.unread((byte) current);
+			}
+		}
+		
+		return result;
+	}
+	
 	@Override
 	public OneParameterInstruction convert(PushbackInputStream pushbackInputStream) throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+		return convertRecursive(pushbackInputStream, new byte[] {});
 	}
 
 	private static byte[] generateSUBANDXORORCP(CompilationUnit compilationUnit, OneParameterInstruction instruction, MaskedOpcode[] masks) {
