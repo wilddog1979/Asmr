@@ -24,15 +24,17 @@ public abstract class TwoParameterInstruction extends Z80Instruction {
 		return target;
 	}
 
-	public void setTarget(Parameter target) {
+	public TwoParameterInstruction setTarget(Parameter target) {
 		this.target = target;
+		return this;
 	}
 
 	public Parameter getSource() {
 		return source;
 	}
 
-	public void setSource(Parameter source) {
+	public TwoParameterInstruction setSource(Parameter source) {
 		this.source = source;
+		return this;
 	}
 }

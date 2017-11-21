@@ -22,8 +22,9 @@ public abstract class OneParameterInstruction extends Z80Instruction {
 		return parameter;
 	}
 
-	public void setParameter(Parameter parameter) {
+	public OneParameterInstruction setParameter(Parameter parameter) {
 		this.parameter = parameter;
+		return this;
 	}
 
 }

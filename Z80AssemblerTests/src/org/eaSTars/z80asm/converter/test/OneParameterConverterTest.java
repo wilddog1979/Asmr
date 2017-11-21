@@ -266,6 +266,7 @@ public class OneParameterConverterTest {
 			
 			assertNotNull(result, "Converted result expected");
 			assertEquals(instruction.getClass(), result.getClass(), "Class type must match");
+			//assertEquals(instruction.getParameter(), result.getParameter(), "Parameter must match");
 		} catch (IOException e) {
 			fail("Unexpected exception", e);
 		}

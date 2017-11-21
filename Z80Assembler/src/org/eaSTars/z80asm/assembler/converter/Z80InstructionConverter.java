@@ -1,9 +1,11 @@
 package org.eaSTars.z80asm.assembler.converter;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 import org.eaSTars.asm.assember.AssemblyConverter;
+import org.eaSTars.asm.assember.PushbackInputStream;
 import org.eaSTars.asm.ast.Instruction;
 import org.eaSTars.z80asm.ast.parameter.Parameter;
 import org.eaSTars.z80asm.ast.parameter.Register;
@@ -36,14 +38,6 @@ public abstract class Z80InstructionConverter<T extends Instruction> extends Ass
 			null,
 			Register.A);
 	
-	protected <T2 extends Instruction> T2 instanciate(Class<T2> clazz) {
-		try {
-			return clazz.newInstance();
-		} catch (InstantiationException | IllegalAccessException e) {
-			return null;
-		}
-	}
-	
 	private static int tableLookup(List<RegisterPair> map, Parameter parameter) {
 		int result = -1;
 		
@@ -57,6 +51,16 @@ public abstract class Z80InstructionConverter<T extends Instruction> extends Ass
 	
 	protected static int getRegisterSSIndex(Parameter parameter) {
 		return tableLookup(TABLE_SS, parameter);
+	}
+	
+	protected static Parameter reverseRegisterSS(int index) {
+		Parameter result = null;
+		
+		if (index >= 0 && index < 4) {
+			result = new RegisterPairParameter(TABLE_SS.get(index));
+		}
+		
+		return result;
 	}
 	
 	protected static int getRegisterQQIndex(Parameter parameter) {
@@ -84,6 +88,41 @@ public abstract class Z80InstructionConverter<T extends Instruction> extends Ass
 		}
 		
 		return result;
+	}
+	
+	protected static Parameter reverseRegisterRH(int index) {
+		Parameter result = null;
+		
+		if (index == 6) {
+			result = new RegisterIndirectAddressing(RegisterPair.HL);
+		} else if (index >= 0 && index < 8) {
+			result = new RegisterParameter(TABLE_R.get(index));
+		}
+		
+		return result;
+	}
+	
+	protected abstract MaskedOpcodeMap<T> getReverse(int index);
+	
+	protected T convertRecursive(PushbackInputStream pushbackInputStream, byte[] buffer)  throws IOException{
+		T result = null;
+		
+		int current = pushbackInputStream.read();
+		if (current != -1) {
+			byte[] currentbuffer = Arrays.copyOf(buffer, buffer.length + 1);
+			currentbuffer[buffer.length] = (byte) current;
+			result = getReverse(currentbuffer.length).getInstruction(currentbuffer);
+			if (result == null && (result = convertRecursive(pushbackInputStream, currentbuffer)) == null) {
+				pushbackInputStream.unread((byte) current);
+			}
+		}
+		
+		return result;
+	}
+	
+	@Override
+	public T convert(PushbackInputStream pushbackInputStream) throws IOException {
+		return convertRecursive(pushbackInputStream, new byte[] {});
 	}
 	
 }

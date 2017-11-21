@@ -1,21 +1,21 @@
 package org.eaSTars.z80asm.assembler.converter;
 
-public class OpcodeMask {
+class OpcodeMask<T> {
 
-	private byte[] mask;
+	protected byte[] mask;
 	
-	private byte[] value;
+	protected byte[] value;
+	
+	protected ParameterExtractor<T> parameterExtractor;
 	
 	public OpcodeMask(byte[] mask, byte[] value) {
 		this.mask = mask;
 		this.value = value;
 	}
-
-	public byte[] getMask() {
-		return mask;
+	
+	public OpcodeMask(byte[] mask, byte[] value, ParameterExtractor<T> parameterExtractor) {
+		this(mask, value);
+		this.parameterExtractor = parameterExtractor;
 	}
-
-	public byte[] getValue() {
-		return value;
-	}
+	
 }
