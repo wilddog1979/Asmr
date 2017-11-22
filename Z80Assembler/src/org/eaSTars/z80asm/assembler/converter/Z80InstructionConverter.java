@@ -7,6 +7,12 @@ import java.util.List;
 import org.eaSTars.asm.assember.AssemblyConverter;
 import org.eaSTars.asm.assember.PushbackInputStream;
 import org.eaSTars.asm.ast.Instruction;
+import org.eaSTars.z80asm.ast.expression.ConstantValueExpression;
+import org.eaSTars.z80asm.ast.parameter.Condition;
+import org.eaSTars.z80asm.ast.parameter.ConditionParameter;
+import org.eaSTars.z80asm.ast.parameter.ConstantValueParameter;
+import org.eaSTars.z80asm.ast.parameter.ExpressionParameter;
+import org.eaSTars.z80asm.ast.parameter.IndexedAddressingParameter;
 import org.eaSTars.z80asm.ast.parameter.Parameter;
 import org.eaSTars.z80asm.ast.parameter.Register;
 import org.eaSTars.z80asm.ast.parameter.RegisterIndirectAddressing;
@@ -67,6 +73,16 @@ public abstract class Z80InstructionConverter<T extends Instruction> extends Ass
 		return tableLookup(TABLE_QQ, parameter);
 	}
 	
+	protected static Parameter reverseRegisterQQ(int index) {
+		Parameter result = null;
+		
+		if (index >= 0 && index < 4) {
+			result = new RegisterPairParameter(TABLE_QQ.get(index));
+		}
+		
+		return result;
+	}
+	
 	protected static int getRegisterRIndex(Parameter parameter) {
 		int result = -1;
 		
@@ -100,6 +116,35 @@ public abstract class Z80InstructionConverter<T extends Instruction> extends Ass
 		}
 		
 		return result;
+	}
+	
+	protected static Parameter reverseIndexedAddressing(boolean ix, int displacement) {
+		return new IndexedAddressingParameter(ix ? RegisterPair.IX : RegisterPair.IY, new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(displacement)), 8));
+	}
+	
+	protected static Parameter reverseImmediate(int value) {
+		return new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(value)), 8);
+	}
+	
+	protected static Parameter reverseCondition(int index) {
+		Parameter result = null;
+		
+		for (Condition condition : Condition.values()) {
+			if (condition.getOpcode() == index) {
+				result = new ConditionParameter(condition);
+				break;
+			}
+		}
+		
+		return result;
+	}
+	
+	protected static Parameter reverseRSTValue(int value) {
+		return new ConstantValueParameter(String.format("%02x", value));
+	}
+	
+	protected static Parameter reverseIXIY(boolean ix) {
+		return new RegisterPairParameter(ix ? RegisterPair.IX : RegisterPair.IY);
 	}
 	
 	protected abstract MaskedOpcodeMap<T> getReverse(int index);

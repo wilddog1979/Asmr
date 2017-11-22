@@ -87,4 +87,15 @@ public class TwoOperandExpression implements Expression {
 		this.rightOperand = rightOperand;
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		return obj instanceof TwoOperandExpression &&
+				((leftOperand == null && ((TwoOperandExpression)obj).getLeftOperand() == null) ||
+						(leftOperand != null && leftOperand.equals(((TwoOperandExpression)obj).getLeftOperand()))) &&
+				((operation == null && ((TwoOperandExpression)obj).getOperation() == null) ||
+						(operation != null && operation == ((TwoOperandExpression)obj).getOperation())) &&
+				((rightOperand == null && ((TwoOperandExpression)obj).getRightOperand() == null) ||
+						(rightOperand != null && rightOperand.equals(((TwoOperandExpression)obj).getRightOperand())));
+	}
+	
 }

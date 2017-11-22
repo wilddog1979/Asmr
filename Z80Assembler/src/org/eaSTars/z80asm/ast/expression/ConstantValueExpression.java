@@ -42,4 +42,11 @@ public class ConstantValueExpression implements Expression {
 		this.contantValueParameter = contantValueParameter;
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		return obj instanceof ConstantValueExpression &&
+				((contantValueParameter == null && ((ConstantValueExpression)obj).getContantValueParameter() == null) ||
+						(contantValueParameter != null && contantValueParameter.equals(((ConstantValueExpression)obj).getContantValueParameter())));
+	}
+	
 }

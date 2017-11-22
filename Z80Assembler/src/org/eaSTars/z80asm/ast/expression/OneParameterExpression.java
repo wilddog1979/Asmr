@@ -61,4 +61,13 @@ public class OneParameterExpression implements Expression {
 		this.parameter = parameter;
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		return obj instanceof OneParameterExpression &&
+				((operation == null && ((OneParameterExpression)obj).getOperation() == null) ||
+						(operation != null && operation == ((OneParameterExpression)obj).getOperation())) &&
+				((parameter == null && ((OneParameterExpression)obj).getParameter() == null) ||
+						(parameter != null && parameter.equals(((OneParameterExpression)obj).getParameter())));
+	}
+	
 }

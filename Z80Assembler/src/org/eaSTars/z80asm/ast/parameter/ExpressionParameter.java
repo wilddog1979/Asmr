@@ -48,5 +48,12 @@ public class ExpressionParameter extends Parameter {
 	public void setExpectedBitCount(int expectedBitCount) {
 		this.expectedBitCount = expectedBitCount;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return obj instanceof ExpressionParameter &&
+				((expression == null && ((ExpressionParameter)obj).getExpression() == null) ||
+						(expression != null && expression.equals(((ExpressionParameter)obj).getExpression())));
+	}
 
 }
