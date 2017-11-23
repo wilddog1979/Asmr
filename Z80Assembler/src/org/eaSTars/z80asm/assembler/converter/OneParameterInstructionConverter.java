@@ -41,9 +41,9 @@ public class OneParameterInstructionConverter extends Z80InstructionConverter<On
 		
 		private List<MaskedOpcode<OneParameterInstruction>> masks;
 		
-		private InstructionAssemblyGenerateor generator;
+		private InstructionAssemblyGenerator generator;
 		
-		public InstructionEntry(Class<? extends OneParameterInstruction> instruction, List<MaskedOpcode<OneParameterInstruction>> masks, InstructionAssemblyGenerateor generator) {
+		public InstructionEntry(Class<? extends OneParameterInstruction> instruction, List<MaskedOpcode<OneParameterInstruction>> masks, InstructionAssemblyGenerator generator) {
 			this.instruction = instruction;
 			this.masks = masks;
 			masks.forEach(m -> m.instruction = instruction);
@@ -53,7 +53,7 @@ public class OneParameterInstructionConverter extends Z80InstructionConverter<On
 	}
 	
 	@FunctionalInterface
-	protected static interface InstructionAssemblyGenerateor {
+	protected static interface InstructionAssemblyGenerator {
 		
 		public byte[] generate(CompilationUnit compilationUnit, OneParameterInstruction instruction, List<MaskedOpcode<OneParameterInstruction>> masks);
 		

@@ -9,6 +9,14 @@ import org.eaSTars.z80asm.ast.parameter.RegisterParameter;
 
 public class OUT extends TwoParameterInstruction {
 
+	public OUT() {
+	}
+	
+	public OUT(Parameter target, Parameter source) {
+		setTarget(target);
+		setSource(source);
+	}
+	
 	@Override
 	public String getMnemonic() {
 		return "OUT";

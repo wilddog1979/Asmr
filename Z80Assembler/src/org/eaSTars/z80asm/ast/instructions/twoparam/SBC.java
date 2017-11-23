@@ -1,9 +1,18 @@
 package org.eaSTars.z80asm.ast.instructions.twoparam;
 
 import org.eaSTars.asm.ast.CompilationUnit;
+import org.eaSTars.z80asm.ast.parameter.Parameter;
 
 public class SBC extends ADCSBC {
 
+	public SBC() {
+	}
+	
+	public SBC(Parameter target, Parameter source) {
+		setTarget(target);
+		setSource(source);
+	}
+	
 	@Override
 	public String getMnemonic() {
 		return "SBC";

@@ -9,6 +9,14 @@ import org.eaSTars.z80asm.ast.parameter.Parameter;
 
 public class CALL extends TwoParameterInstruction {
 
+	public CALL() {
+	}
+	
+	public CALL(Parameter target, Parameter source) {
+		setTarget(target);
+		setSource(source);
+	}
+	
 	@Override
 	public String getMnemonic() {
 		return "CALL";
