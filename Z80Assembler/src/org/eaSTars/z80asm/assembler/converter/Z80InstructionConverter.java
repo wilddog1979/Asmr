@@ -3,9 +3,11 @@ package org.eaSTars.z80asm.assembler.converter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.eaSTars.asm.assember.AssemblyConverter;
 import org.eaSTars.asm.assember.PushbackInputStream;
+import org.eaSTars.asm.ast.CompilationUnit;
 import org.eaSTars.asm.ast.Instruction;
 import org.eaSTars.z80asm.ast.expression.ConstantValueExpression;
 import org.eaSTars.z80asm.ast.parameter.Condition;
@@ -147,6 +149,35 @@ public abstract class Z80InstructionConverter<T extends Instruction> extends Ass
 		return new RegisterPairParameter(ix ? RegisterPair.IX : RegisterPair.IY);
 	}
 	
+	protected static byte[] generateIndexedAddressing(CompilationUnit compilationUnit, IndexedAddressingParameter indexedAddressingParameter, byte[] bytes) {
+		byte[] result = null;
+		
+		RegisterPair registerPair = indexedAddressingParameter.getRegisterPair();
+		if (registerPair == RegisterPair.IX) {
+			result = Arrays.copyOf(bytes, bytes.length);
+			result[2] = (byte) indexedAddressingParameter.getDisplacement().getExpressionValue(compilationUnit);
+		} else if (registerPair == RegisterPair.IY) {
+			result = Arrays.copyOf(bytes, bytes.length);
+			result[0] |= 0x20;
+			result[2] = (byte) indexedAddressingParameter.getDisplacement().getExpressionValue(compilationUnit);
+		}
+		
+		return result;
+	}
+
+	protected static byte[] generateIndexRegisters(CompilationUnit compilationUnit, RegisterPair parameter, byte[] bytes) {
+		byte[] result = null;
+		
+		if (parameter == RegisterPair.IX) {
+			result = Arrays.copyOf(bytes, bytes.length);
+		} else if (parameter == RegisterPair.IY) {
+			result = Arrays.copyOf(bytes, bytes.length);
+			result[0] |= 0x20;
+		}
+		
+		return result;
+	}
+
 	protected abstract MaskedOpcodeMap<T> getReverse(int index);
 	
 	protected T convertRecursive(PushbackInputStream pushbackInputStream, byte[] buffer)  throws IOException{
@@ -156,7 +187,7 @@ public abstract class Z80InstructionConverter<T extends Instruction> extends Ass
 		if (current != -1) {
 			byte[] currentbuffer = Arrays.copyOf(buffer, buffer.length + 1);
 			currentbuffer[buffer.length] = (byte) current;
-			result = getReverse(currentbuffer.length).getInstruction(currentbuffer);
+			result = Optional.ofNullable(getReverse(currentbuffer.length)).map(r -> r.getInstruction(currentbuffer)).orElseGet(() -> null);
 			if (result == null && (result = convertRecursive(pushbackInputStream, currentbuffer)) == null) {
 				pushbackInputStream.unread((byte) current);
 			}

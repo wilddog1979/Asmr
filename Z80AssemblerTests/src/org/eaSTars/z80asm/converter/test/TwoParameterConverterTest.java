@@ -113,15 +113,15 @@ public class TwoParameterConverterTest {
 				{new JP(null, new RegisterIndirectAddressing(RegisterPair.HL)), new byte[] {(byte) 0xe9}},
 				{new JP(null, new RegisterIndirectAddressing(RegisterPair.IX)), new byte[] {(byte) 0xdd, (byte) 0xe9}},
 				{new JP(null, new RegisterIndirectAddressing(RegisterPair.IY)), new byte[] {(byte) 0xfd, (byte) 0xe9}},
-				{new JP(null, new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x3500)), 8)), new byte[] {(byte) 0xc3, 0x00, 0x35}},
-				{new JP(new ConditionParameter(Condition.NZ), new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x3500)), 8)), new byte[] {(byte) 0xc2, 0x00, 0x35}},
-				{new JP(new ConditionParameter(Condition.Z), new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x3500)), 8)), new byte[] {(byte) 0xca, 0x00, 0x35}},
-				{new JP(new ConditionParameter(Condition.NC), new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x3500)), 8)), new byte[] {(byte) 0xd2, 0x00, 0x35}},
-				{new JP(new ConditionParameter(Condition.C), new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x3500)), 8)), new byte[] {(byte) 0xda, 0x00, 0x35}},
-				{new JP(new ConditionParameter(Condition.PO), new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x3500)), 8)), new byte[] {(byte) 0xe2, 0x00, 0x35}},
-				{new JP(new ConditionParameter(Condition.PE), new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x3500)), 8)), new byte[] {(byte) 0xea, 0x00, 0x35}},
-				{new JP(new ConditionParameter(Condition.P), new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x3500)), 8)), new byte[] {(byte) 0xf2, 0x00, 0x35}},
-				{new JP(new ConditionParameter(Condition.M), new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x3500)), 8)), new byte[] {(byte) 0xfa, 0x00, 0x35}},
+				{new JP(null, new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x3500)), 16)), new byte[] {(byte) 0xc3, 0x00, 0x35}},
+				{new JP(new ConditionParameter(Condition.NZ), new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x3500)), 16)), new byte[] {(byte) 0xc2, 0x00, 0x35}},
+				{new JP(new ConditionParameter(Condition.Z), new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x3500)), 16)), new byte[] {(byte) 0xca, 0x00, 0x35}},
+				{new JP(new ConditionParameter(Condition.NC), new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x3500)), 16)), new byte[] {(byte) 0xd2, 0x00, 0x35}},
+				{new JP(new ConditionParameter(Condition.C), new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x3500)), 16)), new byte[] {(byte) 0xda, 0x00, 0x35}},
+				{new JP(new ConditionParameter(Condition.PO), new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x3500)), 16)), new byte[] {(byte) 0xe2, 0x00, 0x35}},
+				{new JP(new ConditionParameter(Condition.PE), new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x3500)), 16)), new byte[] {(byte) 0xea, 0x00, 0x35}},
+				{new JP(new ConditionParameter(Condition.P), new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x3500)), 16)), new byte[] {(byte) 0xf2, 0x00, 0x35}},
+				{new JP(new ConditionParameter(Condition.M), new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x3500)), 16)), new byte[] {(byte) 0xfa, 0x00, 0x35}},
 				{new JR(null, new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x0035)), 8)), new byte[] {0x18, 0x33}},
 				{new JR(new ConditionParameter(Condition.NZ), new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x0035)), 8)), new byte[] {0x20, 0x33}},
 				{new JR(new ConditionParameter(Condition.Z), new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x0035)), 8)), new byte[] {0x28, 0x33}},
@@ -173,15 +173,15 @@ public class TwoParameterConverterTest {
 				{new IN(new RegisterParameter(Register.H), new RegisterParameter(Register.C)), new byte[] {(byte) 0xed, 0x60}},
 				{new IN(new RegisterParameter(Register.L), new RegisterParameter(Register.C)), new byte[] {(byte) 0xed, 0x68}},
 				{new IN(new RegisterParameter(Register.A), new RegisterParameter(Register.C)), new byte[] {(byte) 0xed, 0x78}},
-				{new CALL(null, new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x12ff)), 8)), new byte[] {(byte) 0xcd, (byte) 0xff, 0x12}},
-				{new CALL(new ConditionParameter(Condition.NZ), new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x12ff)), 8)), new byte[] {(byte) 0xc4, (byte) 0xff, 0x12}}, 
-				{new CALL(new ConditionParameter(Condition.Z), new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x12ff)), 8)), new byte[] {(byte) 0xcc, (byte) 0xff, 0x12}}, 
-				{new CALL(new ConditionParameter(Condition.NC), new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x12ff)), 8)), new byte[] {(byte) 0xd4, (byte) 0xff, 0x12}}, 
-				{new CALL(new ConditionParameter(Condition.C), new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x12ff)), 8)), new byte[] {(byte) 0xdc, (byte) 0xff, 0x12}}, 
-				{new CALL(new ConditionParameter(Condition.PO), new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x12ff)), 8)), new byte[] {(byte) 0xe4, (byte) 0xff, 0x12}}, 
-				{new CALL(new ConditionParameter(Condition.PE), new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x12ff)), 8)), new byte[] {(byte) 0xec, (byte) 0xff, 0x12}}, 
-				{new CALL(new ConditionParameter(Condition.P), new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x12ff)), 8)), new byte[] {(byte) 0xf4, (byte) 0xff, 0x12}}, 
-				{new CALL(new ConditionParameter(Condition.M), new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x12ff)), 8)), new byte[] {(byte) 0xfc, (byte) 0xff, 0x12}},
+				{new CALL(null, new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x12ff)), 16)), new byte[] {(byte) 0xcd, (byte) 0xff, 0x12}},
+				{new CALL(new ConditionParameter(Condition.NZ), new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x12ff)), 16)), new byte[] {(byte) 0xc4, (byte) 0xff, 0x12}}, 
+				{new CALL(new ConditionParameter(Condition.Z), new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x12ff)), 16)), new byte[] {(byte) 0xcc, (byte) 0xff, 0x12}}, 
+				{new CALL(new ConditionParameter(Condition.NC), new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x12ff)), 16)), new byte[] {(byte) 0xd4, (byte) 0xff, 0x12}}, 
+				{new CALL(new ConditionParameter(Condition.C), new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x12ff)), 16)), new byte[] {(byte) 0xdc, (byte) 0xff, 0x12}}, 
+				{new CALL(new ConditionParameter(Condition.PO), new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x12ff)), 16)), new byte[] {(byte) 0xe4, (byte) 0xff, 0x12}}, 
+				{new CALL(new ConditionParameter(Condition.PE), new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x12ff)), 16)), new byte[] {(byte) 0xec, (byte) 0xff, 0x12}}, 
+				{new CALL(new ConditionParameter(Condition.P), new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x12ff)), 16)), new byte[] {(byte) 0xf4, (byte) 0xff, 0x12}}, 
+				{new CALL(new ConditionParameter(Condition.M), new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x12ff)), 16)), new byte[] {(byte) 0xfc, (byte) 0xff, 0x12}},
 				{new LD(new RegisterIndirectAddressing(RegisterPair.BC), new RegisterParameter(Register.A)), new byte[] {0x02}},
 				{new LD(new RegisterIndirectAddressing(RegisterPair.DE), new RegisterParameter(Register.A)), new byte[] {0x12}},
 				{new LD(new RegisterParameter(Register.A), new RegisterIndirectAddressing(RegisterPair.BC)), new byte[] {0x0a}},
@@ -352,7 +352,7 @@ public class TwoParameterConverterTest {
 			TwoParameterInstruction result = new TwoParameterInstructionConverter().convert(pis);
 			
 			assertNull(result, "Converted result not expected");
-			assertEquals(0x01, pis.read(), "Rolled back value expected");
+			assertEquals(0x04, pis.read(), "Rolled back value expected");
 			assertEquals(-1, pis.read(), "End of stream expected");
 		} catch (IOException e) {
 			fail("Unexpected exception", e);
@@ -366,8 +366,8 @@ public class TwoParameterConverterTest {
 			TwoParameterInstruction result = new TwoParameterInstructionConverter().convert(pis);
 			
 			assertNull(result, "Converted result not expected");
-			assertEquals(0x01, pis.read(), "First rolled back value expected");
-			assertEquals(0x02, pis.read(), "Second rolled back value expected");
+			assertEquals(0x04, pis.read(), "First rolled back value expected");
+			assertEquals(0x03, pis.read(), "Second rolled back value expected");
 			assertEquals(-1, pis.read(), "End of stream expected");
 		} catch (IOException e) {
 			fail("Unexpected exception", e);
@@ -381,9 +381,9 @@ public class TwoParameterConverterTest {
 			TwoParameterInstruction result = new TwoParameterInstructionConverter().convert(pis);
 			
 			assertNull(result, "Converted result not expected");
-			assertEquals(0x01, pis.read(), "First rolled back value expected");
-			assertEquals(0x02, pis.read(), "Second rolled back value expected");
-			assertEquals(0x03, pis.read(), "Third rolled back value expected");
+			assertEquals(0x04, pis.read(), "First rolled back value expected");
+			assertEquals(0x03, pis.read(), "Second rolled back value expected");
+			assertEquals(0x02, pis.read(), "Third rolled back value expected");
 			assertEquals(-1, pis.read(), "End of stream expected");
 		} catch (IOException e) {
 			fail("Unexpected exception", e);
@@ -397,10 +397,10 @@ public class TwoParameterConverterTest {
 			TwoParameterInstruction result = new TwoParameterInstructionConverter().convert(pis);
 			
 			assertNull(result, "Converted result not expected");
-			assertEquals(0x01, pis.read(), "First rolled back value expected");
-			assertEquals(0x02, pis.read(), "Second rolled back value expected");
-			assertEquals(0x03, pis.read(), "Third rolled back value expected");
-			assertEquals(0x04, pis.read(), "Fourth rolled back value expected");
+			assertEquals(0x04, pis.read(), "First rolled back value expected");
+			assertEquals(0x03, pis.read(), "Second rolled back value expected");
+			assertEquals(0x02, pis.read(), "Third rolled back value expected");
+			assertEquals(0x01, pis.read(), "Fourth rolled back value expected");
 			assertEquals(-1, pis.read(), "End of stream expected");
 		} catch (IOException e) {
 			fail("Unexpected exception", e);

@@ -7,4 +7,5 @@ public interface Instruction {
 	public abstract String getAssembly();
 	
 	public abstract byte[] getOpcode(CompilationUnit compilationUnit);
+	
 }

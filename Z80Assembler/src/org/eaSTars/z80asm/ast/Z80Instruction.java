@@ -122,4 +122,9 @@ public abstract class Z80Instruction implements Instruction {
 		return result;
 	}
 	
+	@Override
+	public String toString() {
+		return getAssembly();
+	}
+	
 }
