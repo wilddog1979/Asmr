@@ -8,10 +8,5 @@ public class EI extends NoParameterInstruction {
 	public String getMnemonic() {
 		return "EI";
 	}
-	
-	@Override
-	public byte[] getOpcode() {
-		return new byte[] {(byte) 0xfb};
-	}
 
 }

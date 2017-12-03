@@ -13,11 +13,6 @@ public class DirectiveLine extends AssemblerLine {
 	}
 	
 	@Override
-	public int getRenderedLength(CompilationUnit compilationUnit) {
-		return 0;
-	}
-	
-	@Override
 	public String getLabel() {
 		return directive.getLabel();
 	}
@@ -29,6 +24,7 @@ public class DirectiveLine extends AssemblerLine {
 	
 	@Override
 	public String toString() {
-		return String.format("%s %s", super.toString(), directive.toString());
+		return directive.toString();
 	}
+	
 }

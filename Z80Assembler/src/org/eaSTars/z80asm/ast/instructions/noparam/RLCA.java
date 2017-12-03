@@ -8,10 +8,5 @@ public class RLCA extends NoParameterInstruction {
 	public String getMnemonic() {
 		return "RLCA";
 	}
-	
-	@Override
-	public byte[] getOpcode() {
-		return new byte[] {0x07};
-	}
 
 }

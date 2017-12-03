@@ -8,10 +8,5 @@ public class HALT extends NoParameterInstruction{
 	public String getMnemonic() {
 		return "HALT";
 	}
-	
-	@Override
-	public byte[] getOpcode() {
-		return new byte[] {0x76};
-	}
 
 }

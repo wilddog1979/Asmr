@@ -8,10 +8,5 @@ public class SCF extends NoParameterInstruction {
 	public String getMnemonic() {
 		return "SCF";
 	}
-	
-	@Override
-	public byte[] getOpcode() {
-		return new byte[] {0x37};
-	}
 
 }

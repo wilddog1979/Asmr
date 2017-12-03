@@ -31,7 +31,7 @@ public abstract class Assembler {
 				if (line instanceof InstructionLine) {
 					InstructionLine instructionline = (InstructionLine) line;
 					if (instructionline.getInstruction() != null) {
-						out.write(instructionline.getInstruction().getOpcode(instructions));
+						
 					}
 				}
 			}

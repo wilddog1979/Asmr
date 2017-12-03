@@ -19,7 +19,7 @@ public class ORGTest extends DirectiveTest {
 		
 		ORG orgresult = (ORG) result;
 		
-		assertEquals(0x7a00, orgresult.getValue(null), "ORG vaue must be correct");
+		assertEquals(0x7a00, orgresult.getValue().intValue(), "ORG value must be correct");
 	}
 	
 }

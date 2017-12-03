@@ -8,10 +8,5 @@ public class RLA extends NoParameterInstruction {
 	public String getMnemonic() {
 		return "RLA";
 	}
-	
-	@Override
-	public byte[] getOpcode() {
-		return new byte[] {0x17};
-	}
 
 }

@@ -8,10 +8,5 @@ public class RRCA extends NoParameterInstruction {
 	public String getMnemonic() {
 		return "RRCA";
 	}
-	
-	@Override
-	public byte[] getOpcode() {
-		return new byte[] {0x0f};
-	}
 
 }

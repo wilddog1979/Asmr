@@ -8,10 +8,5 @@ public class DAA extends NoParameterInstruction {
 	public String getMnemonic() {
 		return "DAA";
 	}
-	
-	@Override
-	public byte[] getOpcode() {
-		return new byte[] {0x27};
-	}
 
 }

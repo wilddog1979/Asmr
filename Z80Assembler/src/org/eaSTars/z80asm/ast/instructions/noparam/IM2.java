@@ -8,10 +8,5 @@ public class IM2 extends NoParameterInstruction {
 	public String getMnemonic() {
 		return "IM2";
 	}
-	
-	@Override
-	public byte[] getOpcode() {
-		return new byte[] {(byte) 0xed, 0x5e};
-	}
 
 }

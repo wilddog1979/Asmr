@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.stream.Stream;
 
-import org.eaSTars.asm.ast.CompilationUnit;
 import org.eaSTars.z80asm.ast.Z80Instruction;
 import org.eaSTars.z80asm.ast.instructions.TwoParameterInstruction;
 import org.eaSTars.z80asm.ast.instructions.twoparam.ADC;
@@ -44,11 +43,11 @@ public class TwoParamTest extends InstructionTester {
 		@Override
 		public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
 			return Stream.of(new Object[][] {
-				{"EX AF, AF'", EX.class, RegisterPairParameter.class, "AF", RegisterPairParameter.class, "AF'", new byte[] {0x08}},
-				{"EX [SP], HL", EX.class, RegisterIndirectAddressing.class, "[SP]", RegisterPairParameter.class, "HL", new byte[] {(byte) 0xe3}},
-				{"EX DE, HL", EX.class, RegisterPairParameter.class, "DE", RegisterPairParameter.class, "HL", new byte[] {(byte) 0xeb}},
-				{"EX [SP], IX", EX.class, RegisterIndirectAddressing.class, "[SP]", RegisterPairParameter.class, "IX", new byte[] {(byte) 0xdd, (byte) 0xe3}},
-				{"EX [SP], IY", EX.class, RegisterIndirectAddressing.class, "[SP]", RegisterPairParameter.class, "IY", new byte[] {(byte) 0xfd, (byte) 0xe3}},
+				{"EX AF, AF'", EX.class, RegisterPairParameter.class, "AF", RegisterPairParameter.class, "AF'"},
+				{"EX [SP], HL", EX.class, RegisterIndirectAddressing.class, "[SP]", RegisterPairParameter.class, "HL"},
+				{"EX DE, HL", EX.class, RegisterPairParameter.class, "DE", RegisterPairParameter.class, "HL"},
+				{"EX [SP], IX", EX.class, RegisterIndirectAddressing.class, "[SP]", RegisterPairParameter.class, "IX"},
+				{"EX [SP], IY", EX.class, RegisterIndirectAddressing.class, "[SP]", RegisterPairParameter.class, "IY"},
 				{"ADD HL, BC", ADD.class, RegisterPairParameter.class, "HL", RegisterPairParameter.class, "BC", new byte[]{0x09}},
 				{"ADD HL, DE", ADD.class, RegisterPairParameter.class, "HL", RegisterPairParameter.class, "DE", new byte[]{0x19}},
 				{"ADD HL, HL", ADD.class, RegisterPairParameter.class, "HL", RegisterPairParameter.class, "HL", new byte[]{0x29}},
@@ -317,8 +316,7 @@ public class TwoParamTest extends InstructionTester {
 	@ArgumentsSource(InstructionArgumentProvider.class)
 	public void testOneParameterInstructions(String testinstruction, Class<? extends TwoParameterInstruction> instructionclass,
 			Class<? extends Parameter> targetparameterclass, String targetparameterstring,
-			Class<? extends Parameter> sourceparameterclass, String sourceparameterstring,
-			byte[] opcode) {
+			Class<? extends Parameter> sourceparameterclass, String sourceparameterstring) {
 		Z80Instruction result = getZ80Instruction(testinstruction);
 
 		assertNotNull(result, "Instruction must be recognized");
@@ -342,10 +340,6 @@ public class TwoParamTest extends InstructionTester {
 		assertEquals(sourceparameterstring, resultsourceparameter.getAssembly(), "Source parameter string does not match");
 		
 		assertEquals(testinstruction, result.getAssembly(), "Instruction assembly does not match");
-		
-		CompilationUnit compilationUnit = new CompilationUnit();
-		
-		assertOpcode(opcode, result.getOpcode(compilationUnit));
 	}
 	
 }

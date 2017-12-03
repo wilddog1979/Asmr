@@ -8,10 +8,5 @@ public class OUTI extends NoParameterInstruction {
 	public String getMnemonic() {
 		return "OUTI";
 	}
-	
-	@Override
-	public byte[] getOpcode() {
-		return new byte[] {(byte) 0xed, (byte) 0xa3};
-	}
 
 }

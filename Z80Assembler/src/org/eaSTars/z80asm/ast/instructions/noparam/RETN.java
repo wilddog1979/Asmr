@@ -8,10 +8,5 @@ public class RETN extends NoParameterInstruction {
 	public String getMnemonic() {
 		return "RETN";
 	}
-	
-	@Override
-	public byte[] getOpcode() {
-		return new byte[] {(byte) 0xed, 0x45};
-	}
 
 }

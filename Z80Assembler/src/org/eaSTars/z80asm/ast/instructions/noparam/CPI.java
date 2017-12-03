@@ -8,10 +8,5 @@ public class CPI extends NoParameterInstruction {
 	public String getMnemonic() {
 		return "CPI";
 	}
-	
-	@Override
-	public byte[] getOpcode() {
-		return new byte[] {(byte) 0xed, (byte) 0xa1};
-	}
 
 }

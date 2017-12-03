@@ -27,9 +27,9 @@ public class DirectiveLineTest extends AssemblerLineTester {
 		@Override
 		public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
 			return Stream.of(new Object[][] {
-				{"org 7a00h\n", ORG.class, null, "7a00 org 7a00h"},
-				{"org 7a00h #comment\n", ORG.class, "#comment", "7a00 org 7a00h"},
-				{"@label1: equ 0340h\n", EQU.class, null, "0000 @label1: equ 0340h"}
+				{"org 7a00h\n", ORG.class, null, "org 7a00h"},
+				{"org 7a00h #comment\n", ORG.class, "#comment", "org 7a00h"},
+				{"@label1: equ 0340h\n", EQU.class, null, "@label1: equ 0340h"}
 			}).map(i -> Arguments.of(i));
 		}
 		

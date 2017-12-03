@@ -8,10 +8,5 @@ public class OTIR extends NoParameterInstruction {
 	public String getMnemonic() {
 		return "OTIR";
 	}
-	
-	@Override
-	public byte[] getOpcode() {
-		return new byte[] {(byte) 0xed, (byte) 0xb3};
-	}
 
 }

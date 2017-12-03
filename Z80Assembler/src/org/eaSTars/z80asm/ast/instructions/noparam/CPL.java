@@ -8,10 +8,5 @@ public class CPL extends NoParameterInstruction {
 	public String getMnemonic() {
 		return "CPL";
 	}
-	
-	@Override
-	public byte[] getOpcode() {
-		return new byte[] {0x2f};
-	}
 
 }

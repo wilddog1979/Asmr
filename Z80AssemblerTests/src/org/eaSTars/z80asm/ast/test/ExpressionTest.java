@@ -154,7 +154,6 @@ public class ExpressionTest extends AbstractTester {
 		assertEquals("@testlabel12", contantValueParameter.getValue(), "Value of ConstantValueParameter should match");
 		
 		CompilationUnit compilationUnit = new CompilationUnit();
-		compilationUnit.setAddresscounter(0xcafe);
 		InstructionLine instructionline = new InstructionLine();
 		instructionline.setLabel("@testlabel12");
 		compilationUnit.addLine(instructionline);
@@ -179,7 +178,6 @@ public class ExpressionTest extends AbstractTester {
 		assertEquals("@testlabel12", contantValueParameter.getValue(), "Value of ConstantValueParameter should match");
 		
 		CompilationUnit compilationUnit = new CompilationUnit();
-		compilationUnit.setAddresscounter(0xcafe);
 		InstructionLine instructionline = new InstructionLine();
 		instructionline.setLabel("@testlabel13");
 		compilationUnit.addLine(instructionline);

@@ -8,10 +8,5 @@ public class IND extends NoParameterInstruction {
 	public String getMnemonic() {
 		return "IND";
 	}
-	
-	@Override
-	public byte[] getOpcode() {
-		return new byte[] {(byte) 0xed, (byte) 0xaa};
-	}
 
 }

@@ -8,10 +8,5 @@ public class OUTD extends NoParameterInstruction {
 	public String getMnemonic() {
 		return "OUTD";
 	}
-	
-	@Override
-	public byte[] getOpcode() {
-		return new byte[] {(byte) 0xed, (byte) 0xab};
-	}
 
 }
