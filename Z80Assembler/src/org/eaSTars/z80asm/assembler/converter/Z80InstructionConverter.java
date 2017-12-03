@@ -24,10 +24,10 @@ import org.eaSTars.z80asm.ast.parameter.RegisterParameter;
 
 public abstract class Z80InstructionConverter<T extends Instruction> extends AssemblyConverter<T> {
 
-	private static final List<RegisterPair> TABLE_SS = Arrays.asList(
+	private static final List<RegisterPair> TABLE_PP = Arrays.asList(
 			RegisterPair.BC,
 			RegisterPair.DE,
-			RegisterPair.HL,
+			RegisterPair.IX,
 			RegisterPair.SP);
 	
 	private static final List<RegisterPair> TABLE_QQ = Arrays.asList(
@@ -35,6 +35,12 @@ public abstract class Z80InstructionConverter<T extends Instruction> extends Ass
 			RegisterPair.DE,
 			RegisterPair.HL,
 			RegisterPair.AF);
+	
+	private static final List<RegisterPair> TABLE_RR = Arrays.asList(
+			RegisterPair.BC,
+			RegisterPair.DE,
+			RegisterPair.IY,
+			RegisterPair.SP);
 	
 	private static final List<Register> TABLE_R = Arrays.asList(
 			Register.B,
@@ -45,6 +51,22 @@ public abstract class Z80InstructionConverter<T extends Instruction> extends Ass
 			Register.L,
 			null,
 			Register.A);
+	
+	private static final List<Register> TABLE_MARKEDR = Arrays.asList(
+			Register.BMarked,
+			Register.CMarked,
+			Register.DMarked,
+			Register.EMarked,
+			Register.HMarked,
+			Register.LMarked,
+			null,
+			Register.AMarked);
+	
+	private static final List<RegisterPair> TABLE_SS = Arrays.asList(
+			RegisterPair.BC,
+			RegisterPair.DE,
+			RegisterPair.HL,
+			RegisterPair.SP);
 	
 	private static int tableLookup(List<RegisterPair> map, Parameter parameter) {
 		int result = -1;
@@ -71,8 +93,16 @@ public abstract class Z80InstructionConverter<T extends Instruction> extends Ass
 		return result;
 	}
 	
+	protected static int getRegisterPPIndex(Parameter parameter) {
+		return tableLookup(TABLE_PP, parameter);
+	}
+	
 	protected static int getRegisterQQIndex(Parameter parameter) {
 		return tableLookup(TABLE_QQ, parameter);
+	}
+	
+	protected static int getRegisterRRIndex(Parameter parameter) {
+		return tableLookup(TABLE_RR, parameter);
 	}
 	
 	protected static Parameter reverseRegisterQQ(int index) {
@@ -91,6 +121,17 @@ public abstract class Z80InstructionConverter<T extends Instruction> extends Ass
 		if (parameter instanceof RegisterParameter) {
 			RegisterParameter registerParameter = (RegisterParameter) parameter;
 			result = TABLE_R.indexOf(registerParameter.getRegister());
+		}
+		
+		return result;
+	}
+	
+	protected static int getMarkedRegisterRIndex(Parameter parameter) {
+		int result = -1;
+		
+		if (parameter instanceof RegisterParameter) {
+			RegisterParameter registerParameter = (RegisterParameter) parameter;
+			result = TABLE_MARKEDR.indexOf(registerParameter.getRegister());
 		}
 		
 		return result;
@@ -176,6 +217,10 @@ public abstract class Z80InstructionConverter<T extends Instruction> extends Ass
 		}
 		
 		return result;
+	}
+	
+	protected static byte[] selectMask(MaskedOpcode<? extends Instruction> mask) {
+		return Arrays.copyOf(mask.value, mask.value.length);
 	}
 
 	protected abstract MaskedOpcodeMap<T> getReverse(int index);
