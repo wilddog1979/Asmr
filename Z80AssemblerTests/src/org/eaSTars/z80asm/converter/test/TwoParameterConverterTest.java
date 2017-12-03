@@ -346,6 +346,16 @@ public class TwoParameterConverterTest {
 	}
 	
 	@Test
+	public void testTwoParameterConverterToInstructionLDException1() {
+		testTwoParameterConverterToInstruction(new LD(new ImmediateAddressingParameter(new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x5a00)), 16)), new RegisterPairParameter(RegisterPair.HL)), new byte[] {(byte) 0xed, 0x63, 0x00, 0x5a});	
+	}
+	
+	@Test
+	public void testTwoParameterConverterToInstructionLDException2() {
+		testTwoParameterConverterToInstruction(new LD(new RegisterPairParameter(RegisterPair.HL), new ImmediateAddressingParameter(new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x5a00)), 16))), new byte[] {(byte) 0xed, 0x6b, 0x00, 0x5a});	
+	}
+	
+	@Test
 	public void testUnknownInstructionOneByte() {
 		try {
 			PushbackInputStream pis = new PushbackInputStream(new ByteArrayInputStream(new byte[] {0x04}));

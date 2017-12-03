@@ -105,16 +105,6 @@ public abstract class Z80InstructionConverter<T extends Instruction> extends Ass
 		return tableLookup(TABLE_RR, parameter);
 	}
 	
-	protected static Parameter reverseRegisterQQ(int index) {
-		Parameter result = null;
-		
-		if (index >= 0 && index < 4) {
-			result = new RegisterPairParameter(TABLE_QQ.get(index));
-		}
-		
-		return result;
-	}
-	
 	protected static int getRegisterRIndex(Parameter parameter) {
 		int result = -1;
 		
@@ -149,24 +139,90 @@ public abstract class Z80InstructionConverter<T extends Instruction> extends Ass
 		return result;
 	}
 	
+	protected static Parameter reverseRegisterPP(int index) {
+		Parameter result = null;
+		
+		if (index >= 0 && index < 4) {
+			result = new RegisterPairParameter(TABLE_PP.get(index));
+		}
+		
+		return result;
+	}
+	
+	protected static Parameter reverseRegisterQQ(int index) {
+		Parameter result = null;
+		
+		if (index >= 0 && index < 4) {
+			result = new RegisterPairParameter(TABLE_QQ.get(index));
+		}
+		
+		return result;
+	}
+	
+	protected static Parameter reverseRegisterRR(int index) {
+		Parameter result = null;
+		
+		if (index >= 0 && index < 4) {
+			result = new RegisterPairParameter(TABLE_RR.get(index));
+		}
+		
+		return result;
+	}
+	
 	protected static Parameter reverseRegisterRH(int index) {
 		Parameter result = null;
 		
 		if (index == 6) {
 			result = new RegisterIndirectAddressing(RegisterPair.HL);
-		} else if (index >= 0 && index < 8) {
+		} else {
+			result = reverseRegisterR(index);
+		}
+		
+		return result;
+	}
+	
+	protected static RegisterParameter reverseRegisterR(int index) {
+		RegisterParameter result = null;
+		
+		if (index >= 0 && index < 8) {
 			result = new RegisterParameter(TABLE_R.get(index));
 		}
 		
 		return result;
 	}
 	
-	protected static Parameter reverseIndexedAddressing(boolean ix, int displacement) {
-		return new IndexedAddressingParameter(ix ? RegisterPair.IX : RegisterPair.IY, new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(displacement)), 8));
+	protected static RegisterParameter reverseRegisterRMarked(int index) {
+		RegisterParameter result = null;
+		
+		if (index >= 0 && index < 8) {
+			result = new RegisterParameter(TABLE_MARKEDR.get(index));
+		}
+		
+		return result;
 	}
 	
-	protected static Parameter reverseImmediate(int value) {
-		return new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(value)), 8);
+	protected static Parameter reverseRegisterPPRR(boolean ix, int index) {
+		Parameter result = null;
+		
+		if (ix) {
+			result = reverseRegisterPP(index);
+		} else {
+			result = reverseRegisterRR(index);
+		}
+		
+		return result;
+	}
+	
+	protected static Parameter reverseIndexedAddressing(boolean ix, int displacement) {
+		return new IndexedAddressingParameter(ix ? RegisterPair.IX : RegisterPair.IY, new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(displacement & 0xff)), 8));
+	}
+	
+	protected static Parameter reverseImmediate8(int value) {
+		return new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(value & 0xff)), 8);
+	}
+	
+	protected static Parameter reverseImmediate16(byte hi, byte lo) {
+		return new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(((hi << 8) & 0xff00) | (lo & 0x00ff))), 16);
 	}
 	
 	protected static Parameter reverseCondition(int index) {

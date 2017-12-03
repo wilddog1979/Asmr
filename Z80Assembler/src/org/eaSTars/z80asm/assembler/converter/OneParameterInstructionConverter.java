@@ -61,12 +61,12 @@ public class OneParameterInstructionConverter extends Z80InstructionConverter<On
 	private static List<InstructionEntry> instructionlist = Arrays.asList(new InstructionEntry[]{
 			new InstructionEntry(AND.class, Arrays.asList(
 					new MaskedOpcode<OneParameterInstruction>(new byte[] {(byte) 0xf8}, new byte[] {(byte)0xa0}, (r, v) -> r.setParameter(reverseRegisterRH(v[0] & 0x07))),
-					new MaskedOpcode<OneParameterInstruction>(new byte[] {(byte) 0xff, 0x00}, new byte[] {(byte)0xe6, 0x00}, (r, v) -> r.setParameter(reverseImmediate(v[1]))),
+					new MaskedOpcode<OneParameterInstruction>(new byte[] {(byte) 0xff, 0x00}, new byte[] {(byte)0xe6, 0x00}, (r, v) -> r.setParameter(reverseImmediate8(v[1]))),
 					new MaskedOpcode<OneParameterInstruction>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00}, new byte[] {(byte) 0xdd, (byte) 0xa6, 0x00}, (r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
 					), (c, p, m) -> generateSUBANDXORORCP(c, p, m)),
 			new InstructionEntry(CP.class, Arrays.asList(
 					new MaskedOpcode<OneParameterInstruction>(new byte[] {(byte) 0xf8}, new byte[] {(byte) 0xb8}, (r, v) -> r.setParameter(reverseRegisterRH(v[0] & 0x07))),
-					new MaskedOpcode<OneParameterInstruction>(new byte[] {(byte) 0xff, 0x00}, new byte[] {(byte) 0xfe, 0x00}, (r, v) -> r.setParameter(reverseImmediate(v[1]))),
+					new MaskedOpcode<OneParameterInstruction>(new byte[] {(byte) 0xff, 0x00}, new byte[] {(byte) 0xfe, 0x00}, (r, v) -> r.setParameter(reverseImmediate8(v[1]))),
 					new MaskedOpcode<OneParameterInstruction>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00}, new byte[] {(byte) 0xdd, (byte) 0xbe, 0x00}, (r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
 					), (c, p, m) -> generateSUBANDXORORCP(c, p, m)),
 			new InstructionEntry(DEC.class, Arrays.asList(
@@ -76,7 +76,7 @@ public class OneParameterInstructionConverter extends Z80InstructionConverter<On
 					new MaskedOpcode<OneParameterInstruction>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00}, new byte[] {(byte) 0xdd, 0x35, 0x00}, (r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
 					), (c, p, m) -> generateINCDEC(c, p, m)),
 			new InstructionEntry(DJNZ.class, Arrays.asList(
-					new MaskedOpcode<OneParameterInstruction>(new byte[] {(byte) 0xff, 0x00},  new byte[] {0x10, 0x00}, (r, v) -> r.setParameter(reverseImmediate(v[1] + 2)))
+					new MaskedOpcode<OneParameterInstruction>(new byte[] {(byte) 0xff, 0x00},  new byte[] {0x10, 0x00}, (r, v) -> r.setParameter(reverseImmediate8(v[1] + 2)))
 					), (c, p, m) -> generateDJNZ(c, p, m)) ,
 			new InstructionEntry(INC.class, Arrays.asList(
 					new MaskedOpcode<OneParameterInstruction>(new byte[] {(byte) 0xcf}, new byte[] {0x03}, (r, v) -> r.setParameter(reverseRegisterSS((v[0] >> 4) & 0x03))),
@@ -86,7 +86,7 @@ public class OneParameterInstructionConverter extends Z80InstructionConverter<On
 					), (c, p, m) -> generateINCDEC(c, p, m)),
 			new InstructionEntry(OR.class, Arrays.asList(
 					new MaskedOpcode<OneParameterInstruction>(new byte[] {(byte) 0xf8}, new byte[] {(byte)0xb0}, (r, v) -> r.setParameter(reverseRegisterRH(v[0] & 0x07))),
-					new MaskedOpcode<OneParameterInstruction>(new byte[] {(byte) 0xff, 0x00}, new byte[] {(byte)0xf6, 0x00}, (r, v) -> r.setParameter(reverseImmediate(v[1]))),
+					new MaskedOpcode<OneParameterInstruction>(new byte[] {(byte) 0xff, 0x00}, new byte[] {(byte)0xf6, 0x00}, (r, v) -> r.setParameter(reverseImmediate8(v[1]))),
 					new MaskedOpcode<OneParameterInstruction>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00}, new byte[] {(byte) 0xdd, (byte) 0xb6, 0x00}, (r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
 					), (c, p, m) -> generateSUBANDXORORCP(c, p, m)),
 			new InstructionEntry(POP.class, Arrays.asList(
@@ -134,12 +134,12 @@ public class OneParameterInstructionConverter extends Z80InstructionConverter<On
 					), (c, p, m) -> generateBitrotating(c, p, m)),
 			new InstructionEntry(SUB.class, Arrays.asList(
 					new MaskedOpcode<OneParameterInstruction>(new byte[] {(byte) 0xf8}, new byte[] {(byte) 0x90}, (r, v) -> r.setParameter(reverseRegisterRH(v[0] & 0x07))),
-					new MaskedOpcode<OneParameterInstruction>(new byte[] {(byte) 0xff, 0x00}, new byte[] {(byte)0xd6, 0x00}, (r, v) -> r.setParameter(reverseImmediate(v[1]))),
+					new MaskedOpcode<OneParameterInstruction>(new byte[] {(byte) 0xff, 0x00}, new byte[] {(byte)0xd6, 0x00}, (r, v) -> r.setParameter(reverseImmediate8(v[1]))),
 					new MaskedOpcode<OneParameterInstruction>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00}, new byte[] {(byte) 0xdd, (byte) 0x96, 0x00}, (r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
 					), (c, p, m) -> generateSUBANDXORORCP(c, p, m)),
 			new InstructionEntry(XOR.class, Arrays.asList(
 					new MaskedOpcode<OneParameterInstruction>(new byte[] {(byte) 0xf8}, new byte[] {(byte)0xa8}, (r, v) -> r.setParameter(reverseRegisterRH(v[0] & 0x07))),
-					new MaskedOpcode<OneParameterInstruction>(new byte[] {(byte) 0xff, 0x00}, new byte[] {(byte)0xee, 0x00}, (r, v) -> r.setParameter(reverseImmediate(v[1]))),
+					new MaskedOpcode<OneParameterInstruction>(new byte[] {(byte) 0xff, 0x00}, new byte[] {(byte)0xee, 0x00}, (r, v) -> r.setParameter(reverseImmediate8(v[1]))),
 					new MaskedOpcode<OneParameterInstruction>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00}, new byte[] {(byte) 0xdd, (byte) 0xae, 0x00}, (r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
 					), (c, p, m) -> generateSUBANDXORORCP(c, p, m))
 	});
