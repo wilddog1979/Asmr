@@ -9,8 +9,4 @@ public class NOP extends NoParameterInstruction {
 		return "NOP";
 	}
 	
-	@Override
-	public byte[] getOpcode() {
-		return new byte[]{0x00};
-	}
 }

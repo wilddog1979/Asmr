@@ -34,4 +34,14 @@ public class IndexedAddressingParameter extends AddressingParameter {
 	public void setDisplacement(ExpressionParameter displacement) {
 		this.displacement = displacement;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return obj instanceof IndexedAddressingParameter &&
+				((registerPair == null && ((IndexedAddressingParameter)obj).getRegisterPair() == null) ||
+						(registerPair != null && registerPair == ((IndexedAddressingParameter)obj).getRegisterPair())) &&
+				((displacement == null && ((IndexedAddressingParameter)obj).getDisplacement() == null) ||
+						(displacement != null && displacement.equals(((IndexedAddressingParameter)obj).getDisplacement())));
+	}
+	
 }

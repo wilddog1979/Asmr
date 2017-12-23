@@ -8,10 +8,5 @@ public class CPD extends NoParameterInstruction {
 	public String getMnemonic() {
 		return "CPD";
 	}
-	
-	@Override
-	public byte[] getOpcode() {
-		return new byte[] {(byte) 0xed, (byte) 0xa9};
-	}
 
 }

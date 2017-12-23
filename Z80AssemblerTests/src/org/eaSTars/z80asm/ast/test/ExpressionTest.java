@@ -10,9 +10,10 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.util.stream.Stream;
 
 import org.eaSTars.asm.AbstractTester;
+import org.eaSTars.asm.assember.CompilationContext;
 import org.eaSTars.asm.assember.LabelNotFoundException;
 import org.eaSTars.asm.assember.MismatchingParameterSizeException;
-import org.eaSTars.asm.ast.CompilationUnit;
+import org.eaSTars.asm.assember.CompilationContext.Phase;
 import org.eaSTars.asm.ast.InstructionLine;
 import org.eaSTars.z80asm.ast.expression.ConstantValueExpression;
 import org.eaSTars.z80asm.ast.expression.Expression;
@@ -75,7 +76,7 @@ public class ExpressionTest extends AbstractTester {
 		assertParameter("Left", twoOperandExpression.getLeftOperand(), leftValue);
 		assertParameter("Right", twoOperandExpression.getRightOperand(), rightValue);
 		
-		assertEquals(evaluated, result.evaluate(new CompilationUnit()), "The expression evaluation should match");
+		assertEquals(evaluated, result.evaluate(new CompilationContext()), "The expression evaluation should match");
 		
 		assertEquals(assembly, result.getAssembly(), "Assembly must match");
 	}
@@ -94,7 +95,7 @@ public class ExpressionTest extends AbstractTester {
 		
 		assertParameter("The", oneParameterExpression.getParameter(), intvalue);
 		
-		assertEquals(evaluated, result.evaluate(new CompilationUnit()), "The expression evaluation should match");
+		assertEquals(evaluated, result.evaluate(new CompilationContext()), "The expression evaluation should match");
 		
 		assertEquals(assembly, result.getAssembly(), "Assembly must match");
 	}
@@ -132,9 +133,9 @@ public class ExpressionTest extends AbstractTester {
 		assertNotNull(contantValueParameter.getIntValue(), "IntValue of ConstantValueParameter should not be null");
 		assertEquals(0x45, contantValueParameter.getIntValue().intValue(), "IntValue of ConstantValueParameter should match");
 		
-		CompilationUnit compilationUnit = new CompilationUnit();
+		CompilationContext compilationContext = new CompilationContext();
 		
-		assertEquals(0x45, result.evaluate(compilationUnit), "The expression evaluation should match");
+		assertEquals(0x45, result.evaluate(compilationContext), "The expression evaluation should match");
 	}
 	
 	@Test
@@ -153,13 +154,14 @@ public class ExpressionTest extends AbstractTester {
 		assertNull(contantValueParameter.getIntValue(), "IntValue of ConstantValueParameter should be null");
 		assertEquals("@testlabel12", contantValueParameter.getValue(), "Value of ConstantValueParameter should match");
 		
-		CompilationUnit compilationUnit = new CompilationUnit();
-		compilationUnit.setAddresscounter(0xcafe);
+		CompilationContext compilationContext = new CompilationContext();
+		compilationContext.setAddress(0xcafe);
 		InstructionLine instructionline = new InstructionLine();
 		instructionline.setLabel("@testlabel12");
-		compilationUnit.addLine(instructionline);
+		compilationContext.addInstructionLine(instructionline, 0);
+		compilationContext.setPhase(Phase.COMPILATION);
 		
-		assertEquals(0xcafe, result.evaluate(compilationUnit), "The expression evaluation should match");
+		assertEquals(0xcafe, result.evaluate(compilationContext), "The expression evaluation should match");
 	}
 	
 	@Test
@@ -178,13 +180,13 @@ public class ExpressionTest extends AbstractTester {
 		assertNull(contantValueParameter.getIntValue(), "IntValue of ConstantValueParameter should be null");
 		assertEquals("@testlabel12", contantValueParameter.getValue(), "Value of ConstantValueParameter should match");
 		
-		CompilationUnit compilationUnit = new CompilationUnit();
-		compilationUnit.setAddresscounter(0xcafe);
+		CompilationContext compilationContext = new CompilationContext();
 		InstructionLine instructionline = new InstructionLine();
 		instructionline.setLabel("@testlabel13");
-		compilationUnit.addLine(instructionline);
+		compilationContext.addInstructionLine(instructionline, 0);
+		compilationContext.setPhase(Phase.COMPILATION);
 		
-		assertThrows(LabelNotFoundException.class, () -> result.evaluate(compilationUnit), "LabelNotFoundException expected");
+		assertThrows(LabelNotFoundException.class, () -> result.evaluate(compilationContext), "LabelNotFoundException expected");
 	}
 	
 	@Test

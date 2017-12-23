@@ -8,10 +8,5 @@ public class RETI extends NoParameterInstruction {
 	public String getMnemonic() {
 		return "RETI";
 	}
-	
-	@Override
-	public byte[] getOpcode() {
-		return new byte[] {(byte) 0xed, 0x4d};
-	}
 
 }

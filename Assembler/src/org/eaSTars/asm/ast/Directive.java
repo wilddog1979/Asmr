@@ -1,12 +1,10 @@
 package org.eaSTars.asm.ast;
 
+import org.eaSTars.asm.assember.CompilationContext;
+
 public abstract class Directive {
 
 	private String label;
-	
-	public abstract void apply(CompilationUnit cu);
-	
-	public abstract int getValue(CompilationUnit compilationUnit);
 
 	public String getLabel() {
 		return label;
@@ -15,5 +13,7 @@ public abstract class Directive {
 	public void setLabel(String label) {
 		this.label = label;
 	}
+	
+	public abstract int evaluate(CompilationContext compilationContext);
 	
 }

@@ -1,6 +1,6 @@
 package org.eaSTars.z80asm.assembler.visitors.directive;
 
-import org.eaSTars.z80asm.ast.directives.ORG;
+import org.eaSTars.asm.ast.directives.ORG;
 import org.eaSTars.z80asm.parser.Z80AssemblerBaseVisitor;
 import org.eaSTars.z80asm.parser.Z80AssemblerParser.ORGContext;
 

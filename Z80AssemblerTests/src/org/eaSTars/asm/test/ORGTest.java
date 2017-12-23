@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eaSTars.asm.ast.Directive;
-import org.eaSTars.z80asm.ast.directives.ORG;
+import org.eaSTars.asm.ast.directives.ORG;
 import org.junit.jupiter.api.Test;
 
 public class ORGTest extends DirectiveTest {
@@ -19,7 +19,7 @@ public class ORGTest extends DirectiveTest {
 		
 		ORG orgresult = (ORG) result;
 		
-		assertEquals(0x7a00, orgresult.getValue(null), "ORG vaue must be correct");
+		assertEquals(0x7a00, orgresult.getValue().intValue(), "ORG value must be correct");
 	}
 	
 }

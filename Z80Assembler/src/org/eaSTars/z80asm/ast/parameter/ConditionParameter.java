@@ -23,5 +23,12 @@ public class ConditionParameter extends Parameter {
 	public void setCondition(Condition condition) {
 		this.condition = condition;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return obj instanceof ConditionParameter &&
+				((condition == null && ((ConditionParameter)obj).getCondition() == null) ||
+						(condition != null && condition == ((ConditionParameter)obj).getCondition()));
+	}
 
 }

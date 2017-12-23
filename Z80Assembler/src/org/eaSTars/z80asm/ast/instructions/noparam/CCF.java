@@ -8,10 +8,5 @@ public class CCF extends NoParameterInstruction {
 	public String getMnemonic() {
 		return "CCF";
 	}
-	
-	@Override
-	public byte[] getOpcode() {
-		return new byte[] {0x3f};
-	}
 
 }

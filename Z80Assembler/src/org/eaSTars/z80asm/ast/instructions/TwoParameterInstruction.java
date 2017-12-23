@@ -1,6 +1,5 @@
 package org.eaSTars.z80asm.ast.instructions;
 
-import org.eaSTars.asm.ast.CompilationUnit;
 import org.eaSTars.z80asm.ast.Z80Instruction;
 import org.eaSTars.z80asm.ast.parameter.Parameter;
 
@@ -15,24 +14,22 @@ public abstract class TwoParameterInstruction extends Z80Instruction {
 		return String.format("%s %s, %s", getMnemonic(), target.getAssembly(), source.getAssembly());
 	}
 	
-	@Override
-	public byte[] getOpcode(CompilationUnit compilationUnit) {
-		return getOpcode();
-	}
-	
 	public Parameter getTarget() {
 		return target;
 	}
 
-	public void setTarget(Parameter target) {
+	public TwoParameterInstruction setTarget(Parameter target) {
 		this.target = target;
+		return this;
 	}
 
 	public Parameter getSource() {
 		return source;
 	}
 
-	public void setSource(Parameter source) {
+	public TwoParameterInstruction setSource(Parameter source) {
 		this.source = source;
+		return this;
 	}
+	
 }

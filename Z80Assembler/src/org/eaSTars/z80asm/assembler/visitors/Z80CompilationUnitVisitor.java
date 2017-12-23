@@ -43,7 +43,7 @@ public class Z80CompilationUnitVisitor extends Z80AssemblerBaseVisitor<Compilati
 			} else if (entry instanceof Z80directivesContext) {
 				Z80directivesContext directivectx = (Z80directivesContext) entry;
 				if (directivectx.directive() instanceof ORGContext) {
-					if (orgfound || instructioncount > 0) {	
+					if (orgfound || instructioncount > 0) {
 						Z80directivesContext context = (Z80directivesContext) entry;
 						Token token = ((Z80directivesContext) entry).getStart();
 						throw new RecognitionException(String.format("Unexpected .org directive in line %d at %d", token.getLine(), token.getCharPositionInLine()), null, null, context);
@@ -52,7 +52,6 @@ public class Z80CompilationUnitVisitor extends Z80AssemblerBaseVisitor<Compilati
 				}
 				DirectiveLine directiveline = new DirectiveLine();
 				Directive directive = directivesVisitor.visit(directivectx.directive());
-				directive.apply(compilationUnit);
 				directiveline.setDirective(directive);
 				Optional.ofNullable(directivectx.COMMENT()).ifPresent(c -> directiveline.setComment(c.getText()));
 				compilationUnit.addLine(directiveline);

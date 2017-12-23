@@ -1,6 +1,6 @@
 package org.eaSTars.z80asm.ast.expression;
 
-import org.eaSTars.asm.ast.CompilationUnit;
+import org.eaSTars.asm.assember.CompilationContext;
 
 public class TwoOperandExpression implements Expression {
 
@@ -34,9 +34,9 @@ public class TwoOperandExpression implements Expression {
 	}
 	
 	@Override
-	public int evaluate(CompilationUnit compilationUnit) {
-		int leftParameterValue = leftOperand.evaluate(compilationUnit);
-		int rightParameterValue = rightOperand.evaluate(compilationUnit);
+	public int evaluate(CompilationContext compilationContext) {
+		int leftParameterValue = leftOperand.evaluate(compilationContext);
+		int rightParameterValue = rightOperand.evaluate(compilationContext);
 		if (operation == Operation.PLUS) {
 			return leftParameterValue + rightParameterValue;
 		} else if (operation == Operation.MINUS) {
@@ -85,6 +85,17 @@ public class TwoOperandExpression implements Expression {
 
 	public void setRightOperand(Expression rightOperand) {
 		this.rightOperand = rightOperand;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return obj instanceof TwoOperandExpression &&
+				((leftOperand == null && ((TwoOperandExpression)obj).getLeftOperand() == null) ||
+						(leftOperand != null && leftOperand.equals(((TwoOperandExpression)obj).getLeftOperand()))) &&
+				((operation == null && ((TwoOperandExpression)obj).getOperation() == null) ||
+						(operation != null && operation == ((TwoOperandExpression)obj).getOperation())) &&
+				((rightOperand == null && ((TwoOperandExpression)obj).getRightOperand() == null) ||
+						(rightOperand != null && rightOperand.equals(((TwoOperandExpression)obj).getRightOperand())));
 	}
 	
 }

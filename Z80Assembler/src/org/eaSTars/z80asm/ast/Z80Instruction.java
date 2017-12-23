@@ -57,10 +57,6 @@ public abstract class Z80Instruction implements Instruction {
 			null,
 			Register.AMarked);
 	
-	protected byte[] getOpcode() {
-		return null;
-	}
-	
 	protected int getRegisterSSIndex(Parameter parameter) {
 		return tableLookup(TABLE_SS, parameter);
 	}
@@ -120,6 +116,11 @@ public abstract class Z80Instruction implements Instruction {
 		}
 		
 		return result;
+	}
+	
+	@Override
+	public String toString() {
+		return getAssembly();
 	}
 	
 }

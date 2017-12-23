@@ -47,19 +47,19 @@ public class AssemblerErrorListener implements ANTLRErrorListener {
 	@Override
 	public void reportContextSensitivity(Parser recognizer, DFA dfa, int startIndex, int stopIndex, int prediction,
 			ATNConfigSet configs) {
-		System.out.println("reportContextSensitivity");
+		//System.out.println("reportContextSensitivity");
 	}
 	
 	@Override
 	public void reportAttemptingFullContext(Parser recognizer, DFA dfa, int startIndex, int stopIndex,
 			BitSet conflictingAlts, ATNConfigSet configs) {
-		System.out.println("reportAttemptingFullContext");
+		//System.out.println("reportAttemptingFullContext");
 	}
 	
 	@Override
 	public void reportAmbiguity(Parser recognizer, DFA dfa, int startIndex, int stopIndex, boolean exact,
 			BitSet ambigAlts, ATNConfigSet configs) {
-		System.out.println("reportAmbiguity");
+		//System.out.println("reportAmbiguity");
 	}
 
 }

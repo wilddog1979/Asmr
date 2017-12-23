@@ -8,10 +8,5 @@ public class DI extends NoParameterInstruction {
 	public String getMnemonic() {
 		return "DI";
 	}
-	
-	@Override
-	public byte[] getOpcode() {
-		return new byte[] {(byte) 0xf3};
-	}
 
 }

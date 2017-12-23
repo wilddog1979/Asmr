@@ -8,10 +8,5 @@ public class LDDR extends NoParameterInstruction {
 	public String getMnemonic() {
 		return "LDDR";
 	}
-	
-	@Override
-	public byte[] getOpcode() {
-		return new byte[] {(byte) 0xed, (byte) 0xb8};
-	}
 
 }

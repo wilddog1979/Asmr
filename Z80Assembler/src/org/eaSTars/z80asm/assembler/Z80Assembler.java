@@ -11,7 +11,10 @@ import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.TokenStream;
 import org.eaSTars.asm.assember.Assembler;
 import org.eaSTars.asm.assember.AssemblerException;
+import org.eaSTars.asm.assember.CompilationContext;
 import org.eaSTars.asm.ast.CompilationUnit;
+import org.eaSTars.asm.ast.Instruction;
+import org.eaSTars.z80asm.assembler.converter.AbstractZ80InstructionConverter;
 import org.eaSTars.z80asm.assembler.visitors.Z80CompilationUnitVisitor;
 import org.eaSTars.z80asm.parser.Z80AssemblerLexer;
 import org.eaSTars.z80asm.parser.Z80AssemblerParser;
@@ -42,6 +45,11 @@ public class Z80Assembler extends Assembler {
 		}
 		
 		return result;
+	}
+	
+	@Override
+	protected byte[] getInstuction(CompilationContext compilationContext, Instruction instruction) {
+		return AbstractZ80InstructionConverter.convertInstruction(compilationContext, instruction);
 	}
 	
 }

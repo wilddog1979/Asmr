@@ -8,10 +8,5 @@ public class INIR extends NoParameterInstruction {
 	public String getMnemonic() {
 		return "INIR";
 	}
-	
-	@Override
-	public byte[] getOpcode() {
-		return new byte[] {(byte) 0xed, (byte) 0xb2};
-	}
 
 }

@@ -23,4 +23,12 @@ public class RegisterIndirectAddressing extends AddressingParameter {
 	public void setRegisterPair(RegisterPair registerPair) {
 		this.registerPair = registerPair;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return obj instanceof RegisterIndirectAddressing &&
+				((registerPair == null && ((RegisterIndirectAddressing)obj).getRegisterPair() == null) ||
+						(registerPair != null && registerPair == ((RegisterIndirectAddressing)obj).getRegisterPair()));
+	}
+	
 }

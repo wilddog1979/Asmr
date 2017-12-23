@@ -23,4 +23,12 @@ public class ImmediateAddressingParameter extends AddressingParameter {
 	public void setValue(ExpressionParameter value) {
 		this.value = value;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return obj instanceof ImmediateAddressingParameter &&
+				((value == null && ((ImmediateAddressingParameter)obj).getValue() == null) ||
+						(value != null && value.equals(((ImmediateAddressingParameter)obj).getValue())));
+	}
+	
 }

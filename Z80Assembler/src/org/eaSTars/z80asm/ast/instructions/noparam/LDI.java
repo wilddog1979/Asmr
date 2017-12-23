@@ -8,10 +8,5 @@ public class LDI extends NoParameterInstruction {
 	public String getMnemonic() {
 		return "LDI";
 	}
-	
-	@Override
-	public byte[] getOpcode() {
-		return new byte[] {(byte) 0xed, (byte) 0xa0};
-	}
 
 }

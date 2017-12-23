@@ -23,4 +23,12 @@ public class RegisterPairParameter extends Parameter {
 	public void setRegisterPair(RegisterPair registerPair) {
 		this.registerPair = registerPair;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return obj instanceof RegisterPairParameter &&
+				((registerPair == null && ((RegisterPairParameter)obj).getRegisterPair() == null) ||
+						(registerPair != null && registerPair == ((RegisterPairParameter)obj).getRegisterPair()));
+	}
+	
 }

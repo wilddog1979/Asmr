@@ -8,10 +8,5 @@ public class CPDR extends NoParameterInstruction {
 	public String getMnemonic() {
 		return "CPDR";
 	}
-	
-	@Override
-	public byte[] getOpcode() {
-		return new byte[] {(byte) 0xed, (byte) 0xb9};
-	}
 
 }

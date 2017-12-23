@@ -39,4 +39,14 @@ public class ConstantValueParameter extends Parameter {
 	public void setValue(String value) {
 		this.value = value;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return obj instanceof ConstantValueParameter &&
+				((intValue == null && ((ConstantValueParameter)obj).getIntValue() == null) ||
+						(intValue != null && intValue.equals(((ConstantValueParameter)obj).getIntValue()))) &&
+				((value == null && ((ConstantValueParameter)obj).getValue() == null) ||
+						(value != null && value.equals(((ConstantValueParameter)obj).getValue())));
+	}
+	
 }

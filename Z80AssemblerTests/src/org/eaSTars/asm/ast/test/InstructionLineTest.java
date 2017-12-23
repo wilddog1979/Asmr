@@ -26,15 +26,15 @@ public class InstructionLineTest extends AssemblerLineTester {
 		@Override
 		public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
 			return Stream.of(new Object[][] {
-				{"################\n", null, null, "################", "0000\t################"},
-				{"# Test program #\n", null, null, "# Test program #", "0000\t# Test program #"},
-				{"NOP\n", null, NOP.class, null, "0000\tNOP "},
-				{"NOP #comment\n", null, NOP.class, "#comment", "0000\tNOP #comment"},
-				{"	#comment\n", null, null, "#comment", "0000\t#comment"},
-				{"#comment\n", null, null, "#comment", "0000\t#comment"},
-				{"@testlabel:\n", "@testlabel", null, null, "0000\t@testlabel: "},
-				{"	@testlabel:					#comment\n", "@testlabel", null, "#comment", "0000\t@testlabel: #comment"},
-				{"	@testlabel2:		NOP			#comment\n", "@testlabel2", NOP.class, "#comment", "0000\t@testlabel2: NOP #comment"}
+				{"################\n", null, null, "################", "################"},
+				{"# Test program #\n", null, null, "# Test program #", "# Test program #"},
+				{"NOP\n", null, NOP.class, null, "NOP "},
+				{"NOP #comment\n", null, NOP.class, "#comment", "NOP #comment"},
+				{"	#comment\n", null, null, "#comment", "#comment"},
+				{"#comment\n", null, null, "#comment", "#comment"},
+				{"@testlabel:\n", "@testlabel", null, null, "@testlabel: "},
+				{"	@testlabel:					#comment\n", "@testlabel", null, "#comment", "@testlabel: #comment"},
+				{"	@testlabel2:		NOP			#comment\n", "@testlabel2", NOP.class, "#comment", "@testlabel2: NOP #comment"}
 			}).map(i -> Arguments.of(i));
 		}
 		
@@ -47,8 +47,6 @@ public class InstructionLineTest extends AssemblerLineTester {
 		
 		assertTrue(result instanceof InstructionLine, "result must be an instance of InstructionLine");
 		InstructionLine instructionLineResult = (InstructionLine) result;
-		
-		assertEquals(0, instructionLineResult.getAddress(), "Address must match");
 		
 		if (label != null) {
 			assertEquals(label, result.getLabel(), "Label must match");

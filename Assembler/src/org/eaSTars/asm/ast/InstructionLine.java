@@ -13,14 +13,8 @@ public class InstructionLine extends AssemblerLine {
 	}
 
 	@Override
-	public int getRenderedLength(CompilationUnit compilationUnit) {
-		return instruction != null ? instruction.getOpcode(compilationUnit).length : 0;
-	}
-	
-	@Override
 	public String toString() {
-		return String.format("%s\t%s%s%s",
-				super.toString(),
+		return String.format("%s%s%s",
 				label != null ? label + ": " : "",
 						instruction != null ? instruction.getAssembly() + " " : "",
 								comment != null ? comment : "");

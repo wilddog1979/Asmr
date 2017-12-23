@@ -8,10 +8,5 @@ public class EXX extends NoParameterInstruction {
 	public String getMnemonic() {
 		return "EXX";
 	}
-	
-	@Override
-	public byte[] getOpcode() {
-		return new byte[] {(byte) 0xd9};
-	}
 
 }
