@@ -1,8 +1,9 @@
-package org.eaSTars.z80asm.ast.directives;
+package org.eaSTars.asm.ast.directives;
 
-import org.eaSTars.z80asm.ast.Z80Directive;
+import org.eaSTars.asm.assember.CompilationContext;
+import org.eaSTars.asm.ast.Directive;
 
-public class ORG extends Z80Directive {
+public class ORG extends Directive {
 
 	private Integer value;
 
@@ -11,6 +12,11 @@ public class ORG extends Z80Directive {
 	
 	public ORG(Integer value) {
 		setValue(value);
+	}
+	
+	@Override
+	public int evaluate(CompilationContext compilationContext) {
+		return 0;
 	}
 
 	public Integer getValue() {

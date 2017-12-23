@@ -2,8 +2,8 @@ package org.eaSTars.z80asm.ast.expression;
 
 import java.util.Optional;
 
+import org.eaSTars.asm.assember.CompilationContext;
 import org.eaSTars.asm.assember.LabelNotFoundException;
-import org.eaSTars.asm.ast.CompilationUnit;
 import org.eaSTars.z80asm.ast.parameter.ConstantValueParameter;
 
 public class ConstantValueExpression implements Expression {
@@ -18,10 +18,10 @@ public class ConstantValueExpression implements Expression {
 	}
 	
 	@Override
-	public int evaluate(CompilationUnit compilationUnit) {
+	public int evaluate(CompilationContext compilationContext) {
 		return Optional.ofNullable(contantValueParameter.getIntValue()).map(i -> i.intValue())
 				.orElseGet(() -> Optional.ofNullable(contantValueParameter.getValue())
-						.map(v -> compilationUnit.getLabelValue(v))
+						.map(v -> compilationContext.getLabelValue(v))
 						.orElseThrow(() -> new LabelNotFoundException(contantValueParameter.getValue())));
 	}
 	

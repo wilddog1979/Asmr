@@ -5,11 +5,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.eaSTars.asm.assember.AssemblyConverter;
+import org.eaSTars.asm.assember.AbstractAssemblyConverter;
+import org.eaSTars.asm.assember.CompilationContext;
 import org.eaSTars.asm.assember.PushbackInputStream;
-import org.eaSTars.asm.ast.CompilationUnit;
 import org.eaSTars.asm.ast.Instruction;
 import org.eaSTars.z80asm.ast.expression.ConstantValueExpression;
+import org.eaSTars.z80asm.ast.instructions.NoParameterInstruction;
+import org.eaSTars.z80asm.ast.instructions.OneParameterInstruction;
+import org.eaSTars.z80asm.ast.instructions.TwoParameterInstruction;
 import org.eaSTars.z80asm.ast.parameter.Condition;
 import org.eaSTars.z80asm.ast.parameter.ConditionParameter;
 import org.eaSTars.z80asm.ast.parameter.ConstantValueParameter;
@@ -22,7 +25,7 @@ import org.eaSTars.z80asm.ast.parameter.RegisterPair;
 import org.eaSTars.z80asm.ast.parameter.RegisterPairParameter;
 import org.eaSTars.z80asm.ast.parameter.RegisterParameter;
 
-public abstract class Z80InstructionConverter<T extends Instruction> extends AssemblyConverter<T> {
+public abstract class AbstractZ80InstructionConverter<T extends Instruction> extends AbstractAssemblyConverter<T> {
 
 	private static final List<RegisterPair> TABLE_PP = Arrays.asList(
 			RegisterPair.BC,
@@ -67,6 +70,37 @@ public abstract class Z80InstructionConverter<T extends Instruction> extends Ass
 			RegisterPair.DE,
 			RegisterPair.HL,
 			RegisterPair.SP);
+	
+	private static final NoParameterInstructionConverter noParameterInstructionConverter = new NoParameterInstructionConverter();
+	
+	private static final OneParameterInstructionConverter oneParameterInstructionConverter = new OneParameterInstructionConverter();
+	
+	private static final TwoParameterInstructionConverter twoParameterInstructionconverter = new TwoParameterInstructionConverter();
+	
+	public static Instruction convertInstruction(PushbackInputStream pushbackInputStream) throws IOException {
+		Instruction result = noParameterInstructionConverter.convert(pushbackInputStream);
+		if (result == null) {
+			result = oneParameterInstructionConverter.convert(pushbackInputStream);
+		}
+		if (result == null) {
+			result = twoParameterInstructionconverter.convert(pushbackInputStream);
+		}
+		
+		return result;
+	}
+	
+	public static byte[] convertInstruction(CompilationContext compilationContext, Instruction instruction) {
+		byte[] result = null;
+		if (instruction instanceof NoParameterInstruction) {
+			result = noParameterInstructionConverter.convert(compilationContext, (NoParameterInstruction) instruction);
+		} else if (instruction instanceof OneParameterInstruction) {
+			result = oneParameterInstructionConverter.convert(compilationContext, (OneParameterInstruction) instruction);
+		} else if (instruction instanceof TwoParameterInstruction) {
+			result = twoParameterInstructionconverter.convert(compilationContext, (TwoParameterInstruction) instruction);
+		}
+		
+		return result;
+	}
 	
 	private static int tableLookup(List<RegisterPair> map, Parameter parameter) {
 		int result = -1;
@@ -246,23 +280,23 @@ public abstract class Z80InstructionConverter<T extends Instruction> extends Ass
 		return new RegisterPairParameter(ix ? RegisterPair.IX : RegisterPair.IY);
 	}
 	
-	protected static byte[] generateIndexedAddressing(CompilationUnit compilationUnit, IndexedAddressingParameter indexedAddressingParameter, byte[] bytes) {
+	protected static byte[] generateIndexedAddressing(CompilationContext compilationContext, IndexedAddressingParameter indexedAddressingParameter, byte[] bytes) {
 		byte[] result = null;
 		
 		RegisterPair registerPair = indexedAddressingParameter.getRegisterPair();
 		if (registerPair == RegisterPair.IX) {
 			result = Arrays.copyOf(bytes, bytes.length);
-			result[2] = (byte) indexedAddressingParameter.getDisplacement().getExpressionValue(compilationUnit);
+			result[2] = (byte) indexedAddressingParameter.getDisplacement().getExpressionValue(compilationContext);
 		} else if (registerPair == RegisterPair.IY) {
 			result = Arrays.copyOf(bytes, bytes.length);
 			result[0] |= 0x20;
-			result[2] = (byte) indexedAddressingParameter.getDisplacement().getExpressionValue(compilationUnit);
+			result[2] = (byte) indexedAddressingParameter.getDisplacement().getExpressionValue(compilationContext);
 		}
 		
 		return result;
 	}
 
-	protected static byte[] generateIndexRegisters(CompilationUnit compilationUnit, RegisterPair parameter, byte[] bytes) {
+	protected static byte[] generateIndexRegisters(RegisterPair parameter, byte[] bytes) {
 		byte[] result = null;
 		
 		if (parameter == RegisterPair.IX) {

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.eaSTars.asm.ast.CompilationUnit;
+import org.eaSTars.asm.assember.CompilationContext;
 import org.eaSTars.z80asm.ast.instructions.NoParameterInstruction;
 import org.eaSTars.z80asm.ast.instructions.noparam.CCF;
 import org.eaSTars.z80asm.ast.instructions.noparam.CPD;
@@ -45,7 +45,7 @@ import org.eaSTars.z80asm.ast.instructions.noparam.RRCA;
 import org.eaSTars.z80asm.ast.instructions.noparam.RRD;
 import org.eaSTars.z80asm.ast.instructions.noparam.SCF;
 
-public class NoParameterInstructionConverter extends Z80InstructionConverter<NoParameterInstruction> {
+public class NoParameterInstructionConverter extends AbstractZ80InstructionConverter<NoParameterInstruction> {
 	
 	private static class InstructionEntry {
 		private Class<? extends NoParameterInstruction> instruction;
@@ -117,7 +117,7 @@ public class NoParameterInstructionConverter extends Z80InstructionConverter<NoP
 	}
 	
 	@Override
-	public byte[] convert(CompilationUnit compilationUnit, NoParameterInstruction instruction) {
+	public byte[] convert(CompilationContext compilationContext, NoParameterInstruction instruction) {
 		byte[] result = null;
 		MaskedOpcode<NoParameterInstruction> lookupresult = instructions.get(instruction.getClass());
 		if (lookupresult != null) {

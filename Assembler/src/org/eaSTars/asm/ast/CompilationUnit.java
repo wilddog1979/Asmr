@@ -5,7 +5,6 @@ import java.util.Optional;
 import java.util.Vector;
 
 import org.eaSTars.asm.assember.LabelAlreadyDefinedException;
-import org.eaSTars.asm.assember.LabelNotFoundException;
 
 public class CompilationUnit {
 
@@ -17,20 +16,6 @@ public class CompilationUnit {
 				.ifPresent(l -> {throw new LabelAlreadyDefinedException(label);}));
 		
 		lines.add(line);
-	}
-	
-	public int getLabelValue(String label) {
-		return lines.stream().filter(l -> label.equals(l.getLabel()))
-				.findFirst().map(l -> {
-					int result = 0;
-					if (l instanceof InstructionLine) {
-						
-					} else if (l instanceof DirectiveLine) {
-						
-					}
-					return result;
-				})
-				.orElseThrow(() -> {throw new LabelNotFoundException(label);});
 	}
 	
 	public int getLineCount() {

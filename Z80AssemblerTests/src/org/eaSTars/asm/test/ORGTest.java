@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eaSTars.asm.ast.Directive;
-import org.eaSTars.z80asm.ast.directives.ORG;
+import org.eaSTars.asm.ast.directives.ORG;
 import org.junit.jupiter.api.Test;
 
 public class ORGTest extends DirectiveTest {

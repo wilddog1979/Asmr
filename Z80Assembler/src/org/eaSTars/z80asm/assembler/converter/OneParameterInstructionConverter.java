@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.eaSTars.asm.ast.CompilationUnit;
+import org.eaSTars.asm.assember.CompilationContext;
 import org.eaSTars.z80asm.ast.instructions.OneParameterInstruction;
 import org.eaSTars.z80asm.ast.instructions.oneparam.AND;
 import org.eaSTars.z80asm.ast.instructions.oneparam.CP;
@@ -33,7 +33,7 @@ import org.eaSTars.z80asm.ast.parameter.IndexedAddressingParameter;
 import org.eaSTars.z80asm.ast.parameter.Parameter;
 import org.eaSTars.z80asm.ast.parameter.RegisterPairParameter;
 
-public class OneParameterInstructionConverter extends Z80InstructionConverter<OneParameterInstruction> {
+public class OneParameterInstructionConverter extends AbstractZ80InstructionConverter<OneParameterInstruction> {
 	
 	private static class InstructionEntry {
 		private Class<? extends OneParameterInstruction> instruction;
@@ -54,7 +54,7 @@ public class OneParameterInstructionConverter extends Z80InstructionConverter<On
 	@FunctionalInterface
 	protected static interface InstructionAssemblyGenerator {
 		
-		public byte[] generate(CompilationUnit compilationUnit, Parameter parameter, List<MaskedOpcode<OneParameterInstruction>> masks);
+		public byte[] generate(CompilationContext compilationContext, Parameter parameter, List<MaskedOpcode<OneParameterInstruction>> masks);
 		
 	}
 	
@@ -100,7 +100,7 @@ public class OneParameterInstructionConverter extends Z80InstructionConverter<On
 			new InstructionEntry(RET.class, Arrays.asList(
 					new MaskedOpcode<OneParameterInstruction>(new byte[] {(byte) 0xff}, new byte[] {(byte) 0xc9}, (r, v) -> r.setParameter(null)),
 					new MaskedOpcode<OneParameterInstruction>(new byte[] {(byte) 0xc7}, new byte[] {(byte) 0xc0}, (r, v) -> r.setParameter(reverseCondition((v[0] >> 3) & 0x07)))
-					), (c, p, m) -> generateRET(c, p, m)),
+					), (c, p, m) -> generateRET(p, m)),
 			new InstructionEntry(RL.class, Arrays.asList(
 					new MaskedOpcode<OneParameterInstruction>(new byte[] {(byte) 0xff, (byte) 0xf8}, new byte[] {(byte) 0xca, 0x10}, (r, v) -> r.setParameter(reverseRegisterRH(v[1] & 0x07))),
 					new MaskedOpcode<OneParameterInstruction>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00, (byte) 0xff}, new byte[] {(byte) 0xdd, (byte) 0xca, 0x00, 0x16}, (r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
@@ -119,7 +119,7 @@ public class OneParameterInstructionConverter extends Z80InstructionConverter<On
 					), (c, p, m) -> generateBitrotating(c, p, m)),
 			new InstructionEntry(RST.class, Arrays.asList(
 					new MaskedOpcode<OneParameterInstruction>(new byte[] {(byte) 0xc7}, new byte[] {(byte) 0xc7}, (r, v) -> r.setParameter(reverseRSTValue(v[0] & 0x38)))
-					), (c, p, m) -> generateRST(c, p, m)),
+					), (c, p, m) -> generateRST(p, m)),
 			new InstructionEntry(SLA.class, Arrays.asList(
 					new MaskedOpcode<OneParameterInstruction>(new byte[] {(byte) 0xff, (byte) 0xf8}, new byte[] {(byte) 0xca, 0x20}, (r, v) -> r.setParameter(reverseRegisterRH(v[1] & 0x07))),
 					new MaskedOpcode<OneParameterInstruction>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00, (byte) 0xff}, new byte[] {(byte) 0xdd, (byte) 0xca, 0x00, 0x26}, (r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
@@ -162,34 +162,34 @@ public class OneParameterInstructionConverter extends Z80InstructionConverter<On
 	}
 	
 	@Override
-	public byte[] convert(CompilationUnit compilationUnit, OneParameterInstruction instruction) {
+	public byte[] convert(CompilationContext compilationContext, OneParameterInstruction instruction) {
 		byte[] result = null;
 		InstructionEntry entry = instructions.get(instruction.getClass());
 		if (entry != null && entry.generator != null) {
-			result = entry.generator.generate(compilationUnit, instruction.getParameter(), entry.masks);
+			result = entry.generator.generate(compilationContext, instruction.getParameter(), entry.masks);
 		}
 		return result;
 	}
 
-	private static byte[] generateSUBANDXORORCP(CompilationUnit compilationUnit, Parameter parameter, List<MaskedOpcode<OneParameterInstruction>> masks) {
+	private static byte[] generateSUBANDXORORCP(CompilationContext compilationContext, Parameter parameter, List<MaskedOpcode<OneParameterInstruction>> masks) {
 		byte[] result = null;
 		
 		int registerindex = getRegisterRHIndex(parameter);
 		if (registerindex != -1) {
 			result = new byte[] {(byte) (masks.get(0).value[0] | registerindex)};
 		} else if (parameter instanceof ExpressionParameter) {
-			int value = ((ExpressionParameter) parameter).getExpressionValue(compilationUnit);
+			int value = ((ExpressionParameter) parameter).getExpressionValue(compilationContext);
 			result = new byte[] {masks.get(1).value[0], 0};
 			result[1] = (byte)(value & 0xff);
 		}
 		if (result == null && parameter instanceof IndexedAddressingParameter) {
-			result = generateIndexedAddressing(compilationUnit, (IndexedAddressingParameter) parameter, masks.get(2).value);
+			result = generateIndexedAddressing(compilationContext, (IndexedAddressingParameter) parameter, masks.get(2).value);
 		}
 		
 		return result;
 	}
 	
-	private static byte[] generateINCDEC(CompilationUnit compilationUnit, Parameter parameter, List<MaskedOpcode<OneParameterInstruction>> masks) {
+	private static byte[] generateINCDEC(CompilationContext compilationContext, Parameter parameter, List<MaskedOpcode<OneParameterInstruction>> masks) {
 		byte[] result = null;
 		
 		int registerindex = getRegisterSSIndex(parameter);
@@ -198,40 +198,40 @@ public class OneParameterInstructionConverter extends Z80InstructionConverter<On
 		} else if ((registerindex = getRegisterRHIndex(parameter)) != -1) {
 			result = new byte[] {(byte) (masks.get(1).value[0] | (registerindex << 3))};
 		} else if (parameter instanceof RegisterPairParameter) {
-			result = generateIndexRegisters(compilationUnit, ((RegisterPairParameter) parameter).getRegisterPair(), masks.get(2).value);
+			result = generateIndexRegisters(((RegisterPairParameter) parameter).getRegisterPair(), masks.get(2).value);
 		}
 		if (result == null && parameter instanceof IndexedAddressingParameter) {
-			result = generateIndexedAddressing(compilationUnit, (IndexedAddressingParameter) parameter, masks.get(3).value);
+			result = generateIndexedAddressing(compilationContext, (IndexedAddressingParameter) parameter, masks.get(3).value);
 		}
 		
 		return result;
 	}
 
-	private static byte[] generateDJNZ(CompilationUnit compilationUnit, Parameter parameter, List<MaskedOpcode<OneParameterInstruction>> masks) {
+	private static byte[] generateDJNZ(CompilationContext compilationContext, Parameter parameter, List<MaskedOpcode<OneParameterInstruction>> masks) {
 		byte[] result = null;
 		
 		if (parameter instanceof ExpressionParameter) {
 			ExpressionParameter expressionParameter = (ExpressionParameter) parameter;
-			result = new byte[] {masks.get(0).value[0], (byte) (expressionParameter.getExpressionValue(compilationUnit) - 2)};
+			result = new byte[] {masks.get(0).value[0], (byte) (expressionParameter.getExpressionValue(compilationContext) - 2)};
 		}
 		
 		return result;
 	}
 	
-	private static byte[] generatePUSHPOP(CompilationUnit compilationUnit, Parameter parameter, List<MaskedOpcode<OneParameterInstruction>> masks) {
+	private static byte[] generatePUSHPOP(CompilationContext compilationContext, Parameter parameter, List<MaskedOpcode<OneParameterInstruction>> masks) {
 		byte[] result = null;
 		
 		int registerindex = getRegisterQQIndex(parameter);
 		if (registerindex != -1) {
 			result = new byte[] {(byte) (masks.get(0).value[0] | (registerindex << 4))};
 		} else if (parameter instanceof RegisterPairParameter) {
-			result = generateIndexRegisters(compilationUnit, ((RegisterPairParameter) parameter).getRegisterPair(), masks.get(1).value);
+			result = generateIndexRegisters(((RegisterPairParameter) parameter).getRegisterPair(), masks.get(1).value);
 		}
 		
 		return result;
 	}
 	
-	private static byte[] generateBitrotating(CompilationUnit compilationUnit, Parameter parameter, List<MaskedOpcode<OneParameterInstruction>> masks) {
+	private static byte[] generateBitrotating(CompilationContext compilationContext, Parameter parameter, List<MaskedOpcode<OneParameterInstruction>> masks) {
 		byte[] result = null;
 		
 		int registerindex = getRegisterRHIndex(parameter);
@@ -239,13 +239,13 @@ public class OneParameterInstructionConverter extends Z80InstructionConverter<On
 			result = Arrays.copyOf(masks.get(0).value, 2);
 			result[1] |= registerindex;
 		} else if (parameter instanceof IndexedAddressingParameter) {
-			result = generateIndexedAddressing(compilationUnit, (IndexedAddressingParameter) parameter, masks.get(1).value);
+			result = generateIndexedAddressing(compilationContext, (IndexedAddressingParameter) parameter, masks.get(1).value);
 		}
 		
 		return result;
 	}
 
-	private static byte[] generateRET(CompilationUnit compilationUnit, Parameter parameter, List<MaskedOpcode<OneParameterInstruction>> masks) {
+	private static byte[] generateRET(Parameter parameter, List<MaskedOpcode<OneParameterInstruction>> masks) {
 		byte[] result = null;
 		
 		if (parameter == null || parameter instanceof ConditionParameter) {
@@ -257,7 +257,7 @@ public class OneParameterInstructionConverter extends Z80InstructionConverter<On
 		return result;
 	}
 	
-	private static byte[] generateRST(CompilationUnit compilationUnit, Parameter parameter, List<MaskedOpcode<OneParameterInstruction>> masks) {
+	private static byte[] generateRST(Parameter parameter, List<MaskedOpcode<OneParameterInstruction>> masks) {
 		byte[] result = null;
 		
 		if (parameter instanceof ConstantValueParameter) {

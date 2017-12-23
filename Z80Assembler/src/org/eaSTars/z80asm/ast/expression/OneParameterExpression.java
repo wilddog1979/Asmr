@@ -1,6 +1,6 @@
 package org.eaSTars.z80asm.ast.expression;
 
-import org.eaSTars.asm.ast.CompilationUnit;
+import org.eaSTars.asm.assember.CompilationContext;
 
 public class OneParameterExpression implements Expression {
 
@@ -31,8 +31,8 @@ public class OneParameterExpression implements Expression {
 	}
 	
 	@Override
-	public int evaluate(CompilationUnit compilationUnit) {
-		int parameterValue = parameter.evaluate(compilationUnit);
+	public int evaluate(CompilationContext compilationContext) {
+		int parameterValue = parameter.evaluate(compilationContext);
 		if (operation == Operation.MINUS) {
 			return -parameterValue;
 		} else {

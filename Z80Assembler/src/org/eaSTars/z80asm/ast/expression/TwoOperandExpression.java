@@ -1,6 +1,6 @@
 package org.eaSTars.z80asm.ast.expression;
 
-import org.eaSTars.asm.ast.CompilationUnit;
+import org.eaSTars.asm.assember.CompilationContext;
 
 public class TwoOperandExpression implements Expression {
 
@@ -34,9 +34,9 @@ public class TwoOperandExpression implements Expression {
 	}
 	
 	@Override
-	public int evaluate(CompilationUnit compilationUnit) {
-		int leftParameterValue = leftOperand.evaluate(compilationUnit);
-		int rightParameterValue = rightOperand.evaluate(compilationUnit);
+	public int evaluate(CompilationContext compilationContext) {
+		int leftParameterValue = leftOperand.evaluate(compilationContext);
+		int rightParameterValue = rightOperand.evaluate(compilationContext);
 		if (operation == Operation.PLUS) {
 			return leftParameterValue + rightParameterValue;
 		} else if (operation == Operation.MINUS) {

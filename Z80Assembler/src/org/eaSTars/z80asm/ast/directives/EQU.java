@@ -1,5 +1,6 @@
 package org.eaSTars.z80asm.ast.directives;
 
+import org.eaSTars.asm.assember.CompilationContext;
 import org.eaSTars.z80asm.ast.Z80Directive;
 import org.eaSTars.z80asm.ast.expression.Expression;
 
@@ -13,6 +14,11 @@ public class EQU extends Z80Directive {
 	public EQU(String label, Expression expression) {
 		setLabel(label);
 		setExpression(expression);
+	}
+	
+	@Override
+	public int evaluate(CompilationContext compilationContext) {
+		return expression.evaluate(compilationContext);
 	}
 
 	@Override

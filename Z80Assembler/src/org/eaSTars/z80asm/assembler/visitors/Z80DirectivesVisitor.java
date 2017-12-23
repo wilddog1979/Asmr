@@ -9,7 +9,6 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.eaSTars.asm.ast.Directive;
 import org.eaSTars.z80asm.assembler.visitors.directive.EQUDirectiveVisitor;
 import org.eaSTars.z80asm.assembler.visitors.directive.ORGDirectiveVisitor;
-import org.eaSTars.z80asm.ast.Z80Directive;
 import org.eaSTars.z80asm.parser.Z80AssemblerBaseVisitor;
 import org.eaSTars.z80asm.parser.Z80AssemblerParser.EQUContext;
 import org.eaSTars.z80asm.parser.Z80AssemblerParser.ORGContext;
@@ -18,7 +17,7 @@ public class Z80DirectivesVisitor extends Z80AssemblerBaseVisitor<Directive> {
 
 	@FunctionalInterface
 	private interface VisitorInvokation{
-		public Z80Directive invokeVisitor(ParseTree tree);
+		public Directive invokeVisitor(ParseTree tree);
 	}
 	
 	private class VisitorMapEntry {

@@ -1,7 +1,7 @@
 package org.eaSTars.z80asm.ast.parameter;
 
+import org.eaSTars.asm.assember.CompilationContext;
 import org.eaSTars.asm.assember.MismatchingParameterSizeException;
-import org.eaSTars.asm.ast.CompilationUnit;
 import org.eaSTars.z80asm.ast.expression.Expression;
 
 public class ExpressionParameter extends Parameter {
@@ -23,8 +23,8 @@ public class ExpressionParameter extends Parameter {
 		return expression.getAssembly();
 	}
 
-	public int getExpressionValue(CompilationUnit compilationUnit) {
-		int result = expression.evaluate(compilationUnit);
+	public int getExpressionValue(CompilationContext compilationContext) {
+		int result = expression.evaluate(compilationContext);
 		
 		if ((result & ((1 << expectedBitCount) - 1)) != result) {
 			throw new MismatchingParameterSizeException(result, expectedBitCount);
