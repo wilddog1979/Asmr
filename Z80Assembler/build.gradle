@@ -1,0 +1,35 @@
+plugins {
+  id 'java'
+  id 'idea'
+  id 'antlr'
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  antlr 'org.antlr:antlr4:4.13.0'
+
+  implementation project(':Assembler')
+  implementation 'org.antlr:antlr4-runtime:4.13.0'
+
+  testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+}
+
+generateGrammarSource {
+  arguments += ["-visitor", "-long-messages"]
+}
+
+test {
+  testLogging.showStandardStreams = false
+  useJUnitPlatform()
+
+  testLogging {
+    events "passed", "skipped", "failed"
+  }
+  reports {
+    html.enabled = true
+  }
+  systemProperties System.properties
+}
