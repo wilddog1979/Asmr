@@ -6,7 +6,7 @@
 version: 2
 updates:
   - package-ecosystem: "gradle" # See documentation for possible values
-    directory: "/Assember" # Location of package manifests
+    directory: "/Assembler" # Location of package manifests
     schedule:
       interval: "weekly"
     reviewers:
@@ -14,7 +14,7 @@ updates:
     labels:
       - "gradle update"
   - package-ecosystem: "gradle" # See documentation for possible values
-    directory: "/Z80Assember" # Location of package manifests
+    directory: "/Z80Assembler" # Location of package manifests
     schedule:
       interval: "weekly"
     reviewers:
