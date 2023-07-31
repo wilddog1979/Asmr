@@ -1,32 +1,14 @@
 package org.eaSTars.z80asm.assembler.visitors;
 
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.Token;
+import org.eaSTars.z80asm.ast.parameter.*;
+import org.eaSTars.z80asm.parser.Z80AssemblerBaseVisitor;
+import org.eaSTars.z80asm.parser.Z80AssemblerParser.*;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Optional;
-
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.Token;
-import org.eaSTars.z80asm.ast.parameter.ExpressionParameter;
-import org.eaSTars.z80asm.ast.parameter.Parameter;
-import org.eaSTars.z80asm.ast.parameter.Register;
-import org.eaSTars.z80asm.ast.parameter.RegisterIndirectAddressing;
-import org.eaSTars.z80asm.ast.parameter.RegisterPair;
-import org.eaSTars.z80asm.ast.parameter.RegisterPairParameter;
-import org.eaSTars.z80asm.ast.parameter.RegisterParameter;
-import org.eaSTars.z80asm.parser.Z80AssemblerBaseVisitor;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.Hex16bitsContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.Hex3bitsContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.Hex8bitsContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.IndexedReferenceContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.InstructionContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.ParameterTContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.RegisterPPContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.RegisterQQContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.RegisterRRContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.RegisterSSContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.RegistersContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.RegistersWithReferenceContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.RegistersmarkedContext;
 
 public abstract class ParameterizedVisitor<T, C extends InstructionContext, P extends ParserRuleContext> extends Z80AssemblerBaseVisitor<T> {
 

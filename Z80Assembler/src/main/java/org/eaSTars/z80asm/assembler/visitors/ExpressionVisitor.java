@@ -1,21 +1,14 @@
 package org.eaSTars.z80asm.assembler.visitors;
 
-import java.util.Optional;
-
 import org.eaSTars.z80asm.ast.expression.ConstantValueExpression;
 import org.eaSTars.z80asm.ast.expression.Expression;
 import org.eaSTars.z80asm.ast.expression.OneParameterExpression;
 import org.eaSTars.z80asm.ast.expression.TwoOperandExpression;
 import org.eaSTars.z80asm.ast.parameter.ConstantValueParameter;
 import org.eaSTars.z80asm.parser.Z80AssemblerBaseVisitor;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.AdditiveExpressionContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.BitwiseandExpressionContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.BitwiseshiftExpressionContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.BitwisexorExpressionContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.ExpressionContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.MultiplicativeExpressionContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.PrimaryExpressionContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.UnaryExpressionContext;
+import org.eaSTars.z80asm.parser.Z80AssemblerParser.*;
+
+import java.util.Optional;
 
 public class ExpressionVisitor extends Z80AssemblerBaseVisitor<Expression> {
 

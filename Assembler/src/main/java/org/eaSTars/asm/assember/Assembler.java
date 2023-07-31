@@ -1,15 +1,15 @@
 package org.eaSTars.asm.assember;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-
 import org.antlr.v4.runtime.ANTLRErrorListener;
 import org.eaSTars.asm.assember.CompilationContext.Phase;
 import org.eaSTars.asm.ast.AssemblerLine;
 import org.eaSTars.asm.ast.CompilationUnit;
 import org.eaSTars.asm.ast.Instruction;
 import org.eaSTars.asm.ast.InstructionLine;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 public abstract class Assembler {
 

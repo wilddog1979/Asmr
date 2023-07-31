@@ -1,49 +1,23 @@
 package org.eaSTars.z80asm.converter.test;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.stream.Stream;
-
 import org.eaSTars.asm.assember.PushbackInputStream;
 import org.eaSTars.z80asm.assembler.converter.TwoParameterInstructionConverter;
 import org.eaSTars.z80asm.ast.expression.ConstantValueExpression;
 import org.eaSTars.z80asm.ast.instructions.TwoParameterInstruction;
-import org.eaSTars.z80asm.ast.instructions.twoparam.ADC;
-import org.eaSTars.z80asm.ast.instructions.twoparam.ADD;
-import org.eaSTars.z80asm.ast.instructions.twoparam.BIT;
-import org.eaSTars.z80asm.ast.instructions.twoparam.CALL;
-import org.eaSTars.z80asm.ast.instructions.twoparam.EX;
-import org.eaSTars.z80asm.ast.instructions.twoparam.IN;
-import org.eaSTars.z80asm.ast.instructions.twoparam.JP;
-import org.eaSTars.z80asm.ast.instructions.twoparam.JR;
-import org.eaSTars.z80asm.ast.instructions.twoparam.LD;
-import org.eaSTars.z80asm.ast.instructions.twoparam.OUT;
-import org.eaSTars.z80asm.ast.instructions.twoparam.RES;
-import org.eaSTars.z80asm.ast.instructions.twoparam.SBC;
-import org.eaSTars.z80asm.ast.instructions.twoparam.SET;
-import org.eaSTars.z80asm.ast.parameter.Condition;
-import org.eaSTars.z80asm.ast.parameter.ConditionParameter;
-import org.eaSTars.z80asm.ast.parameter.ConstantValueParameter;
-import org.eaSTars.z80asm.ast.parameter.ExpressionParameter;
-import org.eaSTars.z80asm.ast.parameter.ImmediateAddressingParameter;
-import org.eaSTars.z80asm.ast.parameter.IndexedAddressingParameter;
-import org.eaSTars.z80asm.ast.parameter.Register;
-import org.eaSTars.z80asm.ast.parameter.RegisterIndirectAddressing;
-import org.eaSTars.z80asm.ast.parameter.RegisterPair;
-import org.eaSTars.z80asm.ast.parameter.RegisterPairParameter;
-import org.eaSTars.z80asm.ast.parameter.RegisterParameter;
+import org.eaSTars.z80asm.ast.instructions.twoparam.*;
+import org.eaSTars.z80asm.ast.parameter.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TwoParameterConverterTest {
 

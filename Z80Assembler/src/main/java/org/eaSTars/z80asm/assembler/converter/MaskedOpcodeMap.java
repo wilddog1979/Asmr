@@ -1,8 +1,8 @@
 package org.eaSTars.z80asm.assembler.converter;
 
-import java.util.HashMap;
-
 import org.eaSTars.asm.ast.Instruction;
+
+import java.util.HashMap;
 
 class MaskedOpcodeMap<T1 extends Instruction> extends HashMap<OpcodeMask<T1>, Class<? extends T1>> {
 

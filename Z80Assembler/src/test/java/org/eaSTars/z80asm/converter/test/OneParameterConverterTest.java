@@ -1,54 +1,23 @@
 package org.eaSTars.z80asm.converter.test;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.stream.Stream;
-
 import org.eaSTars.asm.assember.PushbackInputStream;
 import org.eaSTars.z80asm.assembler.converter.OneParameterInstructionConverter;
 import org.eaSTars.z80asm.ast.expression.ConstantValueExpression;
 import org.eaSTars.z80asm.ast.instructions.OneParameterInstruction;
-import org.eaSTars.z80asm.ast.instructions.oneparam.AND;
-import org.eaSTars.z80asm.ast.instructions.oneparam.CP;
-import org.eaSTars.z80asm.ast.instructions.oneparam.DEC;
-import org.eaSTars.z80asm.ast.instructions.oneparam.DJNZ;
-import org.eaSTars.z80asm.ast.instructions.oneparam.INC;
-import org.eaSTars.z80asm.ast.instructions.oneparam.OR;
-import org.eaSTars.z80asm.ast.instructions.oneparam.POP;
-import org.eaSTars.z80asm.ast.instructions.oneparam.PUSH;
-import org.eaSTars.z80asm.ast.instructions.oneparam.RET;
-import org.eaSTars.z80asm.ast.instructions.oneparam.RL;
-import org.eaSTars.z80asm.ast.instructions.oneparam.RLC;
-import org.eaSTars.z80asm.ast.instructions.oneparam.RR;
-import org.eaSTars.z80asm.ast.instructions.oneparam.RRC;
-import org.eaSTars.z80asm.ast.instructions.oneparam.RST;
-import org.eaSTars.z80asm.ast.instructions.oneparam.SLA;
-import org.eaSTars.z80asm.ast.instructions.oneparam.SRA;
-import org.eaSTars.z80asm.ast.instructions.oneparam.SRL;
-import org.eaSTars.z80asm.ast.instructions.oneparam.SUB;
-import org.eaSTars.z80asm.ast.instructions.oneparam.XOR;
-import org.eaSTars.z80asm.ast.parameter.Condition;
-import org.eaSTars.z80asm.ast.parameter.ConditionParameter;
-import org.eaSTars.z80asm.ast.parameter.ConstantValueParameter;
-import org.eaSTars.z80asm.ast.parameter.ExpressionParameter;
-import org.eaSTars.z80asm.ast.parameter.IndexedAddressingParameter;
-import org.eaSTars.z80asm.ast.parameter.Register;
-import org.eaSTars.z80asm.ast.parameter.RegisterIndirectAddressing;
-import org.eaSTars.z80asm.ast.parameter.RegisterPair;
-import org.eaSTars.z80asm.ast.parameter.RegisterPairParameter;
-import org.eaSTars.z80asm.ast.parameter.RegisterParameter;
+import org.eaSTars.z80asm.ast.instructions.oneparam.*;
+import org.eaSTars.z80asm.ast.parameter.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class OneParameterConverterTest {
 

@@ -1,12 +1,5 @@
 package org.eaSTars.asm.ast.test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.stream.Stream;
-
 import org.antlr.v4.runtime.RecognitionException;
 import org.eaSTars.asm.ast.AssemblerLine;
 import org.eaSTars.asm.ast.Directive;
@@ -19,6 +12,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
+
+import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DirectiveLineTest extends AssemblerLineTester {
 

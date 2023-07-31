@@ -1,10 +1,6 @@
 package org.eaSTars.asm;
 
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.Lexer;
-import org.antlr.v4.runtime.TokenStream;
+import org.antlr.v4.runtime.*;
 import org.eaSTars.asm.ast.CompilationUnit;
 import org.eaSTars.z80asm.assembler.visitors.ExpressionVisitor;
 import org.eaSTars.z80asm.assembler.visitors.Z80CompilationUnitVisitor;

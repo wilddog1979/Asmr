@@ -1,9 +1,9 @@
 package org.eaSTars.z80asm.ast.test;
 
+import org.eaSTars.asm.AbstractTester;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import org.eaSTars.asm.AbstractTester;
 
 public abstract class InstructionTester extends AbstractTester {
 

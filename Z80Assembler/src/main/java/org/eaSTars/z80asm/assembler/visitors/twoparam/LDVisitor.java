@@ -2,44 +2,8 @@ package org.eaSTars.z80asm.assembler.visitors.twoparam;
 
 import org.eaSTars.z80asm.assembler.visitors.TwoParameterInstructionVisitor;
 import org.eaSTars.z80asm.ast.instructions.twoparam.LD;
-import org.eaSTars.z80asm.ast.parameter.ImmediateAddressingParameter;
-import org.eaSTars.z80asm.ast.parameter.Parameter;
-import org.eaSTars.z80asm.ast.parameter.Register;
-import org.eaSTars.z80asm.ast.parameter.RegisterIndirectAddressing;
-import org.eaSTars.z80asm.ast.parameter.RegisterPair;
-import org.eaSTars.z80asm.ast.parameter.RegisterPairParameter;
-import org.eaSTars.z80asm.ast.parameter.RegisterParameter;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.InstructionLDparametersContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.LDContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.LDaiContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.LDarContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.LDarefnum16Context;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.LDfromAToAddressContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.LDfromAddressToAContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.LDhlrefnum16Context;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.LDiaContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.LDidxnum8Context;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.LDidxregsContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.LDixnum16Context;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.LDixrefnum16Context;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.LDiynum16Context;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.LDiyrefnum16Context;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.LDraContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.LDrefhltoregContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.LDrefnum16aContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.LDrefnum16hlContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.LDrefnum16ixContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.LDrefnum16iyContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.LDrefnum16ssContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.LDregregmarkedContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.LDregsidxContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.LDregtorefhlContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.LDrhnum8Context;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.LDsphlContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.LDspixContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.LDspiyContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.LDssnum16Context;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.LDssrefnum16Context;
+import org.eaSTars.z80asm.ast.parameter.*;
+import org.eaSTars.z80asm.parser.Z80AssemblerParser.*;
 
 public class LDVisitor extends TwoParameterInstructionVisitor<LD, LDContext, InstructionLDparametersContext> {
 

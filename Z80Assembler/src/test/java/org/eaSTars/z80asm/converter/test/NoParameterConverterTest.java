@@ -1,61 +1,21 @@
 package org.eaSTars.z80asm.converter.test;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.stream.Stream;
-
 import org.eaSTars.asm.assember.PushbackInputStream;
 import org.eaSTars.z80asm.assembler.converter.NoParameterInstructionConverter;
 import org.eaSTars.z80asm.ast.instructions.NoParameterInstruction;
-import org.eaSTars.z80asm.ast.instructions.noparam.CCF;
-import org.eaSTars.z80asm.ast.instructions.noparam.CPD;
-import org.eaSTars.z80asm.ast.instructions.noparam.CPDR;
-import org.eaSTars.z80asm.ast.instructions.noparam.CPI;
-import org.eaSTars.z80asm.ast.instructions.noparam.CPIR;
-import org.eaSTars.z80asm.ast.instructions.noparam.CPL;
-import org.eaSTars.z80asm.ast.instructions.noparam.DAA;
-import org.eaSTars.z80asm.ast.instructions.noparam.DI;
-import org.eaSTars.z80asm.ast.instructions.noparam.EI;
-import org.eaSTars.z80asm.ast.instructions.noparam.EXX;
-import org.eaSTars.z80asm.ast.instructions.noparam.HALT;
-import org.eaSTars.z80asm.ast.instructions.noparam.IM0;
-import org.eaSTars.z80asm.ast.instructions.noparam.IM1;
-import org.eaSTars.z80asm.ast.instructions.noparam.IM2;
-import org.eaSTars.z80asm.ast.instructions.noparam.IND;
-import org.eaSTars.z80asm.ast.instructions.noparam.INDR;
-import org.eaSTars.z80asm.ast.instructions.noparam.INI;
-import org.eaSTars.z80asm.ast.instructions.noparam.INIR;
-import org.eaSTars.z80asm.ast.instructions.noparam.LDD;
-import org.eaSTars.z80asm.ast.instructions.noparam.LDDR;
-import org.eaSTars.z80asm.ast.instructions.noparam.LDI;
-import org.eaSTars.z80asm.ast.instructions.noparam.LDIR;
-import org.eaSTars.z80asm.ast.instructions.noparam.NEG;
-import org.eaSTars.z80asm.ast.instructions.noparam.NOP;
-import org.eaSTars.z80asm.ast.instructions.noparam.OTDR;
-import org.eaSTars.z80asm.ast.instructions.noparam.OTIR;
-import org.eaSTars.z80asm.ast.instructions.noparam.OUTD;
-import org.eaSTars.z80asm.ast.instructions.noparam.OUTI;
-import org.eaSTars.z80asm.ast.instructions.noparam.RETI;
-import org.eaSTars.z80asm.ast.instructions.noparam.RETN;
-import org.eaSTars.z80asm.ast.instructions.noparam.RLA;
-import org.eaSTars.z80asm.ast.instructions.noparam.RLCA;
-import org.eaSTars.z80asm.ast.instructions.noparam.RLD;
-import org.eaSTars.z80asm.ast.instructions.noparam.RRA;
-import org.eaSTars.z80asm.ast.instructions.noparam.RRCA;
-import org.eaSTars.z80asm.ast.instructions.noparam.RRD;
-import org.eaSTars.z80asm.ast.instructions.noparam.SCF;
+import org.eaSTars.z80asm.ast.instructions.noparam.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class NoParameterConverterTest {
 

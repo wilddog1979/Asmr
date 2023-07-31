@@ -1,7 +1,5 @@
 package org.eaSTars.z80asm.assembler.visitors;
 
-import java.util.Optional;
-
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -15,6 +13,8 @@ import org.eaSTars.z80asm.parser.Z80AssemblerParser.ORGContext;
 import org.eaSTars.z80asm.parser.Z80AssemblerParser.Z80assemblerlineContext;
 import org.eaSTars.z80asm.parser.Z80AssemblerParser.Z80compilationUnitContext;
 import org.eaSTars.z80asm.parser.Z80AssemblerParser.Z80directivesContext;
+
+import java.util.Optional;
 
 public class Z80CompilationUnitVisitor extends Z80AssemblerBaseVisitor<CompilationUnit> {
 

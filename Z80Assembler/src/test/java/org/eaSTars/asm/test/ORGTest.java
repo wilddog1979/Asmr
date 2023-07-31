@@ -1,12 +1,10 @@
 package org.eaSTars.asm.test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import org.eaSTars.asm.ast.Directive;
 import org.eaSTars.asm.ast.directives.ORG;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ORGTest extends DirectiveTest {
 

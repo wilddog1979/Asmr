@@ -6,13 +6,7 @@ import org.eaSTars.z80asm.ast.parameter.Parameter;
 import org.eaSTars.z80asm.ast.parameter.RegisterIndirectAddressing;
 import org.eaSTars.z80asm.ast.parameter.RegisterPair;
 import org.eaSTars.z80asm.ast.parameter.RegisterPairParameter;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.EXContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.ExafafmarkedContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.ExdehlContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.ExrefsphlContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.ExrefspixContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.ExrefspiyContext;
-import org.eaSTars.z80asm.parser.Z80AssemblerParser.InstructionEXparametersContext;
+import org.eaSTars.z80asm.parser.Z80AssemblerParser.*;
 
 public class EXVisitor extends TwoParameterInstructionVisitor<EX, EXContext, InstructionEXparametersContext> {
 

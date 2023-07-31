@@ -1,10 +1,10 @@
 package org.eaSTars.z80asm.ast.expression;
 
-import java.util.Optional;
-
 import org.eaSTars.asm.assember.CompilationContext;
 import org.eaSTars.asm.assember.LabelNotFoundException;
 import org.eaSTars.z80asm.ast.parameter.ConstantValueParameter;
+
+import java.util.Optional;
 
 public class ConstantValueExpression implements Expression {
 

@@ -1,16 +1,12 @@
 package org.eaSTars.asm.assember;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import org.eaSTars.asm.ast.AssemblerLine;
 import org.eaSTars.asm.ast.Directive;
 import org.eaSTars.asm.ast.DirectiveLine;
 import org.eaSTars.asm.ast.InstructionLine;
 import org.eaSTars.asm.ast.directives.ORG;
+
+import java.util.*;
 
 public class CompilationContext {
 

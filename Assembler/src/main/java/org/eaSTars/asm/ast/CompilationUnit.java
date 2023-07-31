@@ -1,10 +1,10 @@
 package org.eaSTars.asm.ast;
 
+import org.eaSTars.asm.assember.LabelAlreadyDefinedException;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.Vector;
-
-import org.eaSTars.asm.assember.LabelAlreadyDefinedException;
 
 public class CompilationUnit {
 

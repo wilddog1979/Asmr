@@ -1,10 +1,5 @@
 package org.eaSTars.z80asm.assembler.converter;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
 import org.eaSTars.asm.assember.AbstractAssemblyConverter;
 import org.eaSTars.asm.assember.CompilationContext;
 import org.eaSTars.asm.assember.PushbackInputStream;
@@ -13,17 +8,12 @@ import org.eaSTars.z80asm.ast.expression.ConstantValueExpression;
 import org.eaSTars.z80asm.ast.instructions.NoParameterInstruction;
 import org.eaSTars.z80asm.ast.instructions.OneParameterInstruction;
 import org.eaSTars.z80asm.ast.instructions.TwoParameterInstruction;
-import org.eaSTars.z80asm.ast.parameter.Condition;
-import org.eaSTars.z80asm.ast.parameter.ConditionParameter;
-import org.eaSTars.z80asm.ast.parameter.ConstantValueParameter;
-import org.eaSTars.z80asm.ast.parameter.ExpressionParameter;
-import org.eaSTars.z80asm.ast.parameter.IndexedAddressingParameter;
-import org.eaSTars.z80asm.ast.parameter.Parameter;
-import org.eaSTars.z80asm.ast.parameter.Register;
-import org.eaSTars.z80asm.ast.parameter.RegisterIndirectAddressing;
-import org.eaSTars.z80asm.ast.parameter.RegisterPair;
-import org.eaSTars.z80asm.ast.parameter.RegisterPairParameter;
-import org.eaSTars.z80asm.ast.parameter.RegisterParameter;
+import org.eaSTars.z80asm.ast.parameter.*;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 public abstract class AbstractZ80InstructionConverter<T extends Instruction> extends AbstractAssemblyConverter<T> {
 

@@ -1,49 +1,13 @@
 package org.eaSTars.z80asm.assembler.converter;
 
+import org.eaSTars.asm.assember.CompilationContext;
+import org.eaSTars.z80asm.ast.instructions.NoParameterInstruction;
+import org.eaSTars.z80asm.ast.instructions.noparam.*;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import org.eaSTars.asm.assember.CompilationContext;
-import org.eaSTars.z80asm.ast.instructions.NoParameterInstruction;
-import org.eaSTars.z80asm.ast.instructions.noparam.CCF;
-import org.eaSTars.z80asm.ast.instructions.noparam.CPD;
-import org.eaSTars.z80asm.ast.instructions.noparam.CPDR;
-import org.eaSTars.z80asm.ast.instructions.noparam.CPI;
-import org.eaSTars.z80asm.ast.instructions.noparam.CPIR;
-import org.eaSTars.z80asm.ast.instructions.noparam.CPL;
-import org.eaSTars.z80asm.ast.instructions.noparam.DAA;
-import org.eaSTars.z80asm.ast.instructions.noparam.DI;
-import org.eaSTars.z80asm.ast.instructions.noparam.EI;
-import org.eaSTars.z80asm.ast.instructions.noparam.EXX;
-import org.eaSTars.z80asm.ast.instructions.noparam.HALT;
-import org.eaSTars.z80asm.ast.instructions.noparam.IM0;
-import org.eaSTars.z80asm.ast.instructions.noparam.IM1;
-import org.eaSTars.z80asm.ast.instructions.noparam.IM2;
-import org.eaSTars.z80asm.ast.instructions.noparam.IND;
-import org.eaSTars.z80asm.ast.instructions.noparam.INDR;
-import org.eaSTars.z80asm.ast.instructions.noparam.INI;
-import org.eaSTars.z80asm.ast.instructions.noparam.INIR;
-import org.eaSTars.z80asm.ast.instructions.noparam.LDD;
-import org.eaSTars.z80asm.ast.instructions.noparam.LDDR;
-import org.eaSTars.z80asm.ast.instructions.noparam.LDI;
-import org.eaSTars.z80asm.ast.instructions.noparam.LDIR;
-import org.eaSTars.z80asm.ast.instructions.noparam.NEG;
-import org.eaSTars.z80asm.ast.instructions.noparam.NOP;
-import org.eaSTars.z80asm.ast.instructions.noparam.OTDR;
-import org.eaSTars.z80asm.ast.instructions.noparam.OTIR;
-import org.eaSTars.z80asm.ast.instructions.noparam.OUTD;
-import org.eaSTars.z80asm.ast.instructions.noparam.OUTI;
-import org.eaSTars.z80asm.ast.instructions.noparam.RETI;
-import org.eaSTars.z80asm.ast.instructions.noparam.RETN;
-import org.eaSTars.z80asm.ast.instructions.noparam.RLA;
-import org.eaSTars.z80asm.ast.instructions.noparam.RLCA;
-import org.eaSTars.z80asm.ast.instructions.noparam.RLD;
-import org.eaSTars.z80asm.ast.instructions.noparam.RRA;
-import org.eaSTars.z80asm.ast.instructions.noparam.RRCA;
-import org.eaSTars.z80asm.ast.instructions.noparam.RRD;
-import org.eaSTars.z80asm.ast.instructions.noparam.SCF;
 
 public class NoParameterInstructionConverter extends AbstractZ80InstructionConverter<NoParameterInstruction> {
 	

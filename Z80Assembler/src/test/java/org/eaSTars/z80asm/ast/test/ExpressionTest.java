@@ -1,19 +1,10 @@
 package org.eaSTars.z80asm.ast.test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.util.stream.Stream;
-
 import org.eaSTars.asm.AbstractTester;
 import org.eaSTars.asm.assember.CompilationContext;
+import org.eaSTars.asm.assember.CompilationContext.Phase;
 import org.eaSTars.asm.assember.LabelNotFoundException;
 import org.eaSTars.asm.assember.MismatchingParameterSizeException;
-import org.eaSTars.asm.assember.CompilationContext.Phase;
 import org.eaSTars.asm.ast.InstructionLine;
 import org.eaSTars.z80asm.ast.expression.ConstantValueExpression;
 import org.eaSTars.z80asm.ast.expression.Expression;
@@ -27,6 +18,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
+
+import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ExpressionTest extends AbstractTester {
 

@@ -1,36 +1,14 @@
 package org.eaSTars.z80asm.assembler.converter;
 
+import org.eaSTars.asm.assember.CompilationContext;
+import org.eaSTars.z80asm.ast.instructions.TwoParameterInstruction;
+import org.eaSTars.z80asm.ast.instructions.twoparam.*;
+import org.eaSTars.z80asm.ast.parameter.*;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import org.eaSTars.asm.assember.CompilationContext;
-import org.eaSTars.z80asm.ast.instructions.TwoParameterInstruction;
-import org.eaSTars.z80asm.ast.instructions.twoparam.ADC;
-import org.eaSTars.z80asm.ast.instructions.twoparam.ADD;
-import org.eaSTars.z80asm.ast.instructions.twoparam.BIT;
-import org.eaSTars.z80asm.ast.instructions.twoparam.CALL;
-import org.eaSTars.z80asm.ast.instructions.twoparam.EX;
-import org.eaSTars.z80asm.ast.instructions.twoparam.IN;
-import org.eaSTars.z80asm.ast.instructions.twoparam.JP;
-import org.eaSTars.z80asm.ast.instructions.twoparam.JR;
-import org.eaSTars.z80asm.ast.instructions.twoparam.LD;
-import org.eaSTars.z80asm.ast.instructions.twoparam.OUT;
-import org.eaSTars.z80asm.ast.instructions.twoparam.RES;
-import org.eaSTars.z80asm.ast.instructions.twoparam.SBC;
-import org.eaSTars.z80asm.ast.instructions.twoparam.SET;
-import org.eaSTars.z80asm.ast.parameter.Condition;
-import org.eaSTars.z80asm.ast.parameter.ConditionParameter;
-import org.eaSTars.z80asm.ast.parameter.ExpressionParameter;
-import org.eaSTars.z80asm.ast.parameter.ImmediateAddressingParameter;
-import org.eaSTars.z80asm.ast.parameter.IndexedAddressingParameter;
-import org.eaSTars.z80asm.ast.parameter.Parameter;
-import org.eaSTars.z80asm.ast.parameter.Register;
-import org.eaSTars.z80asm.ast.parameter.RegisterIndirectAddressing;
-import org.eaSTars.z80asm.ast.parameter.RegisterPair;
-import org.eaSTars.z80asm.ast.parameter.RegisterPairParameter;
-import org.eaSTars.z80asm.ast.parameter.RegisterParameter;
 
 public class TwoParameterInstructionConverter extends AbstractZ80InstructionConverter<TwoParameterInstruction> {
 

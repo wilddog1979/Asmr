@@ -1,15 +1,10 @@
 package org.eaSTars.z80asm.ast;
 
+import org.eaSTars.asm.ast.Instruction;
+import org.eaSTars.z80asm.ast.parameter.*;
+
 import java.util.Arrays;
 import java.util.List;
-
-import org.eaSTars.asm.ast.Instruction;
-import org.eaSTars.z80asm.ast.parameter.Parameter;
-import org.eaSTars.z80asm.ast.parameter.Register;
-import org.eaSTars.z80asm.ast.parameter.RegisterIndirectAddressing;
-import org.eaSTars.z80asm.ast.parameter.RegisterPair;
-import org.eaSTars.z80asm.ast.parameter.RegisterPairParameter;
-import org.eaSTars.z80asm.ast.parameter.RegisterParameter;
 
 public abstract class Z80Instruction implements Instruction {
 

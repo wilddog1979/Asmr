@@ -1,11 +1,11 @@
 package org.eaSTars.asm.test;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import org.eaSTars.asm.ast.AssemblerLine;
 import org.eaSTars.asm.ast.Directive;
 import org.eaSTars.asm.ast.DirectiveLine;
 import org.eaSTars.asm.ast.test.AssemblerLineTester;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class DirectiveTest extends AssemblerLineTester {
 	

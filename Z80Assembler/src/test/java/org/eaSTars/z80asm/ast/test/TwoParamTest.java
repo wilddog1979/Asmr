@@ -1,40 +1,18 @@
 package org.eaSTars.z80asm.ast.test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.stream.Stream;
-
 import org.eaSTars.z80asm.ast.Z80Instruction;
 import org.eaSTars.z80asm.ast.instructions.TwoParameterInstruction;
-import org.eaSTars.z80asm.ast.instructions.twoparam.ADC;
-import org.eaSTars.z80asm.ast.instructions.twoparam.ADD;
-import org.eaSTars.z80asm.ast.instructions.twoparam.BIT;
-import org.eaSTars.z80asm.ast.instructions.twoparam.CALL;
-import org.eaSTars.z80asm.ast.instructions.twoparam.EX;
-import org.eaSTars.z80asm.ast.instructions.twoparam.IN;
-import org.eaSTars.z80asm.ast.instructions.twoparam.JP;
-import org.eaSTars.z80asm.ast.instructions.twoparam.JR;
-import org.eaSTars.z80asm.ast.instructions.twoparam.LD;
-import org.eaSTars.z80asm.ast.instructions.twoparam.OUT;
-import org.eaSTars.z80asm.ast.instructions.twoparam.RES;
-import org.eaSTars.z80asm.ast.instructions.twoparam.SBC;
-import org.eaSTars.z80asm.ast.instructions.twoparam.SET;
-import org.eaSTars.z80asm.ast.parameter.ConditionParameter;
-import org.eaSTars.z80asm.ast.parameter.ExpressionParameter;
-import org.eaSTars.z80asm.ast.parameter.ImmediateAddressingParameter;
-import org.eaSTars.z80asm.ast.parameter.IndexedAddressingParameter;
-import org.eaSTars.z80asm.ast.parameter.Parameter;
-import org.eaSTars.z80asm.ast.parameter.RegisterIndirectAddressing;
-import org.eaSTars.z80asm.ast.parameter.RegisterPairParameter;
-import org.eaSTars.z80asm.ast.parameter.RegisterParameter;
+import org.eaSTars.z80asm.ast.instructions.twoparam.*;
+import org.eaSTars.z80asm.ast.parameter.*;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
+
+import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TwoParamTest extends InstructionTester {
 

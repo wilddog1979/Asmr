@@ -1,37 +1,14 @@
 package org.eaSTars.z80asm.assembler.converter;
 
+import org.eaSTars.asm.assember.CompilationContext;
+import org.eaSTars.z80asm.ast.instructions.OneParameterInstruction;
+import org.eaSTars.z80asm.ast.instructions.oneparam.*;
+import org.eaSTars.z80asm.ast.parameter.*;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import org.eaSTars.asm.assember.CompilationContext;
-import org.eaSTars.z80asm.ast.instructions.OneParameterInstruction;
-import org.eaSTars.z80asm.ast.instructions.oneparam.AND;
-import org.eaSTars.z80asm.ast.instructions.oneparam.CP;
-import org.eaSTars.z80asm.ast.instructions.oneparam.DEC;
-import org.eaSTars.z80asm.ast.instructions.oneparam.DJNZ;
-import org.eaSTars.z80asm.ast.instructions.oneparam.INC;
-import org.eaSTars.z80asm.ast.instructions.oneparam.OR;
-import org.eaSTars.z80asm.ast.instructions.oneparam.POP;
-import org.eaSTars.z80asm.ast.instructions.oneparam.PUSH;
-import org.eaSTars.z80asm.ast.instructions.oneparam.RET;
-import org.eaSTars.z80asm.ast.instructions.oneparam.RL;
-import org.eaSTars.z80asm.ast.instructions.oneparam.RLC;
-import org.eaSTars.z80asm.ast.instructions.oneparam.RR;
-import org.eaSTars.z80asm.ast.instructions.oneparam.RRC;
-import org.eaSTars.z80asm.ast.instructions.oneparam.RST;
-import org.eaSTars.z80asm.ast.instructions.oneparam.SLA;
-import org.eaSTars.z80asm.ast.instructions.oneparam.SRA;
-import org.eaSTars.z80asm.ast.instructions.oneparam.SRL;
-import org.eaSTars.z80asm.ast.instructions.oneparam.SUB;
-import org.eaSTars.z80asm.ast.instructions.oneparam.XOR;
-import org.eaSTars.z80asm.ast.parameter.ConditionParameter;
-import org.eaSTars.z80asm.ast.parameter.ConstantValueParameter;
-import org.eaSTars.z80asm.ast.parameter.ExpressionParameter;
-import org.eaSTars.z80asm.ast.parameter.IndexedAddressingParameter;
-import org.eaSTars.z80asm.ast.parameter.Parameter;
-import org.eaSTars.z80asm.ast.parameter.RegisterPairParameter;
 
 public class OneParameterInstructionConverter extends AbstractZ80InstructionConverter<OneParameterInstruction> {
 	

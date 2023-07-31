@@ -1,13 +1,13 @@
 package org.eaSTars.asm.visitor;
 
-import java.util.Optional;
-
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.eaSTars.asm.ast.AssemblerLine;
 import org.eaSTars.asm.ast.Instruction;
 import org.eaSTars.asm.ast.InstructionLine;
+
+import java.util.Optional;
 
 public class AssemblerLineVisitor {
 

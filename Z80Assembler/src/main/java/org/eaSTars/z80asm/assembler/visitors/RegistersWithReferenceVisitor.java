@@ -1,10 +1,6 @@
 package org.eaSTars.z80asm.assembler.visitors;
 
-import org.eaSTars.z80asm.ast.parameter.Parameter;
-import org.eaSTars.z80asm.ast.parameter.Register;
-import org.eaSTars.z80asm.ast.parameter.RegisterIndirectAddressing;
-import org.eaSTars.z80asm.ast.parameter.RegisterPair;
-import org.eaSTars.z80asm.ast.parameter.RegisterParameter;
+import org.eaSTars.z80asm.ast.parameter.*;
 import org.eaSTars.z80asm.parser.Z80AssemblerBaseVisitor;
 import org.eaSTars.z80asm.parser.Z80AssemblerParser.RegistersWithReferenceContext;
 
