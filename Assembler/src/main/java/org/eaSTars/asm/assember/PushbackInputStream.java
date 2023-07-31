@@ -6,9 +6,9 @@ import java.util.Stack;
 
 public class PushbackInputStream extends InputStream {
 
-	private InputStream inputStream;
+	private final InputStream inputStream;
 	
-	private Stack<Byte> unreadbuffer = new Stack<Byte>();
+	private final Stack<Byte> unreadbuffer = new Stack<Byte>();
 	
 	public PushbackInputStream(InputStream inputStream) {
 		this.inputStream = inputStream;

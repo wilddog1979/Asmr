@@ -18,9 +18,9 @@ import java.util.Optional;
 
 public class Z80CompilationUnitVisitor extends Z80AssemblerBaseVisitor<CompilationUnit> {
 
-	private AssemblerLineVisitor assemblerLineVisitor = new AssemblerLineVisitor(new Z80InstructionVisitor());
+	private final AssemblerLineVisitor assemblerLineVisitor = new AssemblerLineVisitor(new Z80InstructionVisitor());
 	
-	private Z80DirectivesVisitor directivesVisitor = new Z80DirectivesVisitor();
+	private final Z80DirectivesVisitor directivesVisitor = new Z80DirectivesVisitor();
 	
 	@Override
 	public CompilationUnit visitZ80compilationUnit(Z80compilationUnitContext ctx) {
@@ -31,8 +31,7 @@ public class Z80CompilationUnitVisitor extends Z80AssemblerBaseVisitor<Compilati
 		int instructioncount = 0;
 		
 		for (ParseTree entry : ctx.children) {
-			if (entry instanceof Z80assemblerlineContext) {
-				Z80assemblerlineContext assemblerLine = (Z80assemblerlineContext) entry;
+			if (entry instanceof Z80assemblerlineContext assemblerLine) {
 				AssemblerLine line = assemblerLineVisitor.visitAssemblerLine(assemblerLine.LABEL(), assemblerLine.instruction(), assemblerLine.COMMENT());
 				if (line != null) {
 					compilationUnit.addLine(line);
@@ -40,8 +39,7 @@ public class Z80CompilationUnitVisitor extends Z80AssemblerBaseVisitor<Compilati
 						instructioncount++;
 					}
 				}
-			} else if (entry instanceof Z80directivesContext) {
-				Z80directivesContext directivectx = (Z80directivesContext) entry;
+			} else if (entry instanceof Z80directivesContext directivectx) {
 				if (directivectx.directive() instanceof ORGContext) {
 					if (orgfound || instructioncount > 0) {
 						Z80directivesContext context = (Z80directivesContext) entry;

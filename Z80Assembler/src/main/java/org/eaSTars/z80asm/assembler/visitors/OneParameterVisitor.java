@@ -8,16 +8,16 @@ import org.eaSTars.z80asm.parser.Z80AssemblerParser.InstructionContext;
 
 public abstract class OneParameterVisitor<T extends OneParameterInstruction, C extends InstructionContext, P extends ParserRuleContext> extends ParameterizedVisitor<T, C, P> {
 	
-	protected abstract Parameter getParameter(P paramctx);
+	protected abstract Parameter getParameter(P paramCtx);
 	
 	public T visitInstruction(ParseTree t,  Class<C> type) {
 		C ctx = type.cast(t);
 		T instruction = null;
 		
-		P paramctx = getInstructionParameters(ctx);
-		if (paramctx.exception == null) {
+		P paramCtx = getInstructionParameters(ctx);
+		if (paramCtx.exception == null) {
 			instruction = getInstruction();
-			instruction.setParameter(getParameter(paramctx));
+			instruction.setParameter(getParameter(paramCtx));
 		}
 		
 		return instruction;

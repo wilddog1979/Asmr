@@ -61,7 +61,7 @@ public class NoParameterConverterTest {
 				{new CPDR(), new byte[] {(byte) 0xed, (byte) 0xb9}},
 				{new INDR(), new byte[] {(byte) 0xed, (byte) 0xba}},
 				{new OTDR(), new byte[] {(byte) 0xed, (byte) 0xbb}},
-			}).map(i -> Arguments.of(i));
+			}).map(Arguments::of);
 		}
 		
 	}

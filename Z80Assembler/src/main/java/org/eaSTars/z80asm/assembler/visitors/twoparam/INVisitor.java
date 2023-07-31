@@ -20,16 +20,16 @@ public class INVisitor extends TwoParameterInstructionVisitor<IN, INContext, Ins
 	}
 	
 	@Override
-	protected Parameter getSourceParameter(InstructionINparametersContext paramctx) {
-		return getRegister(paramctx.C, Register.C)
-				.orElseGet(() -> getExpression(paramctx.hex8bits())
+	protected Parameter getSourceParameter(InstructionINparametersContext paramCtx) {
+		return getRegister(paramCtx.C, Register.C)
+				.orElseGet(() -> getExpression(paramCtx.hex8bits())
 						.orElseGet(() -> null));
 	}
 	
 	@Override
-	protected Parameter getTargetParameter(InstructionINparametersContext paramctx) {
-		return getRegister(paramctx.A, Register.A)
-				.orElseGet(() -> getRegisters(paramctx.registers())
+	protected Parameter getTargetParameter(InstructionINparametersContext paramCtx) {
+		return getRegister(paramCtx.A, Register.A)
+				.orElseGet(() -> getRegisters(paramCtx.registers())
 						.orElseGet(() -> null));
 	}
 

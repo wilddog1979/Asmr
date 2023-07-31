@@ -9,10 +9,10 @@ import org.eaSTars.z80asm.parser.Z80AssemblerParser.InstructionSUBANDXORORCPpara
 public abstract class SUBANDXORORCPVisitor<T extends OneParameterInstruction, C extends InstructionContext> extends OneParameterVisitor<T, C, InstructionSUBANDXORORCPparametersContext> {
 
 	@Override
-	protected Parameter getParameter(InstructionSUBANDXORORCPparametersContext paramctx) {
-		return getRegistersWithReference(paramctx.registersWithReference())
-				.orElseGet(() -> getIndexedReference(paramctx.indexedReference())
-						.orElseGet(() -> getExpression(paramctx.hex8bits())
+	protected Parameter getParameter(InstructionSUBANDXORORCPparametersContext paramCtx) {
+		return getRegistersWithReference(paramCtx.registersWithReference())
+				.orElseGet(() -> getIndexedReference(paramCtx.indexedReference())
+						.orElseGet(() -> getExpression(paramCtx.hex8bits())
 								.orElseGet(() -> null)));
 	}
 

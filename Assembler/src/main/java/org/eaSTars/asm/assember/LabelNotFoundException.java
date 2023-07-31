@@ -1,10 +1,13 @@
 package org.eaSTars.asm.assember;
 
+import java.io.Serial;
+
 public class LabelNotFoundException extends RuntimeException {
 
+	@Serial
 	private static final long serialVersionUID = -5692979883104582747L;
 	
-	private String label;
+	private final String label;
 	
 	public LabelNotFoundException(String label) {
 		super(String.format("%s label was not found", label));

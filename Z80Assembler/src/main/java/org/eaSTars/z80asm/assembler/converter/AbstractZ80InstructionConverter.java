@@ -95,8 +95,7 @@ public abstract class AbstractZ80InstructionConverter<T extends Instruction> ext
 	private static int tableLookup(List<RegisterPair> map, Parameter parameter) {
 		int result = -1;
 		
-		if (parameter instanceof RegisterPairParameter) {
-			RegisterPairParameter registerPairParameter = (RegisterPairParameter) parameter;
+		if (parameter instanceof RegisterPairParameter registerPairParameter) {
 			result = map.indexOf(registerPairParameter.getRegisterPair());
 		}
 		
@@ -132,8 +131,7 @@ public abstract class AbstractZ80InstructionConverter<T extends Instruction> ext
 	protected static int getRegisterRIndex(Parameter parameter) {
 		int result = -1;
 		
-		if (parameter instanceof RegisterParameter) {
-			RegisterParameter registerParameter = (RegisterParameter) parameter;
+		if (parameter instanceof RegisterParameter registerParameter) {
 			result = TABLE_R.indexOf(registerParameter.getRegister());
 		}
 		
@@ -143,8 +141,7 @@ public abstract class AbstractZ80InstructionConverter<T extends Instruction> ext
 	protected static int getMarkedRegisterRIndex(Parameter parameter) {
 		int result = -1;
 		
-		if (parameter instanceof RegisterParameter) {
-			RegisterParameter registerParameter = (RegisterParameter) parameter;
+		if (parameter instanceof RegisterParameter registerParameter) {
 			result = TABLE_MARKEDR.indexOf(registerParameter.getRegister());
 		}
 		
@@ -310,10 +307,10 @@ public abstract class AbstractZ80InstructionConverter<T extends Instruction> ext
 		
 		int current = pushbackInputStream.read();
 		if (current != -1) {
-			byte[] currentbuffer = Arrays.copyOf(buffer, buffer.length + 1);
-			currentbuffer[buffer.length] = (byte) current;
-			result = Optional.ofNullable(getReverse(currentbuffer.length)).map(r -> r.getInstruction(currentbuffer)).orElseGet(() -> null);
-			if (result == null && (result = convertRecursive(pushbackInputStream, currentbuffer)) == null) {
+			byte[] currentBuffer = Arrays.copyOf(buffer, buffer.length + 1);
+			currentBuffer[buffer.length] = (byte) current;
+			result = Optional.ofNullable(getReverse(currentBuffer.length)).map(r -> r.getInstruction(currentBuffer)).orElseGet(() -> null);
+			if (result == null && (result = convertRecursive(pushbackInputStream, currentBuffer)) == null) {
 				pushbackInputStream.unread((byte) current);
 			}
 		}

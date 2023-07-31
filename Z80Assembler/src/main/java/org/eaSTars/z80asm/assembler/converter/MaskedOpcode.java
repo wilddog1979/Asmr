@@ -1,5 +1,7 @@
 package org.eaSTars.z80asm.assembler.converter;
 
+import java.util.Arrays;
+
 class MaskedOpcode<T2> {
 	protected Class<? extends T2> instruction;
 	
@@ -21,9 +23,7 @@ class MaskedOpcode<T2> {
 	
 	public MaskedOpcode(byte[] value) {
 		this.mask = new byte[value.length];
-		for (int i = 0; i < mask.length; ++i) {
-			mask[i] = (byte) 0xff;
-		}
+		Arrays.fill(mask, (byte) 0xff);
 		this.value = value;
 	}
 	

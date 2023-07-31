@@ -14,10 +14,10 @@ public class CompilationContext {
 		LABELPROCESS, COMPILATION;
 	}
 	
-	private class CompilationLine {
-		private int address;
+	private static class CompilationLine {
+		private final int address;
 		
-		private AssemblerLine assemblerLine;
+		private final AssemblerLine assemblerLine;
 		
 		public CompilationLine(int address, AssemblerLine assemblerLine) {
 			this.address = address;
@@ -29,9 +29,9 @@ public class CompilationContext {
 	
 	private int address = 0;
 	
-	private List<CompilationLine> lines = new ArrayList<CompilationLine>();
+	private final List<CompilationLine> lines = new ArrayList<>();
 	
-	private Map<String, CompilationLine> labels = new HashMap<String, CompilationLine>();
+	private final Map<String, CompilationLine> labels = new HashMap<>();
 
 	public void addInstructionLine(AssemblerLine assemblerLine, int length) {
 		if (assemblerLine instanceof DirectiveLine) {

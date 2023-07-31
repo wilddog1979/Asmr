@@ -18,10 +18,10 @@ import java.io.InputStream;
 public class Z80Assembler extends Assembler {
 	
 	@Override
-	public CompilationUnit parseInstructions(String sourcefilename) {
+	public CompilationUnit parseInstructions(String sourceFileName) {
 		CompilationUnit result = null;
 		
-		try (InputStream infile = new FileInputStream(sourcefilename)) {
+		try (InputStream infile = new FileInputStream(sourceFileName)) {
 			CharStream charStream = CharStreams.fromStream(infile);
 			Lexer lexer = new Z80AssemblerLexer(charStream);
 			
@@ -44,7 +44,7 @@ public class Z80Assembler extends Assembler {
 	}
 	
 	@Override
-	protected byte[] getInstuction(CompilationContext compilationContext, Instruction instruction) {
+	protected byte[] getInstruction(CompilationContext compilationContext, Instruction instruction) {
 		return AbstractZ80InstructionConverter.convertInstruction(compilationContext, instruction);
 	}
 	

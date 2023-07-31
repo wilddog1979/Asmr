@@ -10,12 +10,12 @@ import org.eaSTars.z80asm.parser.Z80AssemblerParser.InstructionINCDECparametersC
 public abstract class INCDECVisitor<T extends OneParameterInstruction, C extends InstructionContext> extends OneParameterVisitor<T, C, InstructionINCDECparametersContext> {
 
 	@Override
-	protected Parameter getParameter(InstructionINCDECparametersContext paramctx) {
-		return getRegisterPair(paramctx.IX, RegisterPair.IX)
-				.orElseGet(() -> getRegisterPair(paramctx.IY, RegisterPair.IY)
-						.orElseGet(() -> getRegisterSSParameter(paramctx.registerSS())
-								.orElseGet(() -> getRegistersWithReference(paramctx.registersWithReference())
-										.orElseGet(() -> getIndexedReference(paramctx.indexedReference())
+	protected Parameter getParameter(InstructionINCDECparametersContext paramCtx) {
+		return getRegisterPair(paramCtx.IX, RegisterPair.IX)
+				.orElseGet(() -> getRegisterPair(paramCtx.IY, RegisterPair.IY)
+						.orElseGet(() -> getRegisterSSParameter(paramCtx.registerSS())
+								.orElseGet(() -> getRegistersWithReference(paramCtx.registersWithReference())
+										.orElseGet(() -> getIndexedReference(paramCtx.indexedReference())
 												.orElseGet(() -> null)))));
 	}
 

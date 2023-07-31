@@ -9,44 +9,34 @@ import org.eaSTars.z80asm.parser.Z80AssemblerBaseVisitor;
 import org.eaSTars.z80asm.parser.Z80AssemblerParser.EQUContext;
 import org.eaSTars.z80asm.parser.Z80AssemblerParser.ORGContext;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Z80DirectivesVisitor extends Z80AssemblerBaseVisitor<Directive> {
 
 	@FunctionalInterface
-	private interface VisitorInvokation{
+	private interface VisitorInvocation {
 		public Directive invokeVisitor(ParseTree tree);
 	}
-	
-	private class VisitorMapEntry {
-		private Class<? extends ParserRuleContext> context;
-		private VisitorInvokation invokation;
-		
-		private VisitorMapEntry(
-				Class<? extends ParserRuleContext> context,
-				VisitorInvokation invokation) {
-			this.context = context;
-			this.invokation = invokation;
-		}
+
+	private record VisitorMapEntry(Class<? extends ParserRuleContext> context, VisitorInvocation invocation) {
 	}
 	
-	private Map<Class<? extends ParserRuleContext>, VisitorInvokation> visitorMap =
-			Arrays.asList(
+	private final Map<Class<? extends ParserRuleContext>, VisitorInvocation> visitorMap =
+			Stream.of(
 					new VisitorMapEntry(ORGContext.class, t -> new ORGDirectiveVisitor().visitORG((ORGContext) t)),
 					new VisitorMapEntry(EQUContext.class, t -> new EQUDirectiveVisitor().visitEQU((EQUContext) t))
-					)
-			.stream().collect(Collectors.toMap(e -> e.context, e -> e.invokation));
+					).collect(Collectors.toMap(e -> e.context, e -> e.invocation));
 	
 	@Override
 	public Directive visit(ParseTree tree) {
 		Directive directive = null;
 		
 		if (tree != null) {
-			VisitorInvokation invokation = visitorMap.get(tree.getClass());
-			if (invokation != null) {
-				directive = invokation.invokeVisitor(tree);
+			VisitorInvocation invocation = visitorMap.get(tree.getClass());
+			if (invocation != null) {
+				directive = invocation.invokeVisitor(tree);
 			}
 		}
 		

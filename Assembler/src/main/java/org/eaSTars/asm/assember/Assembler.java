@@ -15,17 +15,17 @@ public abstract class Assembler {
 
 	private ANTLRErrorListener errorListener;
 	
-	protected abstract CompilationUnit parseInstructions(String sourcefilename);
+	protected abstract CompilationUnit parseInstructions(String sourceFileName);
 	
-	public void assemble(String sourcefile, String outfile) {
-		errorListener = new AssemblerErrorListener(sourcefile);
+	public void assemble(String sourceFile, String outfile) {
+		errorListener = new AssemblerErrorListener(sourceFile);
 		
-		CompilationUnit result = parseInstructions(sourcefile);
+		CompilationUnit result = parseInstructions(sourceFile);
 		
 		process(result, outfile);
 	}
 	
-	protected abstract byte[] getInstuction(CompilationContext compilationContext, Instruction instruction);
+	protected abstract byte[] getInstruction(CompilationContext compilationContext, Instruction instruction);
 	
 	private void process(CompilationUnit instructions, String outfile) {
 		CompilationContext ctx = new CompilationContext();
@@ -34,11 +34,10 @@ public abstract class Assembler {
 			for (int i = 0; i < instructions.getLineCount(); ++i) {
 				AssemblerLine line = instructions.getLine(i);
 				System.out.println(line.toString());
-				if (line instanceof InstructionLine) {
-					InstructionLine instructionline = (InstructionLine) line;
+				if (line instanceof InstructionLine instructionline) {
 					Instruction instruction = instructionline.getInstruction();
 					if (instruction != null) {
-						byte[] inst = getInstuction(ctx, instruction);
+						byte[] inst = getInstruction(ctx, instruction);
 						ctx.addInstructionLine(line, inst.length);
 					} else {
 						ctx.addInstructionLine(line, 0);
@@ -50,11 +49,10 @@ public abstract class Assembler {
 			ctx.setPhase(Phase.COMPILATION);
 			for (int i = 0; i < instructions.getLineCount(); ++i) {
 				AssemblerLine line = instructions.getLine(i);
-				if (line instanceof InstructionLine) {
-					InstructionLine instructionline = (InstructionLine) line;
+				if (line instanceof InstructionLine instructionline) {
 					Instruction instruction = instructionline.getInstruction();
 					if (instruction != null) {
-						byte[] inst = getInstuction(ctx, instruction);
+						byte[] inst = getInstruction(ctx, instruction);
 						out.write(inst);
 					}
 				}

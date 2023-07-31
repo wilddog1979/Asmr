@@ -21,21 +21,21 @@ public class JRVisitor extends TwoParameterInstructionVisitor<JR, JRContext, Ins
 	}
 	
 	@Override
-	protected Parameter getSourceParameter(InstructionJRparametersContext paramctx) {
-		return getExpression(paramctx.hex8bits()).orElseGet(() -> null);
+	protected Parameter getSourceParameter(InstructionJRparametersContext paramCtx) {
+		return getExpression(paramCtx.hex8bits()).orElseGet(() -> null);
 	}
 
 	@Override
-	protected Parameter getTargetParameter(InstructionJRparametersContext paramctx) {
+	protected Parameter getTargetParameter(InstructionJRparametersContext paramCtx) {
 		Parameter parameter = null;
 		
-		if (paramctx.NZ != null) {
+		if (paramCtx.NZ != null) {
 			parameter = new ConditionParameter(Condition.NZ);
-		} else if (paramctx.Z != null) {
+		} else if (paramCtx.Z != null) {
 			parameter = new ConditionParameter(Condition.Z);
-		} else if (paramctx.NC != null) {
+		} else if (paramCtx.NC != null) {
 			parameter = new ConditionParameter(Condition.NC);
-		} else if (paramctx.C != null) {
+		} else if (paramCtx.C != null) {
 			parameter = new ConditionParameter(Condition.C);
 		}
 		

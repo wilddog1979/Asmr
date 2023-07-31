@@ -21,17 +21,17 @@ public class EXVisitor extends TwoParameterInstructionVisitor<EX, EXContext, Ins
 	}
 	
 	@Override
-	protected Parameter getSourceParameter(InstructionEXparametersContext paramctx) {
+	protected Parameter getSourceParameter(InstructionEXparametersContext paramCtx) {
 		Parameter parameter = null;
 		
-		if (paramctx instanceof ExafafmarkedContext) {
+		if (paramCtx instanceof ExafafmarkedContext) {
 			parameter = new RegisterPairParameter(RegisterPair.AFMarked);
-		} else if (paramctx instanceof ExrefsphlContext ||
-				paramctx instanceof ExdehlContext) {
+		} else if (paramCtx instanceof ExrefsphlContext ||
+				paramCtx instanceof ExdehlContext) {
 			parameter = new RegisterPairParameter(RegisterPair.HL);
-		} else if (paramctx instanceof ExrefspixContext) {
+		} else if (paramCtx instanceof ExrefspixContext) {
 			parameter = new RegisterPairParameter(RegisterPair.IX);
-		} else if (paramctx instanceof ExrefspiyContext) {
+		} else if (paramCtx instanceof ExrefspiyContext) {
 			parameter = new RegisterPairParameter(RegisterPair.IY);
 		}
 		
@@ -39,16 +39,16 @@ public class EXVisitor extends TwoParameterInstructionVisitor<EX, EXContext, Ins
 	}
 	
 	@Override
-	protected Parameter getTargetParameter(InstructionEXparametersContext paramctx) {
+	protected Parameter getTargetParameter(InstructionEXparametersContext paramCtx) {
 		Parameter parameter = null;
 		
-		if (paramctx instanceof ExafafmarkedContext) {
+		if (paramCtx instanceof ExafafmarkedContext) {
 			parameter = new RegisterPairParameter(RegisterPair.AF);
-		} else if (paramctx instanceof ExrefsphlContext ||
-				paramctx instanceof ExrefspixContext ||
-				paramctx instanceof ExrefspiyContext) {
+		} else if (paramCtx instanceof ExrefsphlContext ||
+				paramCtx instanceof ExrefspixContext ||
+				paramCtx instanceof ExrefspiyContext) {
 			parameter = new RegisterIndirectAddressing(RegisterPair.SP);
-		} else if (paramctx instanceof ExdehlContext) {
+		} else if (paramCtx instanceof ExdehlContext) {
 			parameter = new RegisterPairParameter(RegisterPair.DE);
 		}
 		

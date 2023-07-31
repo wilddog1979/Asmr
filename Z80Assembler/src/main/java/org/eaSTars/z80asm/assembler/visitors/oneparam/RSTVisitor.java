@@ -19,8 +19,8 @@ public class RSTVisitor extends OneParameterVisitor<RST, RSTContext, Instruction
 	}
 	
 	@Override
-	protected Parameter getParameter(InstructionRSTparametersContext paramctx) {
-		return getParameterT(paramctx.parameterT())
+	protected Parameter getParameter(InstructionRSTparametersContext paramCtx) {
+		return getParameterT(paramCtx.parameterT())
 				.orElseGet(() -> null);
 	}
 

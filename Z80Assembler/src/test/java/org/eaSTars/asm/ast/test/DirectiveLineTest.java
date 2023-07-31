@@ -27,15 +27,15 @@ public class DirectiveLineTest extends AssemblerLineTester {
 				{"org 7a00h\n", ORG.class, null, "org 7a00h"},
 				{"org 7a00h #comment\n", ORG.class, "#comment", "org 7a00h"},
 				{"@label1: equ 0340h\n", EQU.class, null, "@label1: equ 0340h"}
-			}).map(i -> Arguments.of(i));
+			}).map(Arguments::of);
 		}
 		
 	}
 	
 	@ParameterizedTest
 	@ArgumentsSource(DirectiveArgumentProvider.class)
-	public void testInstructionLine(String testinstruction, Class<? extends Directive> instruction, String comment, String tostring) {
-		AssemblerLine result = invokeParser(testinstruction);
+	public void testInstructionLine(String testInstruction, Class<? extends Directive> instruction, String comment, String tostring) {
+		AssemblerLine result = invokeParser(testInstruction);
 		
 		assertTrue(result instanceof DirectiveLine, "result must be an instance of DirectiveLine");
 		DirectiveLine directiveLineResult = (DirectiveLine) result;

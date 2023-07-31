@@ -21,22 +21,22 @@ public class ADDVisitor extends TwoParameterInstructionVisitor<ADD, ADDContext, 
 	}
 	
 	@Override
-	protected Parameter getSourceParameter(InstructionADDparametersContext paramctx) {
-		return getRegisterSSParameter(paramctx.registerSS())
-				.orElseGet(() -> getRegistersWithReference(paramctx.registersWithReference())
-						.orElseGet(() -> getRegisterPPParameter(paramctx.registerPP())
-								.orElseGet(() -> getRegisterRRParameter(paramctx.registerRR())
-										.orElseGet(() -> getIndexedReference(paramctx.indexedReference())
-												.orElseGet(() -> getExpression(paramctx.hex8bits())
+	protected Parameter getSourceParameter(InstructionADDparametersContext paramCtx) {
+		return getRegisterSSParameter(paramCtx.registerSS())
+				.orElseGet(() -> getRegistersWithReference(paramCtx.registersWithReference())
+						.orElseGet(() -> getRegisterPPParameter(paramCtx.registerPP())
+								.orElseGet(() -> getRegisterRRParameter(paramCtx.registerRR())
+										.orElseGet(() -> getIndexedReference(paramCtx.indexedReference())
+												.orElseGet(() -> getExpression(paramCtx.hex8bits())
 														.orElseGet(() -> null))))));
 	}
 	
 	@Override
-	protected Parameter getTargetParameter(InstructionADDparametersContext paramctx) {
-		return getRegisterPair(paramctx.HL, RegisterPair.HL)
-				.orElseGet(() -> getRegister(paramctx.A, Register.A)
-						.orElseGet(() -> getRegisterPair(paramctx.IX, RegisterPair.IX)
-								.orElseGet(() -> getRegisterPair(paramctx.IY, RegisterPair.IY)
+	protected Parameter getTargetParameter(InstructionADDparametersContext paramCtx) {
+		return getRegisterPair(paramCtx.HL, RegisterPair.HL)
+				.orElseGet(() -> getRegister(paramCtx.A, Register.A)
+						.orElseGet(() -> getRegisterPair(paramCtx.IX, RegisterPair.IX)
+								.orElseGet(() -> getRegisterPair(paramCtx.IY, RegisterPair.IY)
 										.orElseGet(() -> null))));
 	}
 	

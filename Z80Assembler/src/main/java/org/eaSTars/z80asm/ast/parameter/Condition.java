@@ -11,9 +11,9 @@ public enum Condition {
 	P("P", (byte)6),
 	M("M", (byte)7);
 	
-	private String value;
+	private final String value;
 	
-	private byte opcode;
+	private final byte opcode;
 	
 	private Condition(String value, byte opcode) {
 		this.value = value;

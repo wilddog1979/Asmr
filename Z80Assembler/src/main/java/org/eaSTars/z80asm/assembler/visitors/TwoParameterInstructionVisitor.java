@@ -8,19 +8,19 @@ import org.eaSTars.z80asm.parser.Z80AssemblerParser.InstructionContext;
 
 public abstract class TwoParameterInstructionVisitor<T extends TwoParameterInstruction, C extends InstructionContext, P extends ParserRuleContext> extends ParameterizedVisitor<T, C, P> {
 
-	protected abstract Parameter getSourceParameter(P paramctx);
+	protected abstract Parameter getSourceParameter(P paramCtx);
 	
-	protected abstract Parameter getTargetParameter(P paramctx);
+	protected abstract Parameter getTargetParameter(P paramCtx);
 	
 	public T visitInstruction(ParseTree t,  Class<C> type) {
 		C ctx = type.cast(t);
 		T instruction = null;
 		
-		P paramctx = getInstructionParameters(ctx);
-		if (paramctx.exception == null) {
+		P paramCtx = getInstructionParameters(ctx);
+		if (paramCtx.exception == null) {
 			instruction = getInstruction();
-			instruction.setSource(getSourceParameter(paramctx));
-			instruction.setTarget(getTargetParameter(paramctx));
+			instruction.setSource(getSourceParameter(paramCtx));
+			instruction.setTarget(getTargetParameter(paramCtx));
 		}
 		
 		return instruction;

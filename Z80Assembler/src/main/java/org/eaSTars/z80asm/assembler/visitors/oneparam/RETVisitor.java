@@ -21,24 +21,24 @@ public class RETVisitor extends OneParameterVisitor<RET, RETContext, Instruction
 	}
 	
 	@Override
-	protected Parameter getParameter(InstructionRETparametersContext paramctx) {
+	protected Parameter getParameter(InstructionRETparametersContext paramCtx) {
 		Parameter parameter = null;
 		
-		if (paramctx.NZ != null) {
+		if (paramCtx.NZ != null) {
 			parameter = new ConditionParameter(Condition.NZ);
-		} else if (paramctx.Z != null) {
+		} else if (paramCtx.Z != null) {
 			parameter = new ConditionParameter(Condition.Z);
-		} else if (paramctx.NC != null) {
+		} else if (paramCtx.NC != null) {
 			parameter = new ConditionParameter(Condition.NC);
-		} else if (paramctx.C != null) {
+		} else if (paramCtx.C != null) {
 			parameter = new ConditionParameter(Condition.C);
-		} else if (paramctx.PO != null) {
+		} else if (paramCtx.PO != null) {
 			parameter = new ConditionParameter(Condition.PO);
-		} else if (paramctx.PE != null) {
+		} else if (paramCtx.PE != null) {
 			parameter = new ConditionParameter(Condition.PE);
-		} else if (paramctx.P != null) {
+		} else if (paramCtx.P != null) {
 			parameter = new ConditionParameter(Condition.P);
-		} else if (paramctx.M != null) {
+		} else if (paramCtx.M != null) {
 			parameter = new ConditionParameter(Condition.M);
 		}
 		

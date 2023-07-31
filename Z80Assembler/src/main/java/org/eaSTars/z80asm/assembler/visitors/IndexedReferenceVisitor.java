@@ -7,7 +7,7 @@ import org.eaSTars.z80asm.parser.Z80AssemblerParser.IndexedReferenceContext;
 
 public class IndexedReferenceVisitor extends Z80AssemblerBaseVisitor<IndexedAddressingParameter> {
 
-	private HexValueVisitor hexValueVisitor = new HexValueVisitor();
+	private final HexValueVisitor hexValueVisitor = new HexValueVisitor();
 	
 	@Override
 	public IndexedAddressingParameter visitIndexedReference(IndexedReferenceContext ctx) {

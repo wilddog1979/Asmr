@@ -7,7 +7,7 @@ public class TwoOperandExpression implements Expression {
 	public static enum Operation {
 		PLUS("+"), MINUS("-"), STAR("*"), DIV("/"), SHL("<<"), SHR(">>"), AND("&"), XOR("^"), OR("|");
 		
-		private String value;
+		private final String value;
 		
 		private Operation(String value) {
 			this.value = value;

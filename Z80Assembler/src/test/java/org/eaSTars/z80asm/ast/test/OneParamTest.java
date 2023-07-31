@@ -208,16 +208,16 @@ public class OneParamTest extends InstructionTester {
 				{"SRL A", SRL.class, RegisterParameter.class, "A"},
 				{"SRL [IX+0030h]", SRL.class, IndexedAddressingParameter.class, "[IX+0030h]"},
 				{"SRL [IY+0030h]", SRL.class, IndexedAddressingParameter.class, "[IY+0030h]"}
-			}).map(i -> Arguments.of(i));
+			}).map(Arguments::of);
 		}
 
 	}
 
 	@ParameterizedTest
 	@ArgumentsSource(InstructionArgumentProvider.class)
-	public void testOneParameterInstructions(String testinstruction, Class<? extends OneParameterInstruction> instructionclass,
+	public void testOneParameterInstructions(String testInstruction, Class<? extends OneParameterInstruction> instructionclass,
 			Class<? extends Parameter> parameterclass, String parameterstring) {
-		Z80Instruction result = getZ80Instruction(testinstruction);
+		Z80Instruction result = getZ80Instruction(testInstruction);
 
 		assertNotNull(result, "Instruction must be recognized");
 		assertTrue(result.getClass().isAssignableFrom(instructionclass), () -> String.format("Test instruction must be an instance of %s", instructionclass.getName()));
@@ -232,7 +232,7 @@ public class OneParamTest extends InstructionTester {
 			assertNull(resultparameter, "Parameter most not be presented");
 		}
 		
-		assertEquals(testinstruction, result.getAssembly(), "Instruction assembly does not match");
+		assertEquals(testInstruction, result.getAssembly(), "Instruction assembly does not match");
 	}
 
 }

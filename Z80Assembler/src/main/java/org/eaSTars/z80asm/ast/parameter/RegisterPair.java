@@ -10,7 +10,7 @@ public enum RegisterPair {
 	IY("IY"),
 	AFMarked("AF'");
 	
-	private String value;
+	private final String value;
 	
 	private RegisterPair(String value) {
 		this.value = value;

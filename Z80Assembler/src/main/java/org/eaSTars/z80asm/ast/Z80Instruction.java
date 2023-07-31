@@ -42,7 +42,7 @@ public abstract class Z80Instruction implements Instruction {
 			null,
 			Register.A);
 	
-	private static final List<Register> TABLE_MARKEDR = Arrays.asList(
+	private static final List<Register> TABLE_MARKED_R = Arrays.asList(
 			Register.BMarked,
 			Register.CMarked,
 			Register.DMarked,
@@ -71,8 +71,7 @@ public abstract class Z80Instruction implements Instruction {
 	private int tableLookup(List<RegisterPair> map, Parameter parameter) {
 		int result = -1;
 		
-		if (parameter instanceof RegisterPairParameter) {
-			RegisterPairParameter registerPairParameter = (RegisterPairParameter) parameter;
+		if (parameter instanceof RegisterPairParameter registerPairParameter) {
 			result = map.indexOf(registerPairParameter.getRegisterPair());
 		}
 		
@@ -82,8 +81,7 @@ public abstract class Z80Instruction implements Instruction {
 	protected int getRegisterRIndex(Parameter parameter) {
 		int result = -1;
 		
-		if (parameter instanceof RegisterParameter) {
-			RegisterParameter registerParameter = (RegisterParameter) parameter;
+		if (parameter instanceof RegisterParameter registerParameter) {
 			result = TABLE_R.indexOf(registerParameter.getRegister());
 		}
 		
@@ -93,9 +91,8 @@ public abstract class Z80Instruction implements Instruction {
 	protected int getMarkedRegisterRIndex(Parameter parameter) {
 		int result = -1;
 		
-		if (parameter instanceof RegisterParameter) {
-			RegisterParameter registerParameter = (RegisterParameter) parameter;
-			result = TABLE_MARKEDR.indexOf(registerParameter.getRegister());
+		if (parameter instanceof RegisterParameter registerParameter) {
+			result = TABLE_MARKED_R.indexOf(registerParameter.getRegister());
 		}
 		
 		return result;

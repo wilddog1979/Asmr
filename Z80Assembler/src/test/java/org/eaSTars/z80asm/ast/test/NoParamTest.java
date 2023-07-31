@@ -56,19 +56,19 @@ public class NoParamTest extends InstructionTester {
 					{"CPDR", CPDR.class},
 					{"INDR", INDR.class},
 					{"OTDR", OTDR.class}
-			}).map(i -> Arguments.of(i));
+			}).map(Arguments::of);
 		}
 		
 	}
 	
 	@ParameterizedTest
 	@ArgumentsSource(InstructionArgumentProvider.class)
-	public void testNoParameterInstructions(String testinstruction, Class<? extends Z80Instruction> instructionclass) {
-		Z80Instruction result = getZ80Instruction(testinstruction);
+	public void testNoParameterInstructions(String testInstruction, Class<? extends Z80Instruction> instructionclass) {
+		Z80Instruction result = getZ80Instruction(testInstruction);
 		
 		assertNotNull(result, "Instruction must be recognized");
 		assertTrue(result.getClass().isAssignableFrom(instructionclass), () -> String.format("Test instruction must be an instance of %s", instructionclass.getName()));
-		assertEquals(testinstruction, result.getAssembly(), "Instruction assembly does not match");
+		assertEquals(testInstruction, result.getAssembly(), "Instruction assembly does not match");
 	}
 	
 }

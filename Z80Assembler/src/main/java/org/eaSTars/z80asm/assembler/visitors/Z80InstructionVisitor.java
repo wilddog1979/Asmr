@@ -12,23 +12,15 @@ import org.eaSTars.z80asm.parser.Z80AssemblerParser.*;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Z80InstructionVisitor extends Z80AssemblerBaseVisitor<Z80Instruction> {
-	
-	private class InstructionMapEntry {
-		private String text;
-		private Class<? extends Z80Instruction> instruction;
-		
-		public InstructionMapEntry(
-				String text,
-				Class<? extends Z80Instruction> instruction) {
-			this.text = text;
-			this.instruction = instruction;
-		}
+
+	private record InstructionMapEntry(String text, Class<? extends Z80Instruction> instruction) {
 	}
 	
-	private Map<String, Class<? extends Z80Instruction>> instructionMap = 
-			Arrays.asList(
+	private final Map<String, Class<? extends Z80Instruction>> instructionMap =
+			Stream.of(
 					new InstructionMapEntry("NOP", NOP.class),
 					new InstructionMapEntry("RLCA", RLCA.class),
 					new InstructionMapEntry("RRCA", RRCA.class),
@@ -66,28 +58,18 @@ public class Z80InstructionVisitor extends Z80AssemblerBaseVisitor<Z80Instructio
 					new InstructionMapEntry("CPDR", CPDR.class),
 					new InstructionMapEntry("INDR", INDR.class),
 					new InstructionMapEntry("OTDR", OTDR.class)
-					)
-			.stream().collect(Collectors.toMap(e -> e.text, e -> e.instruction));
+					).collect(Collectors.toMap(e -> e.text, e -> e.instruction));
 	
 	@FunctionalInterface
-	private interface VisitorInvokation{
+	private interface VisitorInvocation {
 		public Z80Instruction invokeVisitor(ParseTree tree);
 	}
-	
-	private class VisitorMapEntry {
-		private Class<? extends ParserRuleContext> context;
-		private VisitorInvokation invokation;
-		
-		private VisitorMapEntry(
-				Class<? extends ParserRuleContext> context,
-				VisitorInvokation invokation) {
-			this.context = context;
-			this.invokation = invokation;
-		}
+
+	private record VisitorMapEntry(Class<? extends ParserRuleContext> context, VisitorInvocation invokation) {
 	}
 	
-	private Map<Class<? extends ParserRuleContext>, VisitorInvokation> visitorMap =
-			Arrays.asList(
+	private final Map<Class<? extends ParserRuleContext>, VisitorInvocation> visitorMap =
+			Stream.of(
 					new VisitorMapEntry(LDContext.class, t -> new LDVisitor().visitInstruction(t, LDContext.class)),
 					new VisitorMapEntry(INCContext.class, t -> new INCVisitor().visitInstruction(t, INCContext.class)),
 					new VisitorMapEntry(DECContext.class, t -> new DECVisitor().visitInstruction(t, DECContext.class)),
@@ -105,7 +87,7 @@ public class Z80InstructionVisitor extends Z80AssemblerBaseVisitor<Z80Instructio
 					new VisitorMapEntry(RSTContext.class, t -> new RSTVisitor().visitInstruction(t, RSTContext.class)),
 					new VisitorMapEntry(JPContext.class, t -> new JPVisitor().visitInstruction(t, JPContext.class)),
 					new VisitorMapEntry(RETContext.class, t -> new RETVisitor().visitInstruction(t, RETContext.class)),
-					new VisitorMapEntry(DJNZContext.class, t-> new DJNZVisitor().visitInstruction(t, DJNZContext.class)),
+					new VisitorMapEntry(DJNZContext.class, t -> new DJNZVisitor().visitInstruction(t, DJNZContext.class)),
 					new VisitorMapEntry(JRContext.class, t -> new JRVisitor().visitInstruction(t, JRContext.class)),
 					new VisitorMapEntry(RLCContext.class, t -> new RLCVisitor().visitInstruction(t, RLCContext.class)),
 					new VisitorMapEntry(RRCContext.class, t -> new RRCVisitor().visitInstruction(t, RRCContext.class)),
@@ -120,8 +102,7 @@ public class Z80InstructionVisitor extends Z80AssemblerBaseVisitor<Z80Instructio
 					new VisitorMapEntry(OUTContext.class, t -> new OUTVisitor().visitInstruction(t, OUTContext.class)),
 					new VisitorMapEntry(INContext.class, t -> new INVisitor().visitInstruction(t, INContext.class)),
 					new VisitorMapEntry(CALLContext.class, t -> new CALLVisitor().visitInstruction(t, CALLContext.class))
-					)
-			.stream().collect(Collectors.toMap(e -> e.context, e -> e.invokation));
+					).collect(Collectors.toMap(e -> e.context, e -> e.invokation));
 
 	@Override
 	public Z80Instruction visit(ParseTree tree) {
@@ -136,7 +117,7 @@ public class Z80InstructionVisitor extends Z80AssemblerBaseVisitor<Z80Instructio
 					
 				}
 			} else {
-				VisitorInvokation invokation = visitorMap.get(tree.getClass());
+				VisitorInvocation invokation = visitorMap.get(tree.getClass());
 				if (invokation != null) {
 					instruction = invokation.invokeVisitor(tree);
 				}

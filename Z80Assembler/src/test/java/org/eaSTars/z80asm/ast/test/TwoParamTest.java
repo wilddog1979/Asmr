@@ -285,17 +285,17 @@ public class TwoParamTest extends InstructionTester {
 				{"LD [de00h], IY", LD.class, ImmediateAddressingParameter.class, "[de00h]", RegisterPairParameter.class, "IY", new byte[]{(byte) 0xfd, 0x22, 0x00, (byte) 0xde}},
 				{"LD IX, [de00h]", LD.class, RegisterPairParameter.class, "IX", ImmediateAddressingParameter.class, "[de00h]", new byte[]{(byte) 0xdd, 0x2a, 0x00, (byte) 0xde}},
 				{"LD IY, [de00h]", LD.class, RegisterPairParameter.class, "IY", ImmediateAddressingParameter.class, "[de00h]", new byte[]{(byte) 0xfd, 0x2a, 0x00, (byte) 0xde}}
-			}).map(i -> Arguments.of(i));
+			}).map(Arguments::of);
 		}
 		
 	}
 	
 	@ParameterizedTest
 	@ArgumentsSource(InstructionArgumentProvider.class)
-	public void testOneParameterInstructions(String testinstruction, Class<? extends TwoParameterInstruction> instructionclass,
+	public void testOneParameterInstructions(String testInstruction, Class<? extends TwoParameterInstruction> instructionclass,
 			Class<? extends Parameter> targetparameterclass, String targetparameterstring,
 			Class<? extends Parameter> sourceparameterclass, String sourceparameterstring) {
-		Z80Instruction result = getZ80Instruction(testinstruction);
+		Z80Instruction result = getZ80Instruction(testInstruction);
 
 		assertNotNull(result, "Instruction must be recognized");
 		assertTrue(result.getClass().isAssignableFrom(instructionclass), () -> String.format("Test instruction must be an instance of %s", instructionclass.getName()));
@@ -317,7 +317,7 @@ public class TwoParamTest extends InstructionTester {
 		assertNotNull(resultsourceparameter, "Instruction source parameter must be presented");
 		assertEquals(sourceparameterstring, resultsourceparameter.getAssembly(), "Source parameter string does not match");
 		
-		assertEquals(testinstruction, result.getAssembly(), "Instruction assembly does not match");
+		assertEquals(testInstruction, result.getAssembly(), "Instruction assembly does not match");
 	}
 	
 }

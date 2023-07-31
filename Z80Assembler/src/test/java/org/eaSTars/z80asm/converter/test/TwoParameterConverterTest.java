@@ -290,7 +290,7 @@ public class TwoParameterConverterTest {
 				{new LD(new ImmediateAddressingParameter(new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0xde00)), 16)), new RegisterPairParameter(RegisterPair.IY)), new byte[] {(byte) 0xfd, 0x22, 0x00, (byte) 0xde}},
 				{new LD(new RegisterPairParameter(RegisterPair.IX), new ImmediateAddressingParameter(new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0xde00)), 16))), new byte[] {(byte) 0xdd, 0x2a, 0x00, (byte) 0xde}},
 				{new LD(new RegisterPairParameter(RegisterPair.IY), new ImmediateAddressingParameter(new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0xde00)), 16))), new byte[] {(byte) 0xfd, 0x2a, 0x00, (byte) 0xde}}
-			}).map(i -> Arguments.of(i));
+			}).map(Arguments::of);
 		}
 		
 	}

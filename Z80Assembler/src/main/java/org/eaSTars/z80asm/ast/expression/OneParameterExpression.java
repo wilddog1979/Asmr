@@ -7,7 +7,7 @@ public class OneParameterExpression implements Expression {
 	public static enum Operation {
 		MINUS("-"), NOT("!");
 		
-		private String value;
+		private final String value;
 		
 		private Operation(String value) {
 			this.value = value;

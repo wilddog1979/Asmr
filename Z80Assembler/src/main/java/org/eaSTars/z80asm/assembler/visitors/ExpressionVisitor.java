@@ -63,7 +63,7 @@ public class ExpressionVisitor extends Z80AssemblerBaseVisitor<Expression> {
 	
 	@Override
 	public Expression visitPrimaryExpression(PrimaryExpressionContext ctx) {
-		return Optional.ofNullable(ctx.expression()).map(e -> visitExpression(e))
+		return Optional.ofNullable(ctx.expression()).map(this::visitExpression)
 				.orElseGet(() -> Optional.ofNullable(ctx.Hex16Bits()).map(h -> (Expression)new ConstantValueExpression(new ConstantValueParameter(parseValue(h.getText()))))
 						.orElseGet(() -> Optional.ofNullable(ctx.LABEL()).map(l -> (Expression)new ConstantValueExpression(new ConstantValueParameter(l.getText())))
 								.orElseGet(() -> null)));

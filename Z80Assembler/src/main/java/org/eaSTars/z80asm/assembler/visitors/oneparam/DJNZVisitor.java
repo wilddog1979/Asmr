@@ -19,8 +19,8 @@ public class DJNZVisitor extends OneParameterVisitor<DJNZ, DJNZContext, Instruct
 	}
 	
 	@Override
-	protected Parameter getParameter(InstructionDJNZparametersContext paramctx) {
-		return getExpression(paramctx.hex8bits()).orElseGet(() -> null);
+	protected Parameter getParameter(InstructionDJNZparametersContext paramCtx) {
+		return getExpression(paramCtx.hex8bits()).orElseGet(() -> null);
 	}
 
 }

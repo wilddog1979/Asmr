@@ -9,15 +9,15 @@ import org.eaSTars.z80asm.parser.Z80AssemblerParser.InstructionContext;
 public abstract class BITRESSETVisitor<T extends TwoParameterInstruction, C extends InstructionContext> extends TwoParameterInstructionVisitor<T, C, InstructionBITRESSETparametersContext> {
 
 	@Override
-	protected Parameter getSourceParameter(InstructionBITRESSETparametersContext paramctx) {
-		return getRegistersWithReference(paramctx.registersWithReference())
-				.orElseGet(() -> getIndexedReference(paramctx.indexedReference())
+	protected Parameter getSourceParameter(InstructionBITRESSETparametersContext paramCtx) {
+		return getRegistersWithReference(paramCtx.registersWithReference())
+				.orElseGet(() -> getIndexedReference(paramCtx.indexedReference())
 						.orElseGet(() -> null));
 	}
 	
 	@Override
-	protected Parameter getTargetParameter(InstructionBITRESSETparametersContext paramctx) {
-		return getExpression(paramctx.hex3bits())
+	protected Parameter getTargetParameter(InstructionBITRESSETparametersContext paramCtx) {
+		return getExpression(paramCtx.hex3bits())
 				.orElseGet(() -> null);
 	}
 

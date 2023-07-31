@@ -213,7 +213,7 @@ public class OneParameterConverterTest {
 				{new SRL(new RegisterParameter(Register.A)), new byte[] {(byte) 0xca, 0x3f}},
 				{new SRL(new IndexedAddressingParameter(RegisterPair.IX, new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x30)), 8))), new byte[] {(byte) 0xdd, (byte) 0xca, 0x30, 0x3e}},
 				{new SRL(new IndexedAddressingParameter(RegisterPair.IY, new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x30)), 8))), new byte[] {(byte) 0xfd, (byte) 0xca, 0x30, 0x3e}}
-			}).map(i -> Arguments.of(i));
+			}).map(Arguments::of);
 		}
 		
 	}

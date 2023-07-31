@@ -14,7 +14,7 @@ import java.util.BitSet;
 
 public class AssemblerErrorListener implements ANTLRErrorListener {
 
-	private String filename;
+	private final String filename;
 	
 	public AssemblerErrorListener(String filename) {
 		this.filename = filename;
@@ -29,12 +29,12 @@ public class AssemblerErrorListener implements ANTLRErrorListener {
 			while ((readline = lnr.readLine()) != null && linecounter++ < line) {
 				if (linecounter == line) {
 					System.out.printf("(line %d) %s\n", linecounter, readline);
-					StringBuffer sb = new StringBuffer("         ");
+					StringBuilder sb = new StringBuilder("         ");
 					for (int i = 0; i < charPositionInLine; ++i) {
 						sb.append(readline.charAt(i) == '\t' ? '\t' : ' ');
 					}
-					System.out.println(sb.toString() + "^");
-					System.out.println(sb.toString() + "|_ Syntax Error"+(msg != null ? String.format(" (%s)", msg) : ""));
+					System.out.println(sb + "^");
+					System.out.println(sb + "|_ Syntax Error"+(msg != null ? String.format(" (%s)", msg) : ""));
 				}
 			}
 			

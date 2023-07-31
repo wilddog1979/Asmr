@@ -32,15 +32,15 @@ public class InstructionLineTest extends AssemblerLineTester {
 				{"@testlabel:\n", "@testlabel", null, null, "@testlabel: "},
 				{"	@testlabel:					#comment\n", "@testlabel", null, "#comment", "@testlabel: #comment"},
 				{"	@testlabel2:		NOP			#comment\n", "@testlabel2", NOP.class, "#comment", "@testlabel2: NOP #comment"}
-			}).map(i -> Arguments.of(i));
+			}).map(Arguments::of);
 		}
 		
 	}
 	
 	@ParameterizedTest
 	@ArgumentsSource(InstructionLineArgumentProvider.class)
-	public void testInstructionLine(String testinstruction, String label, Class<? extends Instruction> instruction, String comment, String tostring) {
-		AssemblerLine result = invokeParser(testinstruction);
+	public void testInstructionLine(String testInstruction, String label, Class<? extends Instruction> instruction, String comment, String tostring) {
+		AssemblerLine result = invokeParser(testInstruction);
 		
 		assertTrue(result instanceof InstructionLine, "result must be an instance of InstructionLine");
 		InstructionLine instructionLineResult = (InstructionLine) result;

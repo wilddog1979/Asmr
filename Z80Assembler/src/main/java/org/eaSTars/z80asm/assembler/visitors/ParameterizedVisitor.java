@@ -40,11 +40,11 @@ public abstract class ParameterizedVisitor<T, C extends InstructionContext, P ex
 		public Parameter callmethod(CTX ctx);
 	}
 	
-	private <PT, CTX extends ParserRuleContext> Optional<Parameter> getParameter(P paramctx, Class<PT> type, String methodname, Class<CTX> ctxtype, MethodCaller<CTX> methodCaller) {
-		if (type.isAssignableFrom(paramctx.getClass())) {
+	private <PT, CTX extends ParserRuleContext> Optional<Parameter> getParameter(P paramCtx, Class<PT> type, String methodname, Class<CTX> ctxtype, MethodCaller<CTX> methodCaller) {
+		if (type.isAssignableFrom(paramCtx.getClass())) {
 			try {
-				Method method = type.getMethod(methodname, new Class<?>[] {});
-				Object ctx = method.invoke(paramctx, new Object[] {});
+				Method method = type.getMethod(methodname);
+				Object ctx = method.invoke(paramCtx);
 				return Optional.of(methodCaller.callmethod(ctxtype.cast(ctx)));
 			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
 					| NoSuchMethodException | SecurityException e) {
@@ -54,8 +54,8 @@ public abstract class ParameterizedVisitor<T, C extends InstructionContext, P ex
 		return Optional.empty();
 	}
 	
-	protected <PT> Optional<Parameter> getRegisterSSParameter(P paramctx, Class<PT> type) {
-		return getParameter(paramctx, type, "registerSS", RegisterSSContext.class, ctx -> getRegisterSSVisitor().visitRegisterSS(ctx));
+	protected <PT> Optional<Parameter> getRegisterSSParameter(P paramCtx, Class<PT> type) {
+		return getParameter(paramCtx, type, "registerSS", RegisterSSContext.class, ctx -> getRegisterSSVisitor().visitRegisterSS(ctx));
 	}
 	
 	protected Optional<Parameter> getRegisterSSParameter(RegisterSSContext ctx) {
@@ -74,32 +74,32 @@ public abstract class ParameterizedVisitor<T, C extends InstructionContext, P ex
 		return Optional.ofNullable(ctx).map(c -> getRegisterQQVisitor().visitRegisterQQ(c));
 	}
 	
-	protected <PT> Optional<Parameter> getRegistersWithReference(P paramctx, Class<PT> type) {
-		return getParameter(paramctx, type, "registersWithReference", RegistersWithReferenceContext.class, ctx -> getRegistersWithReferenceVisitor().visitRegistersWithReference(ctx));
+	protected <PT> Optional<Parameter> getRegistersWithReference(P paramCtx, Class<PT> type) {
+		return getParameter(paramCtx, type, "registersWithReference", RegistersWithReferenceContext.class, ctx -> getRegistersWithReferenceVisitor().visitRegistersWithReference(ctx));
 	}
 	
 	protected Optional<Parameter> getRegistersWithReference(RegistersWithReferenceContext ctx) {
 		return Optional.ofNullable(ctx).map(c -> getRegistersWithReferenceVisitor().visitRegistersWithReference(c));
 	}
 	
-	protected <PT> Optional<Parameter> getRegisters(P paramctx, Class<PT> type) {
-		return getParameter(paramctx, type, "registers", RegistersContext.class, ctx -> getRegistersVisitor().visitRegisters(ctx));
+	protected <PT> Optional<Parameter> getRegisters(P paramCtx, Class<PT> type) {
+		return getParameter(paramCtx, type, "registers", RegistersContext.class, ctx -> getRegistersVisitor().visitRegisters(ctx));
 	}
 	
 	protected Optional<Parameter> getRegisters(RegistersContext ctx) {
 		return Optional.ofNullable(ctx).map(c -> getRegistersVisitor().visitRegisters(c));
 	}
 	
-	protected <PT> Optional<Parameter> getRegistersMarked(P paramctx, Class<PT> type) {
-		return getParameter(paramctx, type, "registersmarked", RegistersmarkedContext.class, ctx -> getRegistersMarkedVisitor().visitRegistersmarked(ctx));
+	protected <PT> Optional<Parameter> getRegistersMarked(P paramCtx, Class<PT> type) {
+		return getParameter(paramCtx, type, "registersmarked", RegistersmarkedContext.class, ctx -> getRegistersMarkedVisitor().visitRegistersmarked(ctx));
 	}
 	
 	protected Optional<Parameter> getParameterT(ParameterTContext ctx) {
 		return Optional.ofNullable(ctx).map(c -> getParameterTVisitor().visitParameterT(c));
 	}
 	
-	protected <PT> Optional<Parameter> getIndexedReference(P paramctx, Class<PT> type) {
-		return getParameter(paramctx, type, "indexedReference", IndexedReferenceContext.class, ctx -> getIndexedReferenceVisitor().visitIndexedReference(ctx));
+	protected <PT> Optional<Parameter> getIndexedReference(P paramCtx, Class<PT> type) {
+		return getParameter(paramCtx, type, "indexedReference", IndexedReferenceContext.class, ctx -> getIndexedReferenceVisitor().visitIndexedReference(ctx));
 	}
 	
 	protected Optional<Parameter> getIndexedReference(IndexedReferenceContext ctx) {

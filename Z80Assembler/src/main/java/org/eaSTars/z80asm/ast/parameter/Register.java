@@ -18,7 +18,7 @@ public enum Register {
 	HMarked("H'"),
 	LMarked("L'");
 	
-	private String value;
+	private final String value;
 	
 	private Register(String value) {
 		this.value = value;

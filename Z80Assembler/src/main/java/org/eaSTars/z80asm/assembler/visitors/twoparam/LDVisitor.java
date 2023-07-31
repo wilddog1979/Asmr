@@ -18,57 +18,57 @@ public class LDVisitor extends TwoParameterInstructionVisitor<LD, LDContext, Ins
 	}
 	
 	@Override
-	protected Parameter getSourceParameter(InstructionLDparametersContext paramctx) {
+	protected Parameter getSourceParameter(InstructionLDparametersContext paramCtx) {
 		Parameter parameter = null;
 
-		if (paramctx instanceof LDfromAToAddressContext ||
-				paramctx instanceof LDiaContext ||
-				paramctx instanceof LDraContext ||
-				paramctx instanceof LDrefnum16aContext) {
+		if (paramCtx instanceof LDfromAToAddressContext ||
+				paramCtx instanceof LDiaContext ||
+				paramCtx instanceof LDraContext ||
+				paramCtx instanceof LDrefnum16aContext) {
 			parameter = new RegisterParameter(Register.A);
-		} else if (paramctx instanceof LDaiContext) {
+		} else if (paramCtx instanceof LDaiContext) {
 			parameter = new RegisterParameter(Register.I);
-		} else if (paramctx instanceof LDarContext) {
+		} else if (paramCtx instanceof LDarContext) {
 			parameter = new RegisterParameter(Register.R);
-		} else if (paramctx instanceof LDfromAddressToAContext) {
-			parameter = new RegisterIndirectAddressing(((LDfromAddressToAContext) paramctx).refbc != null ? RegisterPair.BC : RegisterPair.DE);
-		} else if (paramctx instanceof LDrefhltoregContext) {
+		} else if (paramCtx instanceof LDfromAddressToAContext) {
+			parameter = new RegisterIndirectAddressing(((LDfromAddressToAContext) paramCtx).refbc != null ? RegisterPair.BC : RegisterPair.DE);
+		} else if (paramCtx instanceof LDrefhltoregContext) {
 			parameter = new RegisterIndirectAddressing(RegisterPair.HL);
-		} else if (paramctx instanceof LDsphlContext ||
-				paramctx instanceof LDrefnum16hlContext) {
+		} else if (paramCtx instanceof LDsphlContext ||
+				paramCtx instanceof LDrefnum16hlContext) {
 			parameter = new RegisterPairParameter(RegisterPair.HL);
-		} else if (paramctx instanceof LDrhnum8Context) {
-			parameter = getExpression(((LDrhnum8Context) paramctx).hex8bits()).orElseGet(() -> null);
-		} else if (paramctx instanceof LDssnum16Context) {
-			parameter = getExpression(((LDssnum16Context) paramctx).hex16bits()).orElseGet(() -> null);
-		} else if (paramctx instanceof LDidxnum8Context) {
-			parameter = getExpression(((LDidxnum8Context) paramctx).hex8bits()).orElseGet(() -> null);
-		} else if (paramctx instanceof LDixnum16Context) {
-			parameter = getExpression(((LDixnum16Context) paramctx).hex16bits()).orElseGet(() -> null);
-		} else if (paramctx instanceof LDiynum16Context) {
-			parameter = getExpression(((LDiynum16Context) paramctx).hex16bits()).orElseGet(() -> null);
-		} else if (paramctx instanceof LDspixContext ||
-				paramctx instanceof LDrefnum16ixContext) {
+		} else if (paramCtx instanceof LDrhnum8Context) {
+			parameter = getExpression(((LDrhnum8Context) paramCtx).hex8bits()).orElseGet(() -> null);
+		} else if (paramCtx instanceof LDssnum16Context) {
+			parameter = getExpression(((LDssnum16Context) paramCtx).hex16bits()).orElseGet(() -> null);
+		} else if (paramCtx instanceof LDidxnum8Context) {
+			parameter = getExpression(((LDidxnum8Context) paramCtx).hex8bits()).orElseGet(() -> null);
+		} else if (paramCtx instanceof LDixnum16Context) {
+			parameter = getExpression(((LDixnum16Context) paramCtx).hex16bits()).orElseGet(() -> null);
+		} else if (paramCtx instanceof LDiynum16Context) {
+			parameter = getExpression(((LDiynum16Context) paramCtx).hex16bits()).orElseGet(() -> null);
+		} else if (paramCtx instanceof LDspixContext ||
+				paramCtx instanceof LDrefnum16ixContext) {
 			parameter = new RegisterPairParameter(RegisterPair.IX);
-		} else if (paramctx instanceof LDspiyContext ||
-				paramctx instanceof LDrefnum16iyContext) {
+		} else if (paramCtx instanceof LDspiyContext ||
+				paramCtx instanceof LDrefnum16iyContext) {
 			parameter = new RegisterPairParameter(RegisterPair.IY);
-		} else if (paramctx instanceof LDhlrefnum16Context) {
-			parameter = new ImmediateAddressingParameter(getExpression(((LDhlrefnum16Context) paramctx).hex16bits()).orElseGet(() -> null));
-		} else if (paramctx instanceof LDarefnum16Context) {
-			parameter = new ImmediateAddressingParameter(getExpression(((LDarefnum16Context) paramctx).hex16bits()).orElseGet(() -> null));
-		} else if (paramctx instanceof LDssrefnum16Context) {
-			parameter = new ImmediateAddressingParameter(getExpression(((LDssrefnum16Context) paramctx).hex16bits()).orElseGet(() -> null));
-		} else if (paramctx instanceof LDixrefnum16Context) {
-			parameter = new ImmediateAddressingParameter(getExpression(((LDixrefnum16Context) paramctx).hex16bits()).orElseGet(() -> null));
-		} else if (paramctx instanceof LDiyrefnum16Context) {
-			parameter = new ImmediateAddressingParameter(getExpression(((LDiyrefnum16Context) paramctx).hex16bits()).orElseGet(() -> null));
+		} else if (paramCtx instanceof LDhlrefnum16Context) {
+			parameter = new ImmediateAddressingParameter(getExpression(((LDhlrefnum16Context) paramCtx).hex16bits()).orElseGet(() -> null));
+		} else if (paramCtx instanceof LDarefnum16Context) {
+			parameter = new ImmediateAddressingParameter(getExpression(((LDarefnum16Context) paramCtx).hex16bits()).orElseGet(() -> null));
+		} else if (paramCtx instanceof LDssrefnum16Context) {
+			parameter = new ImmediateAddressingParameter(getExpression(((LDssrefnum16Context) paramCtx).hex16bits()).orElseGet(() -> null));
+		} else if (paramCtx instanceof LDixrefnum16Context) {
+			parameter = new ImmediateAddressingParameter(getExpression(((LDixrefnum16Context) paramCtx).hex16bits()).orElseGet(() -> null));
+		} else if (paramCtx instanceof LDiyrefnum16Context) {
+			parameter = new ImmediateAddressingParameter(getExpression(((LDiyrefnum16Context) paramCtx).hex16bits()).orElseGet(() -> null));
 		} else {
-			parameter = getRegisters(paramctx, LDregtorefhlContext.class)
-					.orElseGet(() -> getRegistersMarked(paramctx, LDregregmarkedContext.class)
-							.orElseGet(() -> getRegisters(paramctx, LDidxregsContext.class)
-									.orElseGet(() -> getIndexedReference(paramctx, LDregsidxContext.class)
-											.orElseGet(() -> getRegisterSSParameter(paramctx, LDrefnum16ssContext.class)
+			parameter = getRegisters(paramCtx, LDregtorefhlContext.class)
+					.orElseGet(() -> getRegistersMarked(paramCtx, LDregregmarkedContext.class)
+							.orElseGet(() -> getRegisters(paramCtx, LDidxregsContext.class)
+									.orElseGet(() -> getIndexedReference(paramCtx, LDregsidxContext.class)
+											.orElseGet(() -> getRegisterSSParameter(paramCtx, LDrefnum16ssContext.class)
 													.orElseGet(() -> null)))));
 		}
 
@@ -76,53 +76,53 @@ public class LDVisitor extends TwoParameterInstructionVisitor<LD, LDContext, Ins
 	}
 
 	@Override
-	protected Parameter getTargetParameter(InstructionLDparametersContext paramctx) {
+	protected Parameter getTargetParameter(InstructionLDparametersContext paramCtx) {
 		Parameter parameter = null;
 
-		if (paramctx instanceof LDfromAToAddressContext) {
-			parameter = new RegisterIndirectAddressing(((LDfromAToAddressContext) paramctx).refbc != null ? RegisterPair.BC : RegisterPair.DE);
-		} else if (paramctx instanceof LDfromAddressToAContext ||
-				paramctx instanceof LDaiContext ||
-				paramctx instanceof LDarContext ||
-				paramctx instanceof LDarefnum16Context) {
+		if (paramCtx instanceof LDfromAToAddressContext) {
+			parameter = new RegisterIndirectAddressing(((LDfromAToAddressContext) paramCtx).refbc != null ? RegisterPair.BC : RegisterPair.DE);
+		} else if (paramCtx instanceof LDfromAddressToAContext ||
+				paramCtx instanceof LDaiContext ||
+				paramCtx instanceof LDarContext ||
+				paramCtx instanceof LDarefnum16Context) {
 			parameter = new RegisterParameter(Register.A);
-		} else if (paramctx instanceof LDiaContext) {
+		} else if (paramCtx instanceof LDiaContext) {
 			parameter = new RegisterParameter(Register.I);
-		} else if (paramctx instanceof LDraContext) {
+		} else if (paramCtx instanceof LDraContext) {
 			parameter = new RegisterParameter(Register.R);
-		} else if (paramctx instanceof LDhlrefnum16Context) {
+		} else if (paramCtx instanceof LDhlrefnum16Context) {
 			parameter = new RegisterPairParameter(RegisterPair.HL);
-		} else if (paramctx instanceof LDregtorefhlContext) {
+		} else if (paramCtx instanceof LDregtorefhlContext) {
 			parameter = new RegisterIndirectAddressing(RegisterPair.HL);
-		} else if (paramctx instanceof LDsphlContext ||
-				paramctx instanceof LDspixContext ||
-				paramctx instanceof LDspiyContext) {
+		} else if (paramCtx instanceof LDsphlContext ||
+				paramCtx instanceof LDspixContext ||
+				paramCtx instanceof LDspiyContext) {
 			parameter = new RegisterPairParameter(RegisterPair.SP);
-		} else if (paramctx instanceof LDixnum16Context ||
-				paramctx instanceof LDixrefnum16Context) {
+		} else if (paramCtx instanceof LDixnum16Context ||
+				paramCtx instanceof LDixrefnum16Context) {
 			parameter = new RegisterPairParameter(RegisterPair.IX);
-		} else if (paramctx instanceof LDiynum16Context ||
-				paramctx instanceof LDiyrefnum16Context) {
+		} else if (paramCtx instanceof LDiynum16Context ||
+				paramCtx instanceof LDiyrefnum16Context) {
 			parameter = new RegisterPairParameter(RegisterPair.IY);
-		} else if (paramctx instanceof LDrefnum16hlContext) {
-			parameter = new ImmediateAddressingParameter(getExpression(((LDrefnum16hlContext) paramctx).hex16bits()).orElseGet(() -> null));
-		} else if (paramctx instanceof LDrefnum16aContext) {
-			parameter = new ImmediateAddressingParameter(getExpression(((LDrefnum16aContext) paramctx).hex16bits()).orElseGet(() -> null));
-		} else if (paramctx instanceof LDrefnum16ssContext) {
-			parameter = new ImmediateAddressingParameter(getExpression(((LDrefnum16ssContext) paramctx).hex16bits()).orElseGet(() -> null));
-		} else if (paramctx instanceof LDrefnum16ixContext) {
-			parameter = new ImmediateAddressingParameter(getExpression(((LDrefnum16ixContext) paramctx).hex16bits()).orElseGet(() -> null));
-		} else if (paramctx instanceof LDrefnum16iyContext) {
-			parameter = new ImmediateAddressingParameter(getExpression(((LDrefnum16iyContext) paramctx).hex16bits()).orElseGet(() -> null));
+		} else if (paramCtx instanceof LDrefnum16hlContext) {
+			parameter = new ImmediateAddressingParameter(getExpression(((LDrefnum16hlContext) paramCtx).hex16bits()).orElseGet(() -> null));
+		} else if (paramCtx instanceof LDrefnum16aContext) {
+			parameter = new ImmediateAddressingParameter(getExpression(((LDrefnum16aContext) paramCtx).hex16bits()).orElseGet(() -> null));
+		} else if (paramCtx instanceof LDrefnum16ssContext) {
+			parameter = new ImmediateAddressingParameter(getExpression(((LDrefnum16ssContext) paramCtx).hex16bits()).orElseGet(() -> null));
+		} else if (paramCtx instanceof LDrefnum16ixContext) {
+			parameter = new ImmediateAddressingParameter(getExpression(((LDrefnum16ixContext) paramCtx).hex16bits()).orElseGet(() -> null));
+		} else if (paramCtx instanceof LDrefnum16iyContext) {
+			parameter = new ImmediateAddressingParameter(getExpression(((LDrefnum16iyContext) paramCtx).hex16bits()).orElseGet(() -> null));
 		} else {
-			parameter = getRegisters(paramctx, LDrefhltoregContext.class)
-					.orElseGet(() -> getRegisters(paramctx, LDregregmarkedContext.class)
-							.orElseGet(() -> getRegistersWithReference(paramctx, LDrhnum8Context.class)
-									.orElseGet(() -> getRegisterSSParameter(paramctx, LDssnum16Context.class)
-											.orElseGet(() -> getIndexedReference(paramctx, LDidxregsContext.class)
-													.orElseGet(() -> getRegisters(paramctx, LDregsidxContext.class)
-															.orElseGet(() -> getIndexedReference(paramctx, LDidxnum8Context.class)
-																	.orElseGet(() -> getRegisterSSParameter(paramctx, LDssrefnum16Context.class)
+			parameter = getRegisters(paramCtx, LDrefhltoregContext.class)
+					.orElseGet(() -> getRegisters(paramCtx, LDregregmarkedContext.class)
+							.orElseGet(() -> getRegistersWithReference(paramCtx, LDrhnum8Context.class)
+									.orElseGet(() -> getRegisterSSParameter(paramCtx, LDssnum16Context.class)
+											.orElseGet(() -> getIndexedReference(paramCtx, LDidxregsContext.class)
+													.orElseGet(() -> getRegisters(paramCtx, LDregsidxContext.class)
+															.orElseGet(() -> getIndexedReference(paramCtx, LDidxnum8Context.class)
+																	.orElseGet(() -> getRegisterSSParameter(paramCtx, LDssrefnum16Context.class)
 																			.orElseGet(() -> null))))))));
 		}
 
