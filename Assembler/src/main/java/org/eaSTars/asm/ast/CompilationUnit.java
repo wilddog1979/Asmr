@@ -8,7 +8,7 @@ import java.util.Vector;
 
 public class CompilationUnit {
 
-	private final List<AssemblerLine> lines = new Vector<AssemblerLine>();
+	private final List<AssemblerLine> lines = new Vector<>();
 	
 	public void addLine(AssemblerLine line) {
 		Optional.ofNullable(line.getLabel()).ifPresent(label -> lines.stream()

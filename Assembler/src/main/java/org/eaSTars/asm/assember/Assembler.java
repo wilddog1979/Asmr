@@ -1,5 +1,6 @@
 package org.eaSTars.asm.assember;
 
+import lombok.Getter;
 import org.antlr.v4.runtime.ANTLRErrorListener;
 import org.eaSTars.asm.assember.CompilationContext.Phase;
 import org.eaSTars.asm.ast.AssemblerLine;
@@ -13,6 +14,7 @@ import java.io.OutputStream;
 
 public abstract class Assembler {
 
+	@Getter
 	private ANTLRErrorListener errorListener;
 	
 	protected abstract CompilationUnit parseInstructions(String sourceFileName);
@@ -30,7 +32,7 @@ public abstract class Assembler {
 	private void process(CompilationUnit instructions, String outfile) {
 		CompilationContext ctx = new CompilationContext();
 		try (OutputStream out = new FileOutputStream(outfile)) {
-			ctx.setPhase(Phase.LABELPROCESS);
+			ctx.setPhase(Phase.LABEL_PROCESS);
 			for (int i = 0; i < instructions.getLineCount(); ++i) {
 				AssemblerLine line = instructions.getLine(i);
 				System.out.println(line.toString());
@@ -60,14 +62,6 @@ public abstract class Assembler {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-	}
-
-	public ANTLRErrorListener getErrorListener() {
-		return errorListener;
-	}
-
-	public void setErrorListener(ANTLRErrorListener errorListener) {
-		this.errorListener = errorListener;
 	}
 	
 }

@@ -1,5 +1,9 @@
 package org.eaSTars.z80asm.ast.parameter;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public enum RegisterPair {
 	BC("BC"),
 	DE("DE"),
@@ -9,15 +13,8 @@ public enum RegisterPair {
 	IX("IX"),
 	IY("IY"),
 	AFMarked("AF'");
-	
-	private final String value;
-	
-	private RegisterPair(String value) {
-		this.value = value;
-	}
 
-	public String getValue() {
-		return value;
-	}
+	@Getter
+	private final String value;
 	
 }

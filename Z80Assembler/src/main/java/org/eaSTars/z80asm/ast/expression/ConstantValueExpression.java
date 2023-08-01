@@ -1,22 +1,19 @@
 package org.eaSTars.z80asm.ast.expression;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.eaSTars.asm.assember.CompilationContext;
 import org.eaSTars.asm.assember.LabelNotFoundException;
 import org.eaSTars.z80asm.ast.parameter.ConstantValueParameter;
 
 import java.util.Optional;
 
+@RequiredArgsConstructor
 public class ConstantValueExpression implements Expression {
 
-	private ConstantValueParameter constantValueParameter;
+	@Getter
+	private final ConstantValueParameter constantValueParameter;
 
-	public ConstantValueExpression() {
-	}
-	
-	public ConstantValueExpression(ConstantValueParameter contantValueParameter) {
-		setConstantValueParameter(contantValueParameter);
-	}
-	
 	@Override
 	public int evaluate(CompilationContext compilationContext) {
 		return Optional.ofNullable(constantValueParameter.getIntValue())
@@ -24,29 +21,21 @@ public class ConstantValueExpression implements Expression {
 						.map(compilationContext::getLabelValue)
 						.orElseThrow(() -> new LabelNotFoundException(constantValueParameter.getValue())));
 	}
-	
+
 	@Override
 	public String getAssembly() {
 		return Optional.ofNullable(constantValueParameter.getIntValue())
 				.map(i -> {
 					String result = "0000" + Integer.toHexString(i) + "h";
 					return result.substring(result.length() - 5);
-				}).orElseGet(() -> constantValueParameter.getValue());
-	}
-	
-	public ConstantValueParameter getConstantValueParameter() {
-		return constantValueParameter;
+				}).orElseGet(constantValueParameter::getValue);
 	}
 
-	public void setConstantValueParameter(ConstantValueParameter contantValueParameter) {
-		this.constantValueParameter = contantValueParameter;
-	}
-	
 	@Override
 	public boolean equals(Object obj) {
 		return obj instanceof ConstantValueExpression &&
 				((constantValueParameter == null && ((ConstantValueExpression)obj).getConstantValueParameter() == null) ||
 						(constantValueParameter != null && constantValueParameter.equals(((ConstantValueExpression)obj).getConstantValueParameter())));
 	}
-	
+
 }

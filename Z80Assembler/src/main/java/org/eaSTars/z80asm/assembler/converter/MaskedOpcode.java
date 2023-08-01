@@ -3,6 +3,7 @@ package org.eaSTars.z80asm.assembler.converter;
 import java.util.Arrays;
 
 class MaskedOpcode<T2> {
+
 	protected Class<? extends T2> instruction;
 	
 	protected byte[] mask;
@@ -12,13 +13,9 @@ class MaskedOpcode<T2> {
 	protected ParameterExtractor<T2> extractor;
 	
 	public MaskedOpcode(byte[] mask, byte[] value, ParameterExtractor<T2> extractor) {
-		this(mask, value);
-		this.extractor = extractor;
-	}
-	
-	public MaskedOpcode(byte[] mask, byte[] value) {
 		this.mask = mask;
 		this.value = value;
+		this.extractor = extractor;
 	}
 	
 	public MaskedOpcode(byte[] value) {

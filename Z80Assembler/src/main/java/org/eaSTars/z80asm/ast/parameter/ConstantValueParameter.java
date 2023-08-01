@@ -1,22 +1,26 @@
 package org.eaSTars.z80asm.ast.parameter;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Optional;
 
 public class ConstantValueParameter extends Parameter {
 
+	@Getter
+	@Setter
 	private Integer intValue;
-	
+
+	@Getter
+	@Setter
 	private String value;
-	
-	public ConstantValueParameter() {
-	}
 	
 	public ConstantValueParameter(String value) {
 		setValue(value);
 	}
 	
-	public ConstantValueParameter(int intvalue) {
-		setIntValue(intvalue);
+	public ConstantValueParameter(int intValue) {
+		setIntValue(intValue);
 	}
 	
 	@Override
@@ -24,22 +28,6 @@ public class ConstantValueParameter extends Parameter {
 		return Optional.ofNullable(intValue).map(i -> String.format("%xh", intValue)).orElseGet(() -> value);
 	}
 
-	public Integer getIntValue() {
-		return intValue;
-	}
-
-	public void setIntValue(Integer intValue) {
-		this.intValue = intValue;
-	}
-
-	public String getValue() {
-		return value;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
-	}
-	
 	@Override
 	public boolean equals(Object obj) {
 		return obj instanceof ConstantValueParameter &&

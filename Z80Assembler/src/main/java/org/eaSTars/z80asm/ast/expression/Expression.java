@@ -4,8 +4,8 @@ import org.eaSTars.asm.assember.CompilationContext;
 
 public interface Expression {
 
-	public int evaluate(CompilationContext compilationContext);
+	int evaluate(CompilationContext compilationContext);
 	
-	public String getAssembly();
+	String getAssembly();
 	
 }

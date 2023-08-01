@@ -1,5 +1,7 @@
 package org.eaSTars.asm.assember;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.eaSTars.asm.ast.AssemblerLine;
 import org.eaSTars.asm.ast.Directive;
 import org.eaSTars.asm.ast.DirectiveLine;
@@ -11,22 +13,18 @@ import java.util.*;
 public class CompilationContext {
 
 	public enum Phase {
-		LABELPROCESS, COMPILATION;
+		LABEL_PROCESS, COMPILATION;
 	}
-	
-	private static class CompilationLine {
-		private final int address;
-		
-		private final AssemblerLine assemblerLine;
-		
-		public CompilationLine(int address, AssemblerLine assemblerLine) {
-			this.address = address;
-			this.assemblerLine = assemblerLine;
-		}
+
+	private record CompilationLine(int address, AssemblerLine assemblerLine) {
 	}
-	
-	private Phase phase = Phase.LABELPROCESS;
-	
+
+	@Getter
+	@Setter
+	private Phase phase = Phase.LABEL_PROCESS;
+
+	@Getter
+	@Setter
 	private int address = 0;
 	
 	private final List<CompilationLine> lines = new ArrayList<>();
@@ -49,7 +47,7 @@ public class CompilationContext {
 	public int getLabelValue(String label) {
 		int result = 0;
 		
-		if (getPhase() != Phase.LABELPROCESS) {
+		if (getPhase() != Phase.LABEL_PROCESS) {
 			CompilationLine compilationLine = labels.get(label);
 			if (compilationLine == null) {
 				throw new LabelNotFoundException(label);
@@ -62,22 +60,6 @@ public class CompilationContext {
 		}
 		
 		return result;
-	}
-	
-	public Phase getPhase() {
-		return phase;
-	}
-
-	public void setPhase(Phase phase) {
-		this.phase = phase;
-	}
-
-	public int getAddress() {
-		return address;
-	}
-
-	public void setAddress(int address) {
-		this.address = address;
 	}
 	
 	private void increaseAddress(int value) {

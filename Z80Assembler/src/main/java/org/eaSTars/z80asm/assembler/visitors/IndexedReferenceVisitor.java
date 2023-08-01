@@ -12,7 +12,7 @@ public class IndexedReferenceVisitor extends Z80AssemblerBaseVisitor<IndexedAddr
 	@Override
 	public IndexedAddressingParameter visitIndexedReference(IndexedReferenceContext ctx) {
 		return new IndexedAddressingParameter(
-				ctx.IX != null ? RegisterPair.IX : RegisterPair.IY,
-						hexValueVisitor.visitHex8bits(ctx.hex8bits()));
+			ctx.IX != null ? RegisterPair.IX : RegisterPair.IY,
+			hexValueVisitor.visitHex8bits(ctx.hex8bits()));
 	}
 }

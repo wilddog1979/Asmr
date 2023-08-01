@@ -1,5 +1,6 @@
 package org.eaSTars.asm.assember;
 
+import lombok.RequiredArgsConstructor;
 import org.antlr.v4.runtime.ANTLRErrorListener;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.RecognitionException;
@@ -12,14 +13,11 @@ import java.io.IOException;
 import java.io.LineNumberReader;
 import java.util.BitSet;
 
+@RequiredArgsConstructor
 public class AssemblerErrorListener implements ANTLRErrorListener {
 
 	private final String filename;
-	
-	public AssemblerErrorListener(String filename) {
-		this.filename = filename;
-	}
-	
+
 	@Override
 	public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine,
 			String msg, RecognitionException e) {

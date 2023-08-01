@@ -1,34 +1,26 @@
 package org.eaSTars.z80asm.ast.expression;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.eaSTars.asm.assember.CompilationContext;
 
+@RequiredArgsConstructor
 public class OneParameterExpression implements Expression {
 
-	public static enum Operation {
+	@RequiredArgsConstructor
+	public enum Operation {
 		MINUS("-"), NOT("!");
-		
-		private final String value;
-		
-		private Operation(String value) {
-			this.value = value;
-		}
-		
-		public String getValue() {
-			return value;
-		}
-	}
-	
-	private Operation operation;
-	
-	private Expression parameter;
 
-	public OneParameterExpression() {
+		@Getter
+		private final String value;
+
 	}
-	
-	public OneParameterExpression(Operation operation, Expression parameter) {
-		setOperation(operation);
-		setParameter(parameter);
-	}
+
+	@Getter
+	private final Operation operation;
+
+	@Getter
+	private final Expression parameter;
 	
 	@Override
 	public int evaluate(CompilationContext compilationContext) {
@@ -44,30 +36,14 @@ public class OneParameterExpression implements Expression {
 	public String getAssembly() {
 		return String.format("%s(%s)", operation.getValue(), parameter.getAssembly());
 	}
-	
-	public Operation getOperation() {
-		return operation;
-	}
 
-	public void setOperation(Operation operation) {
-		this.operation = operation;
-	}
-
-	public Expression getParameter() {
-		return parameter;
-	}
-
-	public void setParameter(Expression parameter) {
-		this.parameter = parameter;
-	}
-	
 	@Override
 	public boolean equals(Object obj) {
 		return obj instanceof OneParameterExpression &&
-				((operation == null && ((OneParameterExpression)obj).getOperation() == null) ||
-						(operation != null && operation == ((OneParameterExpression)obj).getOperation())) &&
-				((parameter == null && ((OneParameterExpression)obj).getParameter() == null) ||
-						(parameter != null && parameter.equals(((OneParameterExpression)obj).getParameter())));
+				((operation == null && ((OneParameterExpression)obj).operation == null) ||
+						(operation != null && operation == ((OneParameterExpression)obj).operation)) &&
+				((parameter == null && ((OneParameterExpression)obj).parameter == null) ||
+						(parameter != null && parameter.equals(((OneParameterExpression)obj).parameter)));
 	}
 	
 }

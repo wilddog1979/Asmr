@@ -1,5 +1,9 @@
 package org.eaSTars.z80asm.ast.parameter;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public enum Register {
 	A("A"),
 	B("B"),
@@ -17,14 +21,8 @@ public enum Register {
 	EMarked("E'"),
 	HMarked("H'"),
 	LMarked("L'");
-	
-	private final String value;
-	
-	private Register(String value) {
-		this.value = value;
-	}
 
-	public String getValue() {
-		return value;
-	}
+	@Getter
+	private final String value;
+
 }

@@ -1,37 +1,29 @@
 package org.eaSTars.z80asm.ast.expression;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.eaSTars.asm.assember.CompilationContext;
 
+@RequiredArgsConstructor
 public class TwoOperandExpression implements Expression {
 
-	public static enum Operation {
+	@RequiredArgsConstructor
+	public enum Operation {
 		PLUS("+"), MINUS("-"), STAR("*"), DIV("/"), SHL("<<"), SHR(">>"), AND("&"), XOR("^"), OR("|");
-		
-		private final String value;
-		
-		private Operation(String value) {
-			this.value = value;
-		}
-		
-		public String getValue() {
-			return value;
-		}
-	}
-	
-	private Expression leftOperand;
-	
-	private Operation operation;
-	
-	private Expression rightOperand;
 
-	public TwoOperandExpression() {
+		@Getter
+		private final String value;
+
 	}
-	
-	public TwoOperandExpression(Expression left, Operation operation, Expression right) {
-		setLeftOperand(left);
-		setOperation(operation);
-		setRightOperand(right);
-	}
+
+	@Getter
+	private final Expression leftOperand;
+
+	@Getter
+	private final Operation operation;
+
+	@Getter
+	private final Expression rightOperand;
 	
 	@Override
 	public int evaluate(CompilationContext compilationContext) {
@@ -62,40 +54,16 @@ public class TwoOperandExpression implements Expression {
 	public String getAssembly() {
 		return String.format("(%s) %s (%s)", leftOperand.getAssembly(), operation.getValue(), rightOperand.getAssembly());
 	}
-	
-	public Expression getLeftOperand() {
-		return leftOperand;
-	}
 
-	public void setLeftOperand(Expression leftOperand) {
-		this.leftOperand = leftOperand;
-	}
-
-	public Operation getOperation() {
-		return operation;
-	}
-
-	public void setOperation(Operation operation) {
-		this.operation = operation;
-	}
-
-	public Expression getRightOperand() {
-		return rightOperand;
-	}
-
-	public void setRightOperand(Expression rightOperand) {
-		this.rightOperand = rightOperand;
-	}
-	
 	@Override
 	public boolean equals(Object obj) {
 		return obj instanceof TwoOperandExpression &&
-				((leftOperand == null && ((TwoOperandExpression)obj).getLeftOperand() == null) ||
-						(leftOperand != null && leftOperand.equals(((TwoOperandExpression)obj).getLeftOperand()))) &&
-				((operation == null && ((TwoOperandExpression)obj).getOperation() == null) ||
-						(operation != null && operation == ((TwoOperandExpression)obj).getOperation())) &&
-				((rightOperand == null && ((TwoOperandExpression)obj).getRightOperand() == null) ||
-						(rightOperand != null && rightOperand.equals(((TwoOperandExpression)obj).getRightOperand())));
+				((leftOperand == null && ((TwoOperandExpression)obj).leftOperand == null) ||
+						(leftOperand != null && leftOperand.equals(((TwoOperandExpression)obj).leftOperand))) &&
+				((operation == null && ((TwoOperandExpression)obj).operation == null) ||
+						(operation != null && operation == ((TwoOperandExpression)obj).operation)) &&
+				((rightOperand == null && ((TwoOperandExpression)obj).rightOperand == null) ||
+						(rightOperand != null && rightOperand.equals(((TwoOperandExpression)obj).rightOperand)));
 	}
 	
 }

@@ -1,16 +1,13 @@
 package org.eaSTars.asm.ast;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class InstructionLine extends AssemblerLine {
 
+	@Getter
+	@Setter
 	private Instruction instruction;
-	
-	public Instruction getInstruction() {
-		return instruction;
-	}
-
-	public void setInstruction(Instruction instruction) {
-		this.instruction = instruction;
-	}
 
 	@Override
 	public String toString() {

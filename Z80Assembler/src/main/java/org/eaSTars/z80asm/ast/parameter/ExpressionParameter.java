@@ -1,23 +1,20 @@
 package org.eaSTars.z80asm.ast.parameter;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.eaSTars.asm.assember.CompilationContext;
 import org.eaSTars.asm.assember.MismatchingParameterSizeException;
 import org.eaSTars.z80asm.ast.expression.Expression;
 
+@RequiredArgsConstructor
 public class ExpressionParameter extends Parameter {
 
-	private Expression expression;
-	
-	private int expectedBitCount;
-	
-	public ExpressionParameter() {
-	}
-	
-	public ExpressionParameter(Expression expression, int expectedBitCount) {
-		setExpression(expression);
-		setExpectedBitCount(expectedBitCount);
-	}
-	
+	@Getter
+	private final Expression expression;
+
+	@Getter
+	private final int expectedBitCount;
+
 	@Override
 	public String getAssembly() {
 		return expression.getAssembly();
@@ -32,28 +29,12 @@ public class ExpressionParameter extends Parameter {
 		
 		return result;
 	}
-	
-	public Expression getExpression() {
-		return expression;
-	}
 
-	public void setExpression(Expression expression) {
-		this.expression = expression;
-	}
-
-	public int getExpectedBitCount() {
-		return expectedBitCount;
-	}
-
-	public void setExpectedBitCount(int expectedBitCount) {
-		this.expectedBitCount = expectedBitCount;
-	}
-	
 	@Override
 	public boolean equals(Object obj) {
 		return obj instanceof ExpressionParameter &&
-				((expression == null && ((ExpressionParameter)obj).getExpression() == null) ||
-						(expression != null && expression.equals(((ExpressionParameter)obj).getExpression())));
+				((expression == null && ((ExpressionParameter)obj).expression == null) ||
+						(expression != null && expression.equals(((ExpressionParameter)obj).expression)));
 	}
 
 }

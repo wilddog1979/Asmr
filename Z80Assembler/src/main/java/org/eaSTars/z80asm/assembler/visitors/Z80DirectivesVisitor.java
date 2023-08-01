@@ -17,7 +17,7 @@ public class Z80DirectivesVisitor extends Z80AssemblerBaseVisitor<Directive> {
 
 	@FunctionalInterface
 	private interface VisitorInvocation {
-		public Directive invokeVisitor(ParseTree tree);
+		Directive invokeVisitor(ParseTree tree);
 	}
 
 	private record VisitorMapEntry(Class<? extends ParserRuleContext> context, VisitorInvocation invocation) {

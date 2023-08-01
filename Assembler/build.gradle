@@ -9,4 +9,7 @@ repositories {
 
 dependencies {
   implementation 'org.antlr:antlr4-runtime:4.13.0'
+
+  compileOnly 'org.projectlombok:lombok:1.18.28'
+  annotationProcessor 'org.projectlombok:lombok:1.18.28'
 }

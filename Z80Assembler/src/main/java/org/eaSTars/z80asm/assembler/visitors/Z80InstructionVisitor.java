@@ -9,6 +9,7 @@ import org.eaSTars.z80asm.ast.instructions.noparam.*;
 import org.eaSTars.z80asm.parser.Z80AssemblerBaseVisitor;
 import org.eaSTars.z80asm.parser.Z80AssemblerParser.*;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -62,7 +63,7 @@ public class Z80InstructionVisitor extends Z80AssemblerBaseVisitor<Z80Instructio
 	
 	@FunctionalInterface
 	private interface VisitorInvocation {
-		public Z80Instruction invokeVisitor(ParseTree tree);
+		Z80Instruction invokeVisitor(ParseTree tree);
 	}
 
 	private record VisitorMapEntry(Class<? extends ParserRuleContext> context, VisitorInvocation invokation) {
@@ -112,14 +113,14 @@ public class Z80InstructionVisitor extends Z80AssemblerBaseVisitor<Z80Instructio
 			Class<? extends Z80Instruction> inst = instructionMap.get(tree.getChild(0).getText());
 			if (inst != null) {
 				try {
-					instruction = inst.newInstance();
-				} catch (InstantiationException | IllegalAccessException e) {
+					instruction = inst.getConstructor().newInstance();
+				} catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
 					
 				}
 			} else {
-				VisitorInvocation invokation = visitorMap.get(tree.getClass());
-				if (invokation != null) {
-					instruction = invokation.invokeVisitor(tree);
+				VisitorInvocation invocation = visitorMap.get(tree.getClass());
+				if (invocation != null) {
+					instruction = invocation.invokeVisitor(tree);
 				}
 			}
 		}

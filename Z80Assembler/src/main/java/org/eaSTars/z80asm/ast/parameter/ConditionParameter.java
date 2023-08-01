@@ -1,29 +1,19 @@
 package org.eaSTars.z80asm.ast.parameter;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public class ConditionParameter extends Parameter {
 
-	private Condition condition;
-	
-	public ConditionParameter() {
-	}
-	
-	public ConditionParameter(Condition condition) {
-		setCondition(condition);
-	}
-	
+	@Getter
+	private final Condition condition;
+
 	@Override
 	public String getAssembly() {
 		return condition.getValue();
 	}
 
-	public Condition getCondition() {
-		return condition;
-	}
-
-	public void setCondition(Condition condition) {
-		this.condition = condition;
-	}
-	
 	@Override
 	public boolean equals(Object obj) {
 		return obj instanceof ConditionParameter &&

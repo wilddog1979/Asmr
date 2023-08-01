@@ -45,7 +45,7 @@ public abstract class AbstractZ80InstructionConverter<T extends Instruction> ext
 			null,
 			Register.A);
 	
-	private static final List<Register> TABLE_MARKEDR = Arrays.asList(
+	private static final List<Register> TABLE_MARKED_R = Arrays.asList(
 			Register.BMarked,
 			Register.CMarked,
 			Register.DMarked,
@@ -142,7 +142,7 @@ public abstract class AbstractZ80InstructionConverter<T extends Instruction> ext
 		int result = -1;
 		
 		if (parameter instanceof RegisterParameter registerParameter) {
-			result = TABLE_MARKEDR.indexOf(registerParameter.getRegister());
+			result = TABLE_MARKED_R.indexOf(registerParameter.getRegister());
 		}
 		
 		return result;
@@ -216,7 +216,7 @@ public abstract class AbstractZ80InstructionConverter<T extends Instruction> ext
 		RegisterParameter result = null;
 		
 		if (index >= 0 && index < 8) {
-			result = new RegisterParameter(TABLE_MARKEDR.get(index));
+			result = new RegisterParameter(TABLE_MARKED_R.get(index));
 		}
 		
 		return result;

@@ -25,9 +25,9 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
 	}
 	
 	@FunctionalInterface
-	protected static interface InstructionAssemblyGenerator {
+	protected interface InstructionAssemblyGenerator {
 		
-		public byte[] generate(CompilationContext compilationContext, Parameter parameter, List<MaskedOpcode<OneParameterInstruction>> masks);
+		byte[] generate(CompilationContext compilationContext, Parameter parameter, List<MaskedOpcode<OneParameterInstruction>> masks);
 		
 	}
 	
@@ -123,7 +123,7 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
 			instructionlist.stream().flatMap(e -> e.masks.stream()).collect(Collectors.groupingBy(
 					m -> m.mask.length,
 					Collectors.toMap(
-							m -> new OpcodeMask<OneParameterInstruction>(m.mask, m.value, m.extractor),
+							m -> new OpcodeMask<>(m.mask, m.value, m.extractor),
 							m -> m.instruction,
 							(u,v) -> { throw new IllegalStateException(String.format("Duplicate key %s", u)); },
 							MaskedOpcodeMap<OneParameterInstruction>::new)));
@@ -146,9 +146,9 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
 	private static byte[] generateSUBANDXORORCP(CompilationContext compilationContext, Parameter parameter, List<MaskedOpcode<OneParameterInstruction>> masks) {
 		byte[] result = null;
 		
-		int registerindex = getRegisterRHIndex(parameter);
-		if (registerindex != -1) {
-			result = new byte[] {(byte) (masks.get(0).value[0] | registerindex)};
+		int registerIndex = getRegisterRHIndex(parameter);
+		if (registerIndex != -1) {
+			result = new byte[] {(byte) (masks.get(0).value[0] | registerIndex)};
 		} else if (parameter instanceof ExpressionParameter) {
 			int value = ((ExpressionParameter) parameter).getExpressionValue(compilationContext);
 			result = new byte[] {masks.get(1).value[0], 0};
@@ -164,11 +164,11 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
 	private static byte[] generateINCDEC(CompilationContext compilationContext, Parameter parameter, List<MaskedOpcode<OneParameterInstruction>> masks) {
 		byte[] result = null;
 		
-		int registerindex = getRegisterSSIndex(parameter);
-		if (registerindex != -1) {
-			result = new byte[] {(byte) (masks.get(0).value[0] | (registerindex << 4))};
-		} else if ((registerindex = getRegisterRHIndex(parameter)) != -1) {
-			result = new byte[] {(byte) (masks.get(1).value[0] | (registerindex << 3))};
+		int registerIndex = getRegisterSSIndex(parameter);
+		if (registerIndex != -1) {
+			result = new byte[] {(byte) (masks.get(0).value[0] | (registerIndex << 4))};
+		} else if ((registerIndex = getRegisterRHIndex(parameter)) != -1) {
+			result = new byte[] {(byte) (masks.get(1).value[0] | (registerIndex << 3))};
 		} else if (parameter instanceof RegisterPairParameter) {
 			result = generateIndexRegisters(((RegisterPairParameter) parameter).getRegisterPair(), masks.get(2).value);
 		}
@@ -192,9 +192,9 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
 	private static byte[] generatePUSHPOP(CompilationContext compilationContext, Parameter parameter, List<MaskedOpcode<OneParameterInstruction>> masks) {
 		byte[] result = null;
 		
-		int registerindex = getRegisterQQIndex(parameter);
-		if (registerindex != -1) {
-			result = new byte[] {(byte) (masks.get(0).value[0] | (registerindex << 4))};
+		int registerIndex = getRegisterQQIndex(parameter);
+		if (registerIndex != -1) {
+			result = new byte[] {(byte) (masks.get(0).value[0] | (registerIndex << 4))};
 		} else if (parameter instanceof RegisterPairParameter) {
 			result = generateIndexRegisters(((RegisterPairParameter) parameter).getRegisterPair(), masks.get(1).value);
 		}

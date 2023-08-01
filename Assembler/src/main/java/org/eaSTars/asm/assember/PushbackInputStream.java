@@ -8,7 +8,7 @@ public class PushbackInputStream extends InputStream {
 
 	private final InputStream inputStream;
 	
-	private final Stack<Byte> unreadbuffer = new Stack<Byte>();
+	private final Stack<Byte> unreadBuffer = new Stack<>();
 	
 	public PushbackInputStream(InputStream inputStream) {
 		this.inputStream = inputStream;
@@ -16,17 +16,11 @@ public class PushbackInputStream extends InputStream {
 	
 	@Override
 	public int read() throws IOException {
-		int result = -1;
-		if (!unreadbuffer.isEmpty()) {
-			result = unreadbuffer.pop();
-		} else {
-			result = inputStream.read();
-		}
-		return result;
+		return !unreadBuffer.isEmpty() ? unreadBuffer.pop() : inputStream.read();
 	}
 	
 	public void unread(byte value) {
-		unreadbuffer.push(value);
+		unreadBuffer.push(value);
 	}
 	
 	public void unread(byte[] data) {

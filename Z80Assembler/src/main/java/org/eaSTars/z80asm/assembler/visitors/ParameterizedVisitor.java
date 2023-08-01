@@ -12,25 +12,25 @@ import java.util.Optional;
 
 public abstract class ParameterizedVisitor<T, C extends InstructionContext, P extends ParserRuleContext> extends Z80AssemblerBaseVisitor<T> {
 
-	private RegistersVisitor registersVisitor = null;
+	private final RegistersVisitor registersVisitor = new RegistersVisitor();
 	
-	private RegistersMarkedVisitor registersMarkedVisitor = null;
+	private final RegistersMarkedVisitor registersMarkedVisitor = new RegistersMarkedVisitor();
 	
-	private RegisterSSVisitor registerSSVisitor = null;
+	private final RegisterSSVisitor registerSSVisitor = new RegisterSSVisitor();
 	
-	private RegisterPPVisitor registerPPVisitor = null;
+	private final RegisterPPVisitor registerPPVisitor = new RegisterPPVisitor();
 	
-	private RegisterRRVisitor registerRRVisitor = null;
+	private final RegisterRRVisitor registerRRVisitor = new RegisterRRVisitor();
 	
-	private RegisterQQVisitor registerQQVisitor = null;
+	private final RegisterQQVisitor registerQQVisitor = new RegisterQQVisitor();
 	
-	private RegistersWithReferenceVisitor registersWithReferenceVisitor = null;
+	private final RegistersWithReferenceVisitor registersWithReferenceVisitor = new RegistersWithReferenceVisitor();
 	
-	private ParameterTVisitor parameterTVisitor = null;
+	private final ParameterTVisitor parameterTVisitor = new ParameterTVisitor();
 	
-	private IndexedReferenceVisitor indexedReferenceVisitor = null;
+	private final IndexedReferenceVisitor indexedReferenceVisitor = new IndexedReferenceVisitor();
 	
-	private HexValueVisitor hexValueVisitor = null;
+	private final HexValueVisitor hexValueVisitor = new HexValueVisitor();
 	
 	protected abstract T getInstruction();
 	
@@ -55,67 +55,67 @@ public abstract class ParameterizedVisitor<T, C extends InstructionContext, P ex
 	}
 	
 	protected <PT> Optional<Parameter> getRegisterSSParameter(P paramCtx, Class<PT> type) {
-		return getParameter(paramCtx, type, "registerSS", RegisterSSContext.class, ctx -> getRegisterSSVisitor().visitRegisterSS(ctx));
+		return getParameter(paramCtx, type, "registerSS", RegisterSSContext.class, registerSSVisitor::visitRegisterSS);
 	}
 	
 	protected Optional<Parameter> getRegisterSSParameter(RegisterSSContext ctx) {
-		return Optional.ofNullable(ctx).map(c -> getRegisterSSVisitor().visitRegisterSS(c));
+		return Optional.ofNullable(ctx).map(registerSSVisitor::visitRegisterSS);
 	}
 	
 	protected Optional<Parameter> getRegisterPPParameter(RegisterPPContext ctx) {
-		return Optional.ofNullable(ctx).map(c -> getRegisterPPVisitor().visitRegisterPP(c));
+		return Optional.ofNullable(ctx).map(registerPPVisitor::visitRegisterPP);
 	}
 	
 	protected Optional<Parameter> getRegisterRRParameter(RegisterRRContext ctx) {
-		return Optional.ofNullable(ctx).map(c -> getRegisterRRVisitor().visitRegisterRR(c));
+		return Optional.ofNullable(ctx).map(registerRRVisitor::visitRegisterRR);
 	}
 	
 	protected Optional<Parameter> getRegisterQQParameter(RegisterQQContext ctx) {
-		return Optional.ofNullable(ctx).map(c -> getRegisterQQVisitor().visitRegisterQQ(c));
+		return Optional.ofNullable(ctx).map(registerQQVisitor::visitRegisterQQ);
 	}
 	
 	protected <PT> Optional<Parameter> getRegistersWithReference(P paramCtx, Class<PT> type) {
-		return getParameter(paramCtx, type, "registersWithReference", RegistersWithReferenceContext.class, ctx -> getRegistersWithReferenceVisitor().visitRegistersWithReference(ctx));
+		return getParameter(paramCtx, type, "registersWithReference", RegistersWithReferenceContext.class, registersWithReferenceVisitor::visitRegistersWithReference);
 	}
 	
 	protected Optional<Parameter> getRegistersWithReference(RegistersWithReferenceContext ctx) {
-		return Optional.ofNullable(ctx).map(c -> getRegistersWithReferenceVisitor().visitRegistersWithReference(c));
+		return Optional.ofNullable(ctx).map(registersWithReferenceVisitor::visitRegistersWithReference);
 	}
 	
 	protected <PT> Optional<Parameter> getRegisters(P paramCtx, Class<PT> type) {
-		return getParameter(paramCtx, type, "registers", RegistersContext.class, ctx -> getRegistersVisitor().visitRegisters(ctx));
+		return getParameter(paramCtx, type, "registers", RegistersContext.class, registersVisitor::visitRegisters);
 	}
 	
 	protected Optional<Parameter> getRegisters(RegistersContext ctx) {
-		return Optional.ofNullable(ctx).map(c -> getRegistersVisitor().visitRegisters(c));
+		return Optional.ofNullable(ctx).map(registersVisitor::visitRegisters);
 	}
 	
 	protected <PT> Optional<Parameter> getRegistersMarked(P paramCtx, Class<PT> type) {
-		return getParameter(paramCtx, type, "registersmarked", RegistersmarkedContext.class, ctx -> getRegistersMarkedVisitor().visitRegistersmarked(ctx));
+		return getParameter(paramCtx, type, "registersmarked", RegistersmarkedContext.class, registersMarkedVisitor::visitRegistersmarked);
 	}
 	
 	protected Optional<Parameter> getParameterT(ParameterTContext ctx) {
-		return Optional.ofNullable(ctx).map(c -> getParameterTVisitor().visitParameterT(c));
+		return Optional.ofNullable(ctx).map(parameterTVisitor::visitParameterT);
 	}
 	
 	protected <PT> Optional<Parameter> getIndexedReference(P paramCtx, Class<PT> type) {
-		return getParameter(paramCtx, type, "indexedReference", IndexedReferenceContext.class, ctx -> getIndexedReferenceVisitor().visitIndexedReference(ctx));
+		return getParameter(paramCtx, type, "indexedReference", IndexedReferenceContext.class, indexedReferenceVisitor::visitIndexedReference);
 	}
 	
 	protected Optional<Parameter> getIndexedReference(IndexedReferenceContext ctx) {
-		return Optional.ofNullable(ctx).map(c -> getIndexedReferenceVisitor().visitIndexedReference(c));
+		return Optional.ofNullable(ctx).map(indexedReferenceVisitor::visitIndexedReference);
 	}
 	
 	protected Optional<ExpressionParameter> getExpression(Hex16bitsContext ctx) {
-		return Optional.ofNullable(ctx).map(c -> getHexValueVisitor().visitHex16bits(c));
+		return Optional.ofNullable(ctx).map(hexValueVisitor::visitHex16bits);
 	}
 	
 	protected Optional<ExpressionParameter> getExpression(Hex8bitsContext ctx) {
-		return Optional.ofNullable(ctx).map(c -> getHexValueVisitor().visitHex8bits(c));
+		return Optional.ofNullable(ctx).map(hexValueVisitor::visitHex8bits);
 	}
 	
 	protected Optional<ExpressionParameter> getExpression(Hex3bitsContext ctx) {
-		return Optional.ofNullable(ctx).map(c -> getHexValueVisitor().visitHex3bits(c));
+		return Optional.ofNullable(ctx).map(hexValueVisitor::visitHex3bits);
 	}
 	
 	protected Optional<Parameter> getRegister(Token token, Register register) {
@@ -129,75 +129,5 @@ public abstract class ParameterizedVisitor<T, C extends InstructionContext, P ex
 	protected Optional<Parameter> getRegisterIndirectAddressing(Token token, RegisterPair register) {
 		return Optional.ofNullable(token).map(t -> new RegisterIndirectAddressing(register));
 	}
-	
-	protected RegistersVisitor getRegistersVisitor() {
-		if (registersVisitor == null) {
-			registersVisitor = new RegistersVisitor();
-		}
-		return registersVisitor;
-	}
 
-	protected RegistersMarkedVisitor getRegistersMarkedVisitor() {
-		if (registersMarkedVisitor == null) {
-			registersMarkedVisitor = new RegistersMarkedVisitor();
-		}
-		return registersMarkedVisitor;
-	}
-
-	protected RegisterSSVisitor getRegisterSSVisitor() {
-		if (registerSSVisitor == null) {
-			registerSSVisitor = new RegisterSSVisitor();
-		}
-		return registerSSVisitor;
-	}
-
-	protected RegisterPPVisitor getRegisterPPVisitor() {
-		if (registerPPVisitor == null) {
-			registerPPVisitor = new RegisterPPVisitor();
-		}
-		return registerPPVisitor;
-	}
-
-	protected RegisterRRVisitor getRegisterRRVisitor() {
-		if (registerRRVisitor == null) {
-			registerRRVisitor = new RegisterRRVisitor();
-		}
-		return registerRRVisitor;
-	}
-
-	protected RegisterQQVisitor getRegisterQQVisitor() {
-		if (registerQQVisitor == null) {
-			registerQQVisitor = new RegisterQQVisitor();
-		}
-		return registerQQVisitor;
-	}
-
-	protected RegistersWithReferenceVisitor getRegistersWithReferenceVisitor() {
-		if (registersWithReferenceVisitor == null) {
-			registersWithReferenceVisitor = new RegistersWithReferenceVisitor();
-		}
-		return registersWithReferenceVisitor;
-	}
-
-	protected ParameterTVisitor getParameterTVisitor() {
-		if (parameterTVisitor == null) {
-			parameterTVisitor = new ParameterTVisitor();
-		}
-		return parameterTVisitor;
-	}
-
-	protected IndexedReferenceVisitor getIndexedReferenceVisitor() {
-		if (indexedReferenceVisitor == null) {
-			indexedReferenceVisitor = new IndexedReferenceVisitor();
-		}
-		return indexedReferenceVisitor;
-	}
-	
-	public HexValueVisitor getHexValueVisitor() {
-		if (hexValueVisitor == null) {
-			hexValueVisitor = new HexValueVisitor();
-		}
-		return hexValueVisitor;
-	}
-	
 }

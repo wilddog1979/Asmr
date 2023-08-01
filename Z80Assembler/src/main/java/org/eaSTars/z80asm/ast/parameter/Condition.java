@@ -1,5 +1,9 @@
 package org.eaSTars.z80asm.ast.parameter;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public enum Condition {
 
 	NZ("NZ", (byte)0),
@@ -10,21 +14,11 @@ public enum Condition {
 	PE("PE", (byte)5),
 	P("P", (byte)6),
 	M("M", (byte)7);
-	
+
+	@Getter
 	private final String value;
-	
+
+	@Getter
 	private final byte opcode;
-	
-	private Condition(String value, byte opcode) {
-		this.value = value;
-		this.opcode = opcode;
-	}
 
-	public String getValue() {
-		return value;
-	}
-
-	public byte getOpcode() {
-		return opcode;
-	}
 }

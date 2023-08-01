@@ -1,25 +1,16 @@
 package org.eaSTars.asm.ast;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public abstract class AssemblerLine {
 
+	@Getter
+	@Setter
 	protected String label;
 
+	@Getter
+	@Setter
 	protected String comment;
 
-	public String getLabel() {
-		return label;
-	}
-
-	public void setLabel(String label) {
-		this.label = label;
-	}
-
-	public String getComment() {
-		return comment;
-	}
-
-	public void setComment(String comment) {
-		this.comment = comment;
-	}
-	
 }

@@ -1,19 +1,15 @@
 package org.eaSTars.asm.ast;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.eaSTars.asm.assember.CompilationContext;
 
 public abstract class Directive {
 
-	private String label;
+	@Getter
+	@Setter
+	protected String label;
 
-	public String getLabel() {
-		return label;
-	}
-
-	public void setLabel(String label) {
-		this.label = label;
-	}
-	
 	public abstract int evaluate(CompilationContext compilationContext);
 	
 }

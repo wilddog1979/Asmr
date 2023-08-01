@@ -1,17 +1,14 @@
 package org.eaSTars.asm.ast;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class DirectiveLine extends AssemblerLine {
 
+	@Getter
+	@Setter
 	private Directive directive;
 
-	public Directive getDirective() {
-		return directive;
-	}
-
-	public void setDirective(Directive directive) {
-		this.directive = directive;
-	}
-	
 	@Override
 	public String getLabel() {
 		return directive.getLabel();
