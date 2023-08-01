@@ -33,4 +33,5 @@ public abstract class AbstractTester {
 		Z80AssemblerParser parser = getZ80AssemblerParser(content);
 		return new ExpressionVisitor().visitExpression(parser.expression());
 	}
+
 }

@@ -15,9 +15,9 @@ public class ORGTest extends DirectiveTest {
 		assertNotNull(result, "ORG directive must be recognized");
 		assertTrue(result instanceof ORG, "Result must be an instance of ORG");
 		
-		ORG orgresult = (ORG) result;
+		ORG orgResult = (ORG) result;
 		
-		assertEquals(0x7a00, orgresult.getValue().intValue(), "ORG value must be correct");
+		assertEquals(0x7a00, orgResult.getValue().intValue(), "ORG value must be correct");
 	}
 	
 }

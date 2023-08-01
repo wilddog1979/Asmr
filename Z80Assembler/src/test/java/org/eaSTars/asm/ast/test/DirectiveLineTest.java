@@ -22,7 +22,7 @@ public class DirectiveLineTest extends AssemblerLineTester {
 	private static class DirectiveArgumentProvider implements ArgumentsProvider {
 
 		@Override
-		public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
+		public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
 			return Stream.of(new Object[][] {
 				{"org 7a00h\n", ORG.class, null, "org 7a00h"},
 				{"org 7a00h #comment\n", ORG.class, "#comment", "org 7a00h"},
@@ -39,7 +39,9 @@ public class DirectiveLineTest extends AssemblerLineTester {
 		
 		assertTrue(result instanceof DirectiveLine, "result must be an instance of DirectiveLine");
 		DirectiveLine directiveLineResult = (DirectiveLine) result;
-		
+		assertNotNull(directiveLineResult.getDirective());
+		assertEquals(directiveLineResult.getDirective().getClass(), instruction);
+
 		if (comment != null) {
 			assertEquals(comment, directiveLineResult.getComment(), "Comment must match");
 		} else {

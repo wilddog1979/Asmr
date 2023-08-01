@@ -24,7 +24,7 @@ public class TwoParameterConverterTest {
 	private static class ConverterArgumentProvider implements ArgumentsProvider {
 
 		@Override
-		public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
+		public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
 			return Stream.of(new Object[][] {
 				{new EX(new RegisterPairParameter(RegisterPair.AF), new RegisterPairParameter(RegisterPair.AFMarked)), new byte[] {0x08}},
 				{new EX(new RegisterIndirectAddressing(RegisterPair.SP), new RegisterPairParameter(RegisterPair.HL)), new byte[] {(byte) 0xe3}},
@@ -306,89 +306,69 @@ public class TwoParameterConverterTest {
 	
 	@ParameterizedTest
 	@ArgumentsSource(ConverterArgumentProvider.class)
-	public void testTwoParameterConverterToInstruction(TwoParameterInstruction instruction, byte[] assembly) {
-		try {
-			TwoParameterInstruction result = new TwoParameterInstructionConverter().convert(new PushbackInputStream(new ByteArrayInputStream(assembly)));
+	public void testTwoParameterConverterToInstruction(TwoParameterInstruction instruction, byte[] assembly) throws IOException {
+		TwoParameterInstruction result = new TwoParameterInstructionConverter().convert(new PushbackInputStream(new ByteArrayInputStream(assembly)));
 			
-			assertNotNull(result, "Converted result expected");
-			assertEquals(instruction.getClass(), result.getClass(), "Class type must match");
-			assertEquals(instruction.getTarget(), result.getTarget(), "Target parameter must match");
-			assertEquals(instruction.getSource(), result.getSource(), "Source parameter must match");
-		} catch (IOException e) {
-			fail("Unexpected exception", e);
-		}
+		assertNotNull(result, "Converted result expected");
+		assertEquals(instruction.getClass(), result.getClass(), "Class type must match");
+		assertEquals(instruction.getTarget(), result.getTarget(), "Target parameter must match");
+		assertEquals(instruction.getSource(), result.getSource(), "Source parameter must match");
 	}
 	
 	@Test
-	public void testTwoParameterConverterToInstructionLDException1() {
+	public void testTwoParameterConverterToInstructionLDException1() throws IOException {
 		testTwoParameterConverterToInstruction(new LD(new ImmediateAddressingParameter(new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x5a00)), 16)), new RegisterPairParameter(RegisterPair.HL)), new byte[] {(byte) 0xed, 0x63, 0x00, 0x5a});	
 	}
 	
 	@Test
-	public void testTwoParameterConverterToInstructionLDException2() {
+	public void testTwoParameterConverterToInstructionLDException2() throws IOException {
 		testTwoParameterConverterToInstruction(new LD(new RegisterPairParameter(RegisterPair.HL), new ImmediateAddressingParameter(new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(0x5a00)), 16))), new byte[] {(byte) 0xed, 0x6b, 0x00, 0x5a});	
 	}
 	
 	@Test
-	public void testUnknownInstructionOneByte() {
-		try {
-			PushbackInputStream pis = new PushbackInputStream(new ByteArrayInputStream(new byte[] {0x04}));
-			TwoParameterInstruction result = new TwoParameterInstructionConverter().convert(pis);
+	public void testUnknownInstructionOneByte() throws IOException {
+		PushbackInputStream pis = new PushbackInputStream(new ByteArrayInputStream(new byte[] {0x04}));
+		TwoParameterInstruction result = new TwoParameterInstructionConverter().convert(pis);
 			
-			assertNull(result, "Converted result not expected");
-			assertEquals(0x04, pis.read(), "Rolled back value expected");
-			assertEquals(-1, pis.read(), "End of stream expected");
-		} catch (IOException e) {
-			fail("Unexpected exception", e);
-		}
+		assertNull(result, "Converted result not expected");
+		assertEquals(0x04, pis.read(), "Rolled back value expected");
+		assertEquals(-1, pis.read(), "End of stream expected");
 	}
 	
 	@Test
-	public void testUnknownInstructionTwoByte() {
-		try {
-			PushbackInputStream pis = new PushbackInputStream(new ByteArrayInputStream(new byte[] {0x04, 0x03}));
-			TwoParameterInstruction result = new TwoParameterInstructionConverter().convert(pis);
+	public void testUnknownInstructionTwoByte() throws IOException {
+		PushbackInputStream pis = new PushbackInputStream(new ByteArrayInputStream(new byte[] {0x04, 0x03}));
+		TwoParameterInstruction result = new TwoParameterInstructionConverter().convert(pis);
 			
-			assertNull(result, "Converted result not expected");
-			assertEquals(0x04, pis.read(), "First rolled back value expected");
-			assertEquals(0x03, pis.read(), "Second rolled back value expected");
-			assertEquals(-1, pis.read(), "End of stream expected");
-		} catch (IOException e) {
-			fail("Unexpected exception", e);
-		}
+		assertNull(result, "Converted result not expected");
+		assertEquals(0x04, pis.read(), "First rolled back value expected");
+		assertEquals(0x03, pis.read(), "Second rolled back value expected");
+		assertEquals(-1, pis.read(), "End of stream expected");
 	}
 	
 	@Test
-	public void testUnknownInstructionThreeByte() {
-		try {
-			PushbackInputStream pis = new PushbackInputStream(new ByteArrayInputStream(new byte[] {0x04, 0x03, 0x02}));
-			TwoParameterInstruction result = new TwoParameterInstructionConverter().convert(pis);
+	public void testUnknownInstructionThreeByte() throws IOException {
+		PushbackInputStream pis = new PushbackInputStream(new ByteArrayInputStream(new byte[] {0x04, 0x03, 0x02}));
+		TwoParameterInstruction result = new TwoParameterInstructionConverter().convert(pis);
 			
-			assertNull(result, "Converted result not expected");
-			assertEquals(0x04, pis.read(), "First rolled back value expected");
-			assertEquals(0x03, pis.read(), "Second rolled back value expected");
-			assertEquals(0x02, pis.read(), "Third rolled back value expected");
-			assertEquals(-1, pis.read(), "End of stream expected");
-		} catch (IOException e) {
-			fail("Unexpected exception", e);
-		}
+		assertNull(result, "Converted result not expected");
+		assertEquals(0x04, pis.read(), "First rolled back value expected");
+		assertEquals(0x03, pis.read(), "Second rolled back value expected");
+		assertEquals(0x02, pis.read(), "Third rolled back value expected");
+		assertEquals(-1, pis.read(), "End of stream expected");
 	}
 	
 	@Test
-	public void testUnknownInstructionFourByte() {
-		try {
-			PushbackInputStream pis = new PushbackInputStream(new ByteArrayInputStream(new byte[] {0x04, 0x03, 0x02, 0x01}));
-			TwoParameterInstruction result = new TwoParameterInstructionConverter().convert(pis);
+	public void testUnknownInstructionFourByte() throws IOException {
+		PushbackInputStream pis = new PushbackInputStream(new ByteArrayInputStream(new byte[] {0x04, 0x03, 0x02, 0x01}));
+		TwoParameterInstruction result = new TwoParameterInstructionConverter().convert(pis);
 			
-			assertNull(result, "Converted result not expected");
-			assertEquals(0x04, pis.read(), "First rolled back value expected");
-			assertEquals(0x03, pis.read(), "Second rolled back value expected");
-			assertEquals(0x02, pis.read(), "Third rolled back value expected");
-			assertEquals(0x01, pis.read(), "Fourth rolled back value expected");
-			assertEquals(-1, pis.read(), "End of stream expected");
-		} catch (IOException e) {
-			fail("Unexpected exception", e);
-		}
+		assertNull(result, "Converted result not expected");
+		assertEquals(0x04, pis.read(), "First rolled back value expected");
+		assertEquals(0x03, pis.read(), "Second rolled back value expected");
+		assertEquals(0x02, pis.read(), "Third rolled back value expected");
+		assertEquals(0x01, pis.read(), "Fourth rolled back value expected");
+		assertEquals(-1, pis.read(), "End of stream expected");
 	}
 	
 }

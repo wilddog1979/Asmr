@@ -17,7 +17,7 @@ public class NoParamTest extends InstructionTester {
 	private static class InstructionArgumentProvider implements ArgumentsProvider {
 
 		@Override
-		public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
+		public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
 			return Stream.of(new Object[][] {
 					{"NOP", NOP.class},
 					{"RLCA", RLCA.class},

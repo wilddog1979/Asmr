@@ -19,7 +19,7 @@ public class TwoParamTest extends InstructionTester {
 	private static class InstructionArgumentProvider implements ArgumentsProvider {
 
 		@Override
-		public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
+		public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
 			return Stream.of(new Object[][] {
 				{"EX AF, AF'", EX.class, RegisterPairParameter.class, "AF", RegisterPairParameter.class, "AF'"},
 				{"EX [SP], HL", EX.class, RegisterIndirectAddressing.class, "[SP]", RegisterPairParameter.class, "HL"},

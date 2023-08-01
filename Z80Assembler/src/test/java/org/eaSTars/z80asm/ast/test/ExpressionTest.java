@@ -28,7 +28,7 @@ public class ExpressionTest extends AbstractTester {
 	private static class OneParameterExpressionArgumentProvider implements ArgumentsProvider {
 
 		@Override
-		public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
+		public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
 			return Stream.of(new Object[][] {
 				{"-0005h", OneParameterExpression.Operation.MINUS, 0x05, -0x05, "-(0005h)"},
 				{"!0005h", OneParameterExpression.Operation.NOT, 0x05, ~0x05, "!(0005h)"}
@@ -40,7 +40,7 @@ public class ExpressionTest extends AbstractTester {
 	private static class TwoParameterExpressionArgumentProvider implements ArgumentsProvider {
 
 		@Override
-		public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
+		public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
 			return Stream.of(new Object[][] {
 				{"0001h | 0002h", TwoOperandExpression.Operation.OR, 0x01, 0x02, 0x03, "(0001h) | (0002h)"},
 				{"0003h ^ 0001h", TwoOperandExpression.Operation.XOR, 0x03, 0x01, 0x02, "(0003h) ^ (0001h)"},
@@ -206,13 +206,10 @@ public class ExpressionTest extends AbstractTester {
 	public void testNoMismatchingParameterSize() {
 		Expression expression = getExpression("0021h");
 		ExpressionParameter parameter = new ExpressionParameter(expression, 8);
-		
-		try {
-			int result = parameter.getExpressionValue(null);
-			assertEquals(0x21, result, "expression value must match");
-		} catch (MismatchingParameterSizeException e) {
-			fail("Unexpected MismatchingParameterSizeException");
-		}
+
+		int result = parameter.getExpressionValue(null);
+
+		assertEquals(0x21, result, "expression value must match");
 	}
 	
 	@Test

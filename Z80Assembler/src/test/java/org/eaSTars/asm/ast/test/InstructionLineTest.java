@@ -21,7 +21,7 @@ public class InstructionLineTest extends AssemblerLineTester {
 	private static class InstructionLineArgumentProvider implements ArgumentsProvider {
 
 		@Override
-		public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
+		public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
 			return Stream.of(new Object[][] {
 				{"################\n", null, null, "################", "################"},
 				{"# Test program #\n", null, null, "# Test program #", "# Test program #"},
