@@ -1,6 +1,8 @@
 plugins {
   id 'java'
+  id 'jvm-test-suite'
   id 'idea'
+  id 'checkstyle'
 }
 
 repositories {
@@ -12,4 +14,10 @@ dependencies {
 
   compileOnly 'org.projectlombok:lombok:1.18.28'
   annotationProcessor 'org.projectlombok:lombok:1.18.28'
+}
+
+checkstyle {
+  maxErrors=0
+  maxWarnings=0
+  sourceSets=[sourceSets.main]
 }

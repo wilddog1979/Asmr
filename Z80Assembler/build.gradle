@@ -1,6 +1,8 @@
 plugins {
   id 'java'
+  id 'jvm-test-suite'
   id 'idea'
+  id 'checkstyle'
   id 'antlr'
 }
 
@@ -35,4 +37,10 @@ test {
     html.enabled = true
   }
   systemProperties System.properties
+}
+
+checkstyle {
+  maxErrors=0
+  maxWarnings=0
+  sourceSets=[sourceSets.main, sourceSets.test]
 }
