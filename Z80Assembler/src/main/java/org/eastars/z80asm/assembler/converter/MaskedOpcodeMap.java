@@ -3,6 +3,7 @@ package org.eastars.z80asm.assembler.converter;
 import org.eastars.asm.ast.Instruction;
 
 import java.io.Serial;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 public class MaskedOpcodeMap<T1 extends Instruction> extends HashMap<OpcodeMask<T1>, Class<? extends T1>> {
@@ -12,13 +13,13 @@ public class MaskedOpcodeMap<T1 extends Instruction> extends HashMap<OpcodeMask<
 
   private T1 initialize(Class<? extends T1> clazz, ParameterExtractor<T1> extractor, byte[] values) {
     try {
-      T1 result =  clazz.newInstance();
+      T1 result = clazz.getDeclaredConstructor().newInstance();
 
       if (extractor != null) {
         result = extractor.extract(result, values);
       }
       return result;
-    } catch (InstantiationException | IllegalAccessException e) {
+    } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
       return null;
     }
   }

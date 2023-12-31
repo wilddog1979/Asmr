@@ -109,16 +109,6 @@ public abstract class AbstractZ80InstructionConverter<T extends Instruction> ext
     return tableLookup(TABLE_SS, parameter);
   }
 
-  protected static Parameter reverseRegisterSS(int index) {
-    Parameter result = null;
-
-    if (index >= 0 && index < 4) {
-      result = new RegisterPairParameter(TABLE_SS.get(index));
-    }
-
-    return result;
-  }
-
   protected static int getRegisterPPIndex(Parameter parameter) {
     return tableLookup(TABLE_PP, parameter);
   }
@@ -163,34 +153,31 @@ public abstract class AbstractZ80InstructionConverter<T extends Instruction> ext
     return result;
   }
 
-  protected static Parameter reverseRegisterPP(int index) {
+
+  private static Parameter genericReverseRegister(List<RegisterPair> registerPairs, int index) {
     Parameter result = null;
 
     if (index >= 0 && index < 4) {
-      result = new RegisterPairParameter(TABLE_PP.get(index));
+      result = new RegisterPairParameter(registerPairs.get(index));
     }
 
     return result;
+  }
+
+  protected static Parameter reverseRegisterSS(int index) {
+    return genericReverseRegister(TABLE_SS, index);
+  }
+
+  protected static Parameter reverseRegisterPP(int index) {
+    return genericReverseRegister(TABLE_PP, index);
   }
 
   protected static Parameter reverseRegisterQQ(int index) {
-    Parameter result = null;
-
-    if (index >= 0 && index < 4) {
-      result = new RegisterPairParameter(TABLE_QQ.get(index));
-    }
-
-    return result;
+    return genericReverseRegister(TABLE_QQ, index);
   }
 
   protected static Parameter reverseRegisterRR(int index) {
-    Parameter result = null;
-
-    if (index >= 0 && index < 4) {
-      result = new RegisterPairParameter(TABLE_RR.get(index));
-    }
-
-    return result;
+    return genericReverseRegister(TABLE_RR, index);
   }
 
   protected static Parameter reverseRegisterRH(int index) {
@@ -226,25 +213,14 @@ public abstract class AbstractZ80InstructionConverter<T extends Instruction> ext
   }
 
   protected static Parameter reverseRegisterPPRR(boolean ix, int index) {
-    Parameter result = null;
-
-    if (ix) {
-      result = reverseRegisterPP(index);
-    } else {
-      result = reverseRegisterRR(index);
-    }
-
-    return result;
+    return ix ? reverseRegisterPP(index) : reverseRegisterRR(index);
   }
 
   protected static Parameter reverseIndexedAddressing(boolean ix, int displacement) {
-    return new IndexedAddressingParameter(
-        ix ? RegisterPair.IX : RegisterPair.IY,
-        new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(displacement & 0xff)),
-            8));
+    return new IndexedAddressingParameter(ix ? RegisterPair.IX : RegisterPair.IY, reverseImmediate8(displacement));
   }
 
-  protected static Parameter reverseImmediate8(int value) {
+  protected static ExpressionParameter reverseImmediate8(int value) {
     return new ExpressionParameter(
         new ConstantValueExpression(new ConstantValueParameter(value & 0xff)),
         8);

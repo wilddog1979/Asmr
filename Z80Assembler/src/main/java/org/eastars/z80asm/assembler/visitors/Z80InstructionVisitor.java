@@ -112,7 +112,7 @@ public class Z80InstructionVisitor extends Z80AssemblerBaseVisitor<Z80Instructio
       Class<? extends Z80Instruction> inst = instructionMap.get(tree.getChild(0).getText());
       if (inst != null) {
         try {
-          instruction = inst.getConstructor().newInstance();
+          instruction = inst.getDeclaredConstructor().newInstance();
         } catch (InstantiationException
                  | IllegalAccessException
                  | NoSuchMethodException
