@@ -40,3 +40,4 @@ localfiles
 *.drawio.bkp
 *.drawio.dtmp
 gradle.properties
+TestApp

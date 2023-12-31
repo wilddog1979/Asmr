@@ -1,6 +1,8 @@
 plugins {
   id 'java'
+  id 'jvm-test-suite'
   id 'idea'
+  id 'checkstyle'
   id 'antlr'
 }
 
@@ -24,15 +26,10 @@ generateGrammarSource {
   arguments += ["-visitor", "-long-messages"]
 }
 
-test {
-  testLogging.showStandardStreams = false
-  useJUnitPlatform()
-
-  testLogging {
-    events "passed", "skipped", "failed"
-  }
-  reports {
-    html.enabled = true
-  }
-  systemProperties System.properties
+checkstyle {
+  maxErrors=0
+  maxWarnings=0
 }
+
+checkstyleMain.source = "src/main/java"
+checkstyleMain.exclude '**/generated-src/**'
