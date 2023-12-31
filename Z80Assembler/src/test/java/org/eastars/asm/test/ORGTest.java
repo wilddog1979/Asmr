@@ -1,7 +1,7 @@
 package org.eastars.asm.test;
 
 import org.eastars.asm.ast.Directive;
-import org.eastars.asm.ast.directives.Org;
+import org.eastars.asm.ast.directives.OORG;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,9 +13,9 @@ public class OrgTest extends DirectiveTest {
     Directive result = invokeDirectiveParser("org 7a00h\n");
 
     assertNotNull(result, "ORG directive must be recognized");
-    assertTrue(result instanceof Org, "Result must be an instance of ORG");
+    assertTrue(result instanceof ORG, "Result must be an instance of ORG");
 
-    Org orgResult = (Org) result;
+    ORG orgResult = (ORG) result;
 
     assertEquals(0x7a00, orgResult.getValue().intValue(), "ORG value must be correct");
   }
