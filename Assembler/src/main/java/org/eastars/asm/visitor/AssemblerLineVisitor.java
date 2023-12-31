@@ -9,8 +9,6 @@ import org.eastars.asm.ast.AssemblerLine;
 import org.eastars.asm.ast.Instruction;
 import org.eastars.asm.ast.InstructionLine;
 
-import java.util.Optional;
-
 @Getter
 @AllArgsConstructor
 public class AssemblerLineVisitor {
@@ -23,9 +21,15 @@ public class AssemblerLineVisitor {
     }
     InstructionLine line = new InstructionLine();
 
-    Optional.ofNullable(label).ifPresent(l -> line.setLabel(l.getText()));
-    Optional.ofNullable(instruction).ifPresent(i -> line.setInstruction(getInstructionVisitor().visit(instruction)));
-    Optional.ofNullable(comment).ifPresent(c -> line.setComment(c.getText()));
+    if (label != null) {
+      line.setLabel(label.getText());
+    }
+    if (instruction != null) {
+      line.setInstruction(getInstructionVisitor().visit(instruction));
+    }
+    if (comment != null) {
+      line.setComment(comment.getText());
+    }
 
     return line;
   }
