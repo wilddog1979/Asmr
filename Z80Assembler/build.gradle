@@ -26,6 +26,16 @@ generateGrammarSource {
   arguments += ["-visitor", "-long-messages"]
 }
 
+testing {
+  suites {
+    configureEach {
+      useJUnitJupiter()
+    }
+    test {
+    }
+  }
+}
+
 checkstyle {
   maxErrors=0
   maxWarnings=0
