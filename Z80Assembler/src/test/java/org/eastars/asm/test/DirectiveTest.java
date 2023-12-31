@@ -6,7 +6,6 @@ import org.eastars.asm.ast.DirectiveLine;
 import org.eastars.asm.ast.test.AssemblerLineTester;
 
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class DirectiveTest extends AssemblerLineTester {
   
