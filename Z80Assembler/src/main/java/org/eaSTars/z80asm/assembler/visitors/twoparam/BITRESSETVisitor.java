@@ -6,19 +6,20 @@ import org.eastars.z80asm.ast.parameter.Parameter;
 import org.eastars.z80asm.parser.Z80AssemblerParser.InstructionBITRESSETparametersContext;
 import org.eastars.z80asm.parser.Z80AssemblerParser.InstructionContext;
 
-public abstract class BITRESSETVisitor<T extends TwoParameterInstruction, C extends InstructionContext> extends TwoParameterInstructionVisitor<T, C, InstructionBITRESSETparametersContext> {
+public abstract class BITRESSETVisitor<T extends TwoParameterInstruction, C extends InstructionContext>
+    extends TwoParameterInstructionVisitor<T, C, InstructionBITRESSETparametersContext> {
 
   @Override
   protected Parameter getSourceParameter(InstructionBITRESSETparametersContext paramCtx) {
     return getRegistersWithReference(paramCtx.registersWithReference())
         .orElseGet(() -> getIndexedReference(paramCtx.indexedReference())
-            .orElseGet(() -> null));
+            .orElse(null));
   }
 
   @Override
   protected Parameter getTargetParameter(InstructionBITRESSETparametersContext paramCtx) {
     return getExpression(paramCtx.hex3bits())
-        .orElseGet(() -> null);
+        .orElse(null);
   }
 
 }

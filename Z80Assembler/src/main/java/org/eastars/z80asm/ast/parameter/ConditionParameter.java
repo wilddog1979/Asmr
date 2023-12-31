@@ -3,10 +3,10 @@ package org.eastars.z80asm.ast.parameter;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+@Getter
 @RequiredArgsConstructor
 public class ConditionParameter extends Parameter {
 
-  @Getter
   private final Condition condition;
 
   @Override
@@ -16,9 +16,9 @@ public class ConditionParameter extends Parameter {
 
   @Override
   public boolean equals(Object obj) {
-    return obj instanceof ConditionParameter &&
-        ((condition == null && ((ConditionParameter)obj).getCondition() == null) ||
-            (condition != null && condition == ((ConditionParameter)obj).getCondition()));
+    return obj instanceof ConditionParameter
+        && ((condition == null && ((ConditionParameter) obj).getCondition() == null)
+        || (condition != null && condition == ((ConditionParameter) obj).getCondition()));
   }
 
 }

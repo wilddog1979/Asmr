@@ -105,11 +105,11 @@ public abstract class AbstractZ80InstructionConverter<T extends Instruction> ext
     return result;
   }
 
-  protected static int getRegisterSsIndex(Parameter parameter) {
+  protected static int getRegisterSSIndex(Parameter parameter) {
     return tableLookup(TABLE_SS, parameter);
   }
 
-  protected static Parameter reverseRegisterSs(int index) {
+  protected static Parameter reverseRegisterSS(int index) {
     Parameter result = null;
 
     if (index >= 0 && index < 4) {
@@ -119,15 +119,15 @@ public abstract class AbstractZ80InstructionConverter<T extends Instruction> ext
     return result;
   }
 
-  protected static int getRegisterPpIndex(Parameter parameter) {
+  protected static int getRegisterPPIndex(Parameter parameter) {
     return tableLookup(TABLE_PP, parameter);
   }
 
-  protected static int getRegisterQqIndex(Parameter parameter) {
+  protected static int getRegisterQQIndex(Parameter parameter) {
     return tableLookup(TABLE_QQ, parameter);
   }
 
-  protected static int getRegisterRrIndex(Parameter parameter) {
+  protected static int getRegisterRRIndex(Parameter parameter) {
     return tableLookup(TABLE_RR, parameter);
   }
 
@@ -151,19 +151,19 @@ public abstract class AbstractZ80InstructionConverter<T extends Instruction> ext
     return result;
   }
 
-  protected static int getRegisterRhIndex(Parameter parameter) {
+  protected static int getRegisterRHIndex(Parameter parameter) {
     int result = getRegisterRIndex(parameter);
 
-    if (result == -1 &&
-        parameter instanceof RegisterIndirectAddressing &&
-        ((RegisterIndirectAddressing) parameter).getRegisterPair() == RegisterPair.HL) {
+    if (result == -1
+        && parameter instanceof RegisterIndirectAddressing
+        && ((RegisterIndirectAddressing) parameter).getRegisterPair() == RegisterPair.HL) {
       result = 6;
     }
 
     return result;
   }
 
-  protected static Parameter reverseRegisterPp(int index) {
+  protected static Parameter reverseRegisterPP(int index) {
     Parameter result = null;
 
     if (index >= 0 && index < 4) {
@@ -173,7 +173,7 @@ public abstract class AbstractZ80InstructionConverter<T extends Instruction> ext
     return result;
   }
 
-  protected static Parameter reverseRegisterQq(int index) {
+  protected static Parameter reverseRegisterQQ(int index) {
     Parameter result = null;
 
     if (index >= 0 && index < 4) {
@@ -183,7 +183,7 @@ public abstract class AbstractZ80InstructionConverter<T extends Instruction> ext
     return result;
   }
 
-  protected static Parameter reverseRegisterRr(int index) {
+  protected static Parameter reverseRegisterRR(int index) {
     Parameter result = null;
 
     if (index >= 0 && index < 4) {
@@ -193,7 +193,7 @@ public abstract class AbstractZ80InstructionConverter<T extends Instruction> ext
     return result;
   }
 
-  protected static Parameter reverseRegisterRh(int index) {
+  protected static Parameter reverseRegisterRH(int index) {
     Parameter result = null;
 
     if (index == 6) {
@@ -225,13 +225,13 @@ public abstract class AbstractZ80InstructionConverter<T extends Instruction> ext
     return result;
   }
 
-  protected static Parameter reverseRegisterPpRr(boolean ix, int index) {
+  protected static Parameter reverseRegisterPPRR(boolean ix, int index) {
     Parameter result = null;
 
     if (ix) {
-      result = reverseRegisterPp(index);
+      result = reverseRegisterPP(index);
     } else {
-      result = reverseRegisterRr(index);
+      result = reverseRegisterRR(index);
     }
 
     return result;
@@ -269,11 +269,11 @@ public abstract class AbstractZ80InstructionConverter<T extends Instruction> ext
     return result;
   }
 
-  protected static Parameter reverseRstValue(int value) {
+  protected static Parameter reverseRSTValue(int value) {
     return new ConstantValueParameter(String.format("%02x", value));
   }
 
-  protected static Parameter reverseIxIy(boolean ix) {
+  protected static Parameter reverseIXIY(boolean ix) {
     return new RegisterPairParameter(ix ? RegisterPair.IX : RegisterPair.IY);
   }
 

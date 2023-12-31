@@ -1,12 +1,11 @@
 package org.eastars.z80asm.ast.instructions.twoparam;
 
+import lombok.NoArgsConstructor;
 import org.eastars.z80asm.ast.instructions.TwoParameterInstruction;
 import org.eastars.z80asm.ast.parameter.Parameter;
 
+@NoArgsConstructor
 public class JR extends TwoParameterInstruction {
-
-  public JR() {
-  }
 
   public JR(Parameter target, Parameter source) {
     setTarget(target);

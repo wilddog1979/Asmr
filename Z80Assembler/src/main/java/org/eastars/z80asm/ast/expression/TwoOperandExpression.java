@@ -9,7 +9,15 @@ public class TwoOperandExpression implements Expression {
 
   @RequiredArgsConstructor
   public enum Operation {
-    PLUS("+"), MINUS("-"), STAR("*"), DIV("/"), SHL("<<"), SHR(">>"), AND("&"), XOR("^"), OR("|");
+    PLUS("+"),
+    MINUS("-"),
+    STAR("*"),
+    DIV("/"),
+    SHL("<<"),
+    SHR(">>"),
+    AND("&"),
+    XOR("^"),
+    OR("|");
 
     @Getter
     private final String value;
@@ -57,13 +65,13 @@ public class TwoOperandExpression implements Expression {
 
   @Override
   public boolean equals(Object obj) {
-    return obj instanceof TwoOperandExpression &&
-        ((leftOperand == null && ((TwoOperandExpression)obj).leftOperand == null) ||
-            (leftOperand != null && leftOperand.equals(((TwoOperandExpression)obj).leftOperand))) &&
-        ((operation == null && ((TwoOperandExpression)obj).operation == null) ||
-            (operation != null && operation == ((TwoOperandExpression)obj).operation)) &&
-        ((rightOperand == null && ((TwoOperandExpression)obj).rightOperand == null) ||
-            (rightOperand != null && rightOperand.equals(((TwoOperandExpression)obj).rightOperand)));
+    return obj instanceof TwoOperandExpression
+        && ((leftOperand == null && ((TwoOperandExpression) obj).leftOperand == null)
+        || (leftOperand != null && leftOperand.equals(((TwoOperandExpression) obj).leftOperand)))
+        && ((operation == null && ((TwoOperandExpression) obj).operation == null)
+        || (operation != null && operation == ((TwoOperandExpression) obj).operation))
+        && ((rightOperand == null && ((TwoOperandExpression) obj).rightOperand == null)
+        || (rightOperand != null && rightOperand.equals(((TwoOperandExpression) obj).rightOperand)));
   }
 
 }

@@ -67,7 +67,8 @@ public class NoParamTest extends InstructionTester {
     Z80Instruction result = getZ80Instruction(testInstruction);
     
     assertNotNull(result, "Instruction must be recognized");
-    assertTrue(result.getClass().isAssignableFrom(instructionclass), () -> String.format("Test instruction must be an instance of %s", instructionclass.getName()));
+    assertTrue(result.getClass().isAssignableFrom(instructionclass),
+        () -> String.format("Test instruction must be an instance of %s", instructionclass.getName()));
     assertEquals(testInstruction, result.getAssembly(), "Instruction assembly does not match");
   }
   

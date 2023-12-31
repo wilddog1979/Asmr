@@ -32,7 +32,8 @@ public class Z80CompilationUnitVisitor extends Z80AssemblerBaseVisitor<Compilati
 
     for (ParseTree entry : ctx.children) {
       if (entry instanceof Z80assemblerlineContext assemblerLine) {
-        AssemblerLine line = assemblerLineVisitor.visitAssemblerLine(assemblerLine.LABEL(), assemblerLine.instruction(), assemblerLine.COMMENT());
+        AssemblerLine line = assemblerLineVisitor.visitAssemblerLine(
+            assemblerLine.LABEL(), assemblerLine.instruction(), assemblerLine.COMMENT());
         if (line != null) {
           compilationUnit.addLine(line);
           if (assemblerLine.instruction() != null) {
@@ -44,7 +45,14 @@ public class Z80CompilationUnitVisitor extends Z80AssemblerBaseVisitor<Compilati
           if (orgfound || instructioncount > 0) {
             Z80directivesContext context = (Z80directivesContext) entry;
             Token token = ((Z80directivesContext) entry).getStart();
-            throw new RecognitionException(String.format("Unexpected .org directive in line %d at %d", token.getLine(), token.getCharPositionInLine()), null, null, context);
+            throw new RecognitionException(
+                String.format(
+                    "Unexpected .org directive in line %d at %d",
+                    token.getLine(),
+                    token.getCharPositionInLine()),
+                null,
+                null,
+                context);
           }
           orgfound = true;
         }

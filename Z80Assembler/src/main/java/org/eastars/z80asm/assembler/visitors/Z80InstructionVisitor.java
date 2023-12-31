@@ -65,7 +65,7 @@ public class Z80InstructionVisitor extends Z80AssemblerBaseVisitor<Z80Instructio
     Z80Instruction invokeVisitor(ParseTree tree);
   }
 
-  private record VisitorMapEntry(Class<? extends ParserRuleContext> context, VisitorInvocation invokation) {
+  private record VisitorMapEntry(Class<? extends ParserRuleContext> context, VisitorInvocation invocation) {
   }
 
   private final Map<Class<? extends ParserRuleContext>, VisitorInvocation> visitorMap =
@@ -102,7 +102,7 @@ public class Z80InstructionVisitor extends Z80AssemblerBaseVisitor<Z80Instructio
           new VisitorMapEntry(OUTContext.class, t -> new OUTVisitor().visitInstruction(t, OUTContext.class)),
           new VisitorMapEntry(INContext.class, t -> new INVisitor().visitInstruction(t, INContext.class)),
           new VisitorMapEntry(CALLContext.class, t -> new CALLVisitor().visitInstruction(t, CALLContext.class))
-          ).collect(Collectors.toMap(e -> e.context, e -> e.invokation));
+          ).collect(Collectors.toMap(e -> e.context, e -> e.invocation));
 
   @Override
   public Z80Instruction visit(ParseTree tree) {
@@ -113,8 +113,11 @@ public class Z80InstructionVisitor extends Z80AssemblerBaseVisitor<Z80Instructio
       if (inst != null) {
         try {
           instruction = inst.getConstructor().newInstance();
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-
+        } catch (InstantiationException
+                 | IllegalAccessException
+                 | NoSuchMethodException
+                 | InvocationTargetException e) {
+          // catch block left intentionally empty
         }
       } else {
         VisitorInvocation invocation = visitorMap.get(tree.getClass());

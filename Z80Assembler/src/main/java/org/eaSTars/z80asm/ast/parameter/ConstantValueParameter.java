@@ -5,22 +5,20 @@ import lombok.Setter;
 
 import java.util.Optional;
 
+@Setter
+@Getter
 public class ConstantValueParameter extends Parameter {
 
-  @Getter
-  @Setter
   private Integer intValue;
 
-  @Getter
-  @Setter
   private String value;
   
   public ConstantValueParameter(String value) {
-    setValue(value);
+    this.value = value;
   }
   
   public ConstantValueParameter(int intValue) {
-    setIntValue(intValue);
+    this.intValue = intValue;
   }
   
   @Override
@@ -30,11 +28,11 @@ public class ConstantValueParameter extends Parameter {
 
   @Override
   public boolean equals(Object obj) {
-    return obj instanceof ConstantValueParameter &&
-        ((intValue == null && ((ConstantValueParameter)obj).getIntValue() == null) ||
-            (intValue != null && intValue.equals(((ConstantValueParameter)obj).getIntValue()))) &&
-        ((value == null && ((ConstantValueParameter)obj).getValue() == null) ||
-            (value != null && value.equals(((ConstantValueParameter)obj).getValue())));
+    return obj instanceof ConstantValueParameter
+        && ((intValue == null && ((ConstantValueParameter) obj).getIntValue() == null)
+        || (intValue != null && intValue.equals(((ConstantValueParameter) obj).getIntValue())))
+        && ((value == null && ((ConstantValueParameter) obj).getValue() == null)
+        || (value != null && value.equals(((ConstantValueParameter) obj).getValue())));
   }
   
 }

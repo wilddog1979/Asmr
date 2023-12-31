@@ -1,12 +1,11 @@
 package org.eastars.z80asm.ast.instructions.twoparam;
 
+import lombok.NoArgsConstructor;
 import org.eastars.z80asm.ast.instructions.TwoParameterInstruction;
 import org.eastars.z80asm.ast.parameter.Parameter;
 
+@NoArgsConstructor
 public class IN extends TwoParameterInstruction {
-
-  public IN() {
-  }
 
   public IN(Parameter target, Parameter source) {
     setTarget(target);

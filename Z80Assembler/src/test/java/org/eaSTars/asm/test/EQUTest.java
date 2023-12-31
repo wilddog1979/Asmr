@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class EquTest extends DirectiveTest {
+public class EQUTest extends DirectiveTest {
 
   @Test
   public void testEQUValue() {

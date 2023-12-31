@@ -37,45 +37,45 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
   private static final List<InstructionEntry> instructionlist = Arrays.asList(
     new InstructionEntry(ADC.class, Arrays.asList(
       new MaskedOpcode<>(new byte[] {(byte) 0xf8}, new byte[] {(byte) 0x88}, (r, v) ->
-          r.setTarget(new RegisterParameter(Register.A)).setSource(reverseRegisterRh(v[0] & 0x07))),
+          r.setTarget(new RegisterParameter(Register.A)).setSource(reverseRegisterRH(v[0] & 0x07))),
       new MaskedOpcode<>(new byte[] {(byte) 0xff, 0x00}, new byte[] {(byte) 0xce, 0x00}, (r, v) ->
           r.setTarget(new RegisterParameter(Register.A)).setSource(reverseImmediate8(v[1]))),
       new MaskedOpcode<>(new byte[] {(byte) 0xff, (byte) 0xcf}, new byte[] {(byte) 0xed, 0x4a}, (r, v) ->
           r.setTarget(new RegisterPairParameter(RegisterPair.HL))
-              .setSource(reverseRegisterSs((v[1] >> 4) & 0x03))),
+              .setSource(reverseRegisterSS((v[1] >> 4) & 0x03))),
       new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00}, new byte[] {(byte) 0xdd, (byte) 0x8e, 0x00},
           (r, v) -> r.setTarget(new RegisterParameter(Register.A))
               .setSource(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
-      ), TwoParameterInstructionConverter::generateAdcSbc),
+      ), TwoParameterInstructionConverter::generateADCSbc),
     new InstructionEntry(ADD.class, Arrays.asList(
         new MaskedOpcode<>(new byte[] {(byte) 0xcf}, new byte[] {0x09}, (r, v) ->
             r.setTarget(new RegisterPairParameter(RegisterPair.HL))
-                .setSource(reverseRegisterSs((v[0] >> 4) & 0x03))),
+                .setSource(reverseRegisterSS((v[0] >> 4) & 0x03))),
         new MaskedOpcode<>(new byte[] {(byte) 0xf8}, new byte[] {(byte) 0x80}, (r, v) ->
-            r.setTarget(new RegisterParameter(Register.A)).setSource(reverseRegisterRh(v[0] & 0x07))),
+            r.setTarget(new RegisterParameter(Register.A)).setSource(reverseRegisterRH(v[0] & 0x07))),
         new MaskedOpcode<>(new byte[] {(byte) 0xff, 0x00}, new byte[] {(byte) 0xc6, 0x00}, (r, v) ->
             r.setTarget(new RegisterParameter(Register.A)).setSource(reverseImmediate8(v[1]))),
         new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00}, new byte[] {(byte) 0xdd, (byte) 0x86, 0x00},
             (r, v) -> r.setTarget(new RegisterParameter(Register.A))
                 .setSource(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))),
         new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xcf}, new byte[] {(byte) 0xdd, 0x09}, (r, v) ->
-            r.setTarget(reverseIxIy((v[0] & 0x20) == 0x00))
-                .setSource(reverseRegisterPpRr((v[0] & 0x20) == 0x00, (v[1] >> 4) & 0x03)))
-        ), TwoParameterInstructionConverter::generateAdd),
+            r.setTarget(reverseIXIY((v[0] & 0x20) == 0x00))
+                .setSource(reverseRegisterPPRR((v[0] & 0x20) == 0x00, (v[1] >> 4) & 0x03)))
+        ), TwoParameterInstructionConverter::generateADD),
     new InstructionEntry(BIT.class, Arrays.asList(
         new MaskedOpcode<>(new byte[] {(byte) 0xff, (byte) 0xc0}, new byte[] {(byte) 0xcb, 0x40}, (r, v) ->
-            r.setTarget(reverseImmediate8((v[1] >> 3) & 0x07)).setSource(reverseRegisterRh(v[1] & 0x07))),
+            r.setTarget(reverseImmediate8((v[1] >> 3) & 0x07)).setSource(reverseRegisterRH(v[1] & 0x07))),
         new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00, (byte) 0xc7}, new byte[] {(byte) 0xdd,
             (byte) 0xcb, 0x00, 0x46}, (r, v) ->
             r.setTarget(reverseImmediate8((v[3] >> 3) & 0x07))
                 .setSource(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
-        ), TwoParameterInstructionConverter::generateBitResSet),
+        ), TwoParameterInstructionConverter::generateBITRESSET),
     new InstructionEntry(CALL.class, Arrays.asList(
         new MaskedOpcode<>(new byte[] {(byte) 0xc7, 0x00, 0x00}, new byte[] {(byte) 0xc4, 0x00, 0x00}, (r, v) ->
             r.setTarget(reverseCondition((v[0] >> 3) & 0x07)).setSource(reverseImmediate16(v[2], v[1]))),
         new MaskedOpcode<>(new byte[] {(byte) 0xff, 0x00, 0x00}, new byte[] {(byte) 0xcd, 0x00, 0x00}, (r, v) ->
             r.setSource(reverseImmediate16(v[2], v[1])))
-        ), TwoParameterInstructionConverter::generateCall),
+        ), TwoParameterInstructionConverter::generateCALL),
     new InstructionEntry(EX.class, Arrays.asList(
         new MaskedOpcode<>(new byte[] {(byte) 0xff}, new byte[] {0x08}, (r, v) ->
             r.setTarget(new RegisterPairParameter(RegisterPair.AF))
@@ -87,14 +87,14 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
             r.setTarget(new RegisterIndirectAddressing(RegisterPair.SP))
                 .setSource(new RegisterPairParameter(RegisterPair.HL))),
         new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff}, new byte[] {(byte) 0xdd, (byte) 0xe3}, (r, v) ->
-            r.setTarget(new RegisterIndirectAddressing(RegisterPair.SP)).setSource(reverseIxIy((v[0] & 0x20) == 0x00)))
-        ), (c, t, s, m) -> generateEx(t, s, m)),
+            r.setTarget(new RegisterIndirectAddressing(RegisterPair.SP)).setSource(reverseIXIY((v[0] & 0x20) == 0x00)))
+        ), (c, t, s, m) -> generateEX(t, s, m)),
     new InstructionEntry(IN.class, Arrays.asList(
         new MaskedOpcode<>(new byte[] {(byte) 0xff, 0x00}, new byte[] {(byte) 0xdb, 0x00}, (r, v) ->
             r.setTarget(new RegisterParameter(Register.A)).setSource(reverseImmediate8(v[1]))),
         new MaskedOpcode<>(new byte[] {(byte) 0xff, (byte) 0xc7}, new byte[] {(byte) 0xed, 0x40}, (r, v) ->
             r.setTarget(reverseRegisterR((v[1] >> 3) & 0x07)).setSource(new RegisterParameter(Register.C)))
-        ), TwoParameterInstructionConverter::generateIn),
+        ), TwoParameterInstructionConverter::generateIN),
     new InstructionEntry(JP.class, Arrays.asList(
         new MaskedOpcode<>(new byte[] {(byte) 0xff}, new byte[] {(byte) 0xe9}, (r, v) ->
             r.setSource(new RegisterIndirectAddressing(RegisterPair.HL))),
@@ -104,13 +104,13 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
             r.setTarget(reverseCondition((v[0] >> 3) & 0x07)).setSource(reverseImmediate16(v[2], v[1]))),
         new MaskedOpcode<>(new byte[] {(byte) 0xff, 0x00, 0x00}, new byte[] {(byte) 0xc3, 0x00, 0x00}, (r, v) ->
             r.setSource(reverseImmediate16(v[2], v[1])))
-        ), TwoParameterInstructionConverter::generateJp),
+        ), TwoParameterInstructionConverter::generateJP),
     new InstructionEntry(JR.class, Arrays.asList(
         new MaskedOpcode<>(new byte[] {(byte) 0xe7, 0x00}, new byte[] {0x20, 0x00}, (r, v) ->
             r.setTarget(reverseCondition((v[0] >> 3) & 0x03)).setSource(reverseImmediate8(v[1] + 2))),
         new MaskedOpcode<>(new byte[] {(byte) 0xff, 0x00}, new byte[] {0x18, 0x00}, (r, v) ->
             r.setSource(reverseImmediate8(v[1] + 2)))
-        ), TwoParameterInstructionConverter::generateJr),
+        ), TwoParameterInstructionConverter::generateJR),
     new InstructionEntry(LD.class, Arrays.asList(
         new MaskedOpcode<>(new byte[] {(byte) 0xff}, new byte[] {0x02}, (r, v) ->
             r.setTarget(new RegisterIndirectAddressing(RegisterPair.BC)).setSource(new RegisterParameter(Register.A))),
@@ -136,9 +136,9 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
             r.setTarget(new RegisterPairParameter(RegisterPair.SP))
                 .setSource(new RegisterPairParameter(RegisterPair.HL))),
         new MaskedOpcode<>(new byte[] {(byte) 0xc7, 0x00}, new byte[] {0x06, 0x00}, (r, v) ->
-            r.setTarget(reverseRegisterRh((v[0] >> 3) & 0x07)).setSource(reverseImmediate8(v[1]))),
+            r.setTarget(reverseRegisterRH((v[0] >> 3) & 0x07)).setSource(reverseImmediate8(v[1]))),
         new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff}, new byte[] {(byte) 0xdd, (byte) 0xf9}, (r, v) ->
-            r.setTarget(new RegisterPairParameter(RegisterPair.SP)).setSource(reverseIxIy((v[0] & 0x20) == 0x00))),
+            r.setTarget(new RegisterPairParameter(RegisterPair.SP)).setSource(reverseIXIY((v[0] & 0x20) == 0x00))),
         new MaskedOpcode<>(new byte[] {(byte) 0xff, (byte) 0xff}, new byte[] {(byte) 0xed, (byte) 0x47}, (r, v) ->
             r.setTarget(new RegisterParameter(Register.I)).setSource(new RegisterParameter(Register.A))),
         new MaskedOpcode<>(new byte[] {(byte) 0xff, (byte) 0xff}, new byte[] {(byte) 0xed, (byte) 0x57}, (r, v) ->
@@ -148,7 +148,7 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
         new MaskedOpcode<>(new byte[] {(byte) 0xff, (byte) 0xff}, new byte[] {(byte) 0xed, (byte) 0x5f}, (r, v) ->
             r.setTarget(new RegisterParameter(Register.A)).setSource(new RegisterParameter(Register.R))),
         new MaskedOpcode<>(new byte[] {(byte) 0xcf, 0x00, 0x00}, new byte[] {0x01, 0x00, 0x00}, (r, v) ->
-            r.setTarget(reverseRegisterSs((v[0] >> 4) & 0x03)).setSource(reverseImmediate16(v[2], v[1]))),
+            r.setTarget(reverseRegisterSS((v[0] >> 4) & 0x03)).setSource(reverseImmediate16(v[2], v[1]))),
         new MaskedOpcode<>(new byte[] {(byte) 0xff, 0x00, 0x00}, new byte[] {0x22, 0x00, 0x00}, (r, v) ->
             r.setTarget(new ImmediateAddressingParameter((ExpressionParameter) reverseImmediate16(v[2], v[1])))
                 .setSource(new RegisterPairParameter(RegisterPair.HL))),
@@ -173,57 +173,57 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
         new MaskedOpcode<>(new byte[] {(byte) 0xff, (byte) 0xcf, 0x00, 0x00}, new byte[] {(byte) 0xed, (byte) 0x43,
             0x00, 0x00}, (r, v) ->
             r.setTarget(new ImmediateAddressingParameter((ExpressionParameter) reverseImmediate16(v[3], v[2])))
-                .setSource(reverseRegisterSs((v[1] >> 4) & 0x03))),
+                .setSource(reverseRegisterSS((v[1] >> 4) & 0x03))),
         new MaskedOpcode<>(new byte[] {(byte) 0xff, (byte) 0xcf, 0x00, 0x00}, new byte[] {(byte) 0xed, (byte) 0x4b,
             0x00, 0x00}, (r, v) ->
-            r.setTarget(reverseRegisterSs((v[1] >> 4) & 0x03))
+            r.setTarget(reverseRegisterSS((v[1] >> 4) & 0x03))
                 .setSource(new ImmediateAddressingParameter((ExpressionParameter) reverseImmediate16(v[3], v[2])))),
         new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00, 0x00}, new byte[] {(byte) 0xdd, (byte) 0x21,
             0x00, 0x00}, (r, v) ->
-            r.setTarget(reverseIxIy((v[0] & 0x20) == 0x00)).setSource(reverseImmediate16(v[3], v[2]))),
+            r.setTarget(reverseIXIY((v[0] & 0x20) == 0x00)).setSource(reverseImmediate16(v[3], v[2]))),
         new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00, 0x00}, new byte[] {(byte) 0xdd, (byte) 0x22,
             0x00, 0x00}, (r, v) ->
             r.setTarget(new ImmediateAddressingParameter((ExpressionParameter) reverseImmediate16(v[3], v[2])))
-                .setSource(reverseIxIy((v[0] & 0x20) == 0x00))),
+                .setSource(reverseIXIY((v[0] & 0x20) == 0x00))),
         new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00, 0x00}, new byte[] {(byte) 0xdd, (byte) 0x2a,
             0x00, 0x00}, (r, v) ->
-            r.setTarget(reverseIxIy((v[0] & 0x20) == 0x00))
+            r.setTarget(reverseIXIY((v[0] & 0x20) == 0x00))
                 .setSource(new ImmediateAddressingParameter((ExpressionParameter) reverseImmediate16(v[3], v[2]))))
-        ), TwoParameterInstructionConverter::generateLd),
+        ), TwoParameterInstructionConverter::generateLD),
     new InstructionEntry(OUT.class, Arrays.asList(
         new MaskedOpcode<>(new byte[] {(byte) 0xff, 0x00}, new byte[] {(byte) 0xd3, 0x00}, (r, v) ->
             r.setTarget(reverseImmediate8(v[1])).setSource(new RegisterParameter(Register.A))),
         new MaskedOpcode<>(new byte[] {(byte) 0xff, (byte) 0xc7}, new byte[] {(byte) 0xed, 0x41}, (r, v) ->
             r.setTarget(new RegisterParameter(Register.C)).setSource(reverseRegisterR((v[1] >> 3) & 0x07)))
-        ), TwoParameterInstructionConverter::generateOut),
+        ), TwoParameterInstructionConverter::generateOUT),
     new InstructionEntry(RES.class, Arrays.asList(
         new MaskedOpcode<>(new byte[] {(byte) 0xff, (byte) 0xc0}, new byte[] {(byte) 0xcb, (byte) 0x80}, (r, v) ->
-            r.setTarget(reverseImmediate8((v[1] >> 3) & 0x07)).setSource(reverseRegisterRh(v[1] & 0x07))),
+            r.setTarget(reverseImmediate8((v[1] >> 3) & 0x07)).setSource(reverseRegisterRH(v[1] & 0x07))),
         new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00, (byte) 0xc7}, new byte[] {(byte) 0xdd,
             (byte) 0xcb, 0x00, (byte) 0x86}, (r, v) ->
             r.setTarget(reverseImmediate8((v[3] >> 3) & 0x07))
                 .setSource(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
-        ), TwoParameterInstructionConverter::generateBitResSet),
+        ), TwoParameterInstructionConverter::generateBITRESSET),
     new InstructionEntry(SBC.class, Arrays.asList(
         new MaskedOpcode<>(new byte[] {(byte) 0xf8}, new byte[] {(byte) 0x98}, (r, v) ->
-            r.setTarget(new RegisterParameter(Register.A)).setSource(reverseRegisterRh(v[0] & 0x07))),
+            r.setTarget(new RegisterParameter(Register.A)).setSource(reverseRegisterRH(v[0] & 0x07))),
         new MaskedOpcode<>(new byte[] {(byte) 0xff, 0x00}, new byte[] {(byte) 0xde, 0x00}, (r, v) ->
             r.setTarget(new RegisterParameter(Register.A)).setSource(reverseImmediate8(v[1]))),
         new MaskedOpcode<>(new byte[] {(byte) 0xff, (byte) 0xcf}, new byte[] {(byte) 0xed, 0x42}, (r, v) ->
             r.setTarget(new RegisterPairParameter(RegisterPair.HL))
-                .setSource(reverseRegisterSs((v[1] >> 4) & 0x03))),
+                .setSource(reverseRegisterSS((v[1] >> 4) & 0x03))),
         new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00}, new byte[] {(byte) 0xdd, (byte) 0x9e, 0x00},
             (r, v) -> r.setTarget(new RegisterParameter(Register.A))
                 .setSource(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
-        ), TwoParameterInstructionConverter::generateAdcSbc),
+        ), TwoParameterInstructionConverter::generateADCSbc),
     new InstructionEntry(SET.class, Arrays.asList(
         new MaskedOpcode<>(new byte[] {(byte) 0xff, (byte) 0xc0}, new byte[] {(byte) 0xcb, (byte) 0xc0}, (r, v) ->
-            r.setTarget(reverseImmediate8((v[1] >> 3) & 0x07)).setSource(reverseRegisterRh(v[1] & 0x07))),
+            r.setTarget(reverseImmediate8((v[1] >> 3) & 0x07)).setSource(reverseRegisterRH(v[1] & 0x07))),
         new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00, (byte) 0xc7}, new byte[] {(byte) 0xdd,
             (byte) 0xcb, 0x00, (byte) 0xc6}, (r, v) ->
             r.setTarget(reverseImmediate8((v[3] >> 3) & 0x07))
                 .setSource(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
-        ), TwoParameterInstructionConverter::generateBitResSet));
+        ), TwoParameterInstructionConverter::generateBITRESSET));
   
   private static final Map<Class<? extends TwoParameterInstruction>, InstructionEntry> instructions =
       instructionlist.stream().collect(Collectors.toMap(e -> e.instruction, e -> e));
@@ -232,7 +232,7 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
       instructionlist.stream().flatMap(e -> e.masks.stream()).collect(Collectors.groupingBy(
           m -> m.mask.length,
           Collectors.toMap(
-              m -> new OpcodeMask<TwoParameterInstruction>(m.mask, m.value, m.extractor),
+              m -> new OpcodeMask<>(m.mask, m.value, m.extractor),
               m -> m.instruction,
               (u, v) -> {
                 throw new IllegalStateException(String.format("Duplicate key %s", u));
@@ -255,7 +255,7 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
     return result;
   }
 
-  private static byte[] generateAdcSbc(
+  private static byte[] generateADCSbc(
       CompilationContext compilationContext,
       Parameter targetparameter,
       Parameter sourceparameter,
@@ -264,10 +264,10 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
     
     if (targetparameter instanceof RegisterParameter
         && ((RegisterParameter) targetparameter).getRegister() == Register.A) {
-      int sourceIndex = getRegisterRhIndex(sourceparameter);
+      int sourceIndex = getRegisterRHIndex(sourceparameter);
       if (sourceIndex != -1) {
         result = selectMask(masks.get(0));
-        result[0] |= sourceIndex & 0x07;
+        result[0] |= (byte) (sourceIndex & 0x07);
       } else if (sourceparameter instanceof ExpressionParameter) {
         result = selectMask(masks.get(1));
         result[1] = (byte) ((ExpressionParameter) sourceparameter).getExpressionValue(compilationContext);
@@ -277,7 +277,7 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
       }
     } else if (targetparameter instanceof RegisterPairParameter
         && ((RegisterPairParameter) targetparameter).getRegisterPair() == RegisterPair.HL) {
-      int sourceIndex = getRegisterSsIndex(sourceparameter);
+      int sourceIndex = getRegisterSSIndex(sourceparameter);
       if (sourceIndex != -1) {
         result = selectMask(masks.get(2));
         result[1] |= (byte) (sourceIndex << 4);
@@ -287,7 +287,7 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
     return result;
   }
   
-  private static byte[] generateBitResSet(
+  private static byte[] generateBITRESSET(
       CompilationContext compilationContext,
       Parameter targetparameter,
       Parameter sourceparameter,
@@ -297,7 +297,7 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
     if (targetparameter instanceof ExpressionParameter) {
       int value = ((ExpressionParameter) targetparameter).getExpressionValue(compilationContext);
       if (value >= 0 && value <= 7) {
-        int sourceIndex = getRegisterRhIndex(sourceparameter);
+        int sourceIndex = getRegisterRHIndex(sourceparameter);
         if (sourceIndex != -1) {
           result = selectMask(masks.get(0));
           result[1] |= (byte) ((value << 3) | sourceIndex);
@@ -314,7 +314,7 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
     return result;
   }
   
-  private static byte[] generateCall(
+  private static byte[] generateCALL(
       CompilationContext compilationContext,
       Parameter targetparameter,
       Parameter sourceparameter,
@@ -326,7 +326,7 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
         result = generateWithExpressionValue(
             compilationContext, selectMask(masks.get(0)), (ExpressionParameter) sourceparameter, 1);
         Condition condition = ((ConditionParameter) targetparameter).getCondition();
-        result[0] |= (condition.getOpcode() << 3);
+        result[0] |= (byte) (condition.getOpcode() << 3);
       } else if (targetparameter == null) {
         result = generateWithExpressionValue(
             compilationContext, selectMask(masks.get(1)), (ExpressionParameter) sourceparameter, 1);
@@ -336,7 +336,7 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
     return result;
   }
   
-  private static byte[] generateJp(
+  private static byte[] generateJP(
       CompilationContext compilationContext,
       Parameter targetparameter,
       Parameter sourceparameter,
@@ -360,13 +360,13 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
       result = generateWithExpressionValue(
           compilationContext, selectMask(masks.get(2)), (ExpressionParameter) sourceparameter, 1);
       Condition condition = ((ConditionParameter) targetparameter).getCondition();
-      result[0] |= (condition.getOpcode() << 3);
+      result[0] |= (byte) (condition.getOpcode() << 3);
     }
     
     return result;
   }
   
-  private static byte[] generateJr(
+  private static byte[] generateJR(
       CompilationContext compilationContext,
       Parameter targetParameter,
       Parameter sourceParameter,
@@ -380,7 +380,7 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
       if (condition == Condition.NZ || condition == Condition.Z
           || condition == Condition.NC || condition == Condition.C) {
         result = selectMask(masks.get(0));
-        result[0] |= (condition.getOpcode() << 3);
+        result[0] |= (byte) (condition.getOpcode() << 3);
         result[1] = (byte) (value & 0xff);
       }
     } else if (sourceParameter instanceof ExpressionParameter) {
@@ -392,7 +392,7 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
     return result;
   }
   
-  private static byte[] generateIn(
+  private static byte[] generateIN(
       CompilationContext compilationContext,
       Parameter targetparameter,
       Parameter sourceparameter,
@@ -409,13 +409,13 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
         && ((RegisterParameter) sourceparameter).getRegister() == Register.C
         && (targetIndex = getRegisterRIndex(targetparameter)) != -1) {
       result = selectMask(masks.get(1));
-      result[1] |=  (targetIndex << 3) & 0x38;
+      result[1] |= (byte) ((targetIndex << 3) & 0x38);
     }
     
     return result;
   }
   
-  private static byte[] generateOut(
+  private static byte[] generateOUT(
       CompilationContext compilationContext,
       Parameter targetparameter,
       Parameter sourceparameter,
@@ -432,13 +432,13 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
         && ((RegisterParameter) targetparameter).getRegister() == Register.C
         && (sourceIndex = getRegisterRIndex(sourceparameter)) != -1) {
       result = selectMask(masks.get(1));
-      result[1] |=  (sourceIndex << 3) & 0x38;
+      result[1] |= (byte) ((sourceIndex << 3) & 0x38);
     }
 
     return result;
   }
   
-  private static byte[] generateEx(
+  private static byte[] generateEX(
       Parameter targetparameter,
       Parameter sourceparameter,
       List<MaskedOpcode<TwoParameterInstruction>> masks) {
@@ -469,25 +469,25 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
     return result;
   }
   
-  private static byte[] generateAdd(
+  private static byte[] generateADD(
       CompilationContext compilationContext,
       Parameter targetparameter,
       Parameter sourceparameter,
       List<MaskedOpcode<TwoParameterInstruction>> masks) {
     byte[] result = null;
     
-    int sourceIndex = getRegisterSsIndex(sourceparameter);
+    int sourceIndex = getRegisterSSIndex(sourceparameter);
     if (targetparameter instanceof RegisterPairParameter
         && ((RegisterPairParameter) targetparameter).getRegisterPair() == RegisterPair.HL
         && sourceIndex != -1) {
       result = selectMask(masks.get(0));
-      result[0] |= (sourceIndex << 4) & 0x30;
+      result[0] |= (byte) ((sourceIndex << 4) & 0x30);
     } else if (targetparameter instanceof RegisterParameter
         && ((RegisterParameter) targetparameter).getRegister() == Register.A) {
-      sourceIndex = getRegisterRhIndex(sourceparameter);
+      sourceIndex = getRegisterRHIndex(sourceparameter);
       if (sourceIndex != -1) {
         result = selectMask(masks.get(1));
-        result[0] |= sourceIndex & 0x07;
+        result[0] |= (byte) (sourceIndex & 0x07);
       } else if (sourceparameter instanceof ExpressionParameter) {
         result = selectMask(masks.get(2));
         result[1] |= (byte) ((ExpressionParameter) sourceparameter).getExpressionValue(compilationContext);
@@ -499,16 +499,16 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
     if (result == null && targetparameter instanceof RegisterPairParameter) {
       result = generateIndexRegisters(((RegisterPairParameter) targetparameter).getRegisterPair(), masks.get(4).value);
       if (result != null
-          && ((sourceIndex = getRegisterPpIndex(sourceparameter)) != -1
-            || (sourceIndex = getRegisterRrIndex(sourceparameter)) != -1)) {
-        result[1] |= (sourceIndex << 4) & 0x30;
+          && ((sourceIndex = getRegisterPPIndex(sourceparameter)) != -1
+            || (sourceIndex = getRegisterRRIndex(sourceparameter)) != -1)) {
+        result[1] |= (byte) ((sourceIndex << 4) & 0x30);
       }
     }
     
     return result;
   }
   
-  private static byte[] generateLd(
+  private static byte[] generateLD(
       CompilationContext compilationContext,
       Parameter targetparameter,
       Parameter sourceparameter,
@@ -541,26 +541,26 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
         && ((RegisterIndirectAddressing) targetparameter).getRegisterPair() == RegisterPair.HL
         && (registerIndex = getRegisterRIndex(sourceparameter)) != -1) {
       result = selectMask(masks.get(4));
-      result[0] |= 0x30 | (registerIndex & 0x07);
+      result[0] |= (byte) (0x30 | (registerIndex & 0x07));
     } else if ((registerIndex = getRegisterRIndex(targetparameter)) != -1
         && sourceparameter instanceof RegisterIndirectAddressing
         && ((RegisterIndirectAddressing) sourceparameter).getRegisterPair() == RegisterPair.HL) {
       result = selectMask(masks.get(4));
-      result[0] |= ((registerIndex << 3) & 0x38) | 0x06;
+      result[0] |= (byte) (((registerIndex << 3) & 0x38) | 0x06);
     } else if ((registerIndex = getRegisterRIndex(targetparameter)) != -1
         && (markedRegisterIndex = getMarkedRegisterRIndex(sourceparameter)) != -1) {
       result = selectMask(masks.get(4));
-      result [0] |= ((registerIndex << 3) & 0x38) | (markedRegisterIndex & 0x07);
+      result [0] |= (byte) (((registerIndex << 3) & 0x38) | (markedRegisterIndex & 0x07));
     } else if (targetparameter instanceof RegisterPairParameter
         && ((RegisterPairParameter) targetparameter).getRegisterPair() == RegisterPair.SP
         && sourceparameter instanceof RegisterPairParameter
         && ((RegisterPairParameter) sourceparameter).getRegisterPair() == RegisterPair.HL) {
       result = selectMask(masks.get(5));
-    } else if ((registerIndex = getRegisterRhIndex(targetparameter)) != -1
+    } else if ((registerIndex = getRegisterRHIndex(targetparameter)) != -1
         && sourceparameter instanceof ExpressionParameter) {
       int value = ((ExpressionParameter)  sourceparameter).getExpressionValue(compilationContext);
       result = selectMask(masks.get(6));
-      result[0] |= (registerIndex << 3) & 0x38;
+      result[0] |= (byte) ((registerIndex << 3) & 0x38);
       result[1] = (byte) (value & 0xff);
     } else if (targetparameter instanceof RegisterPairParameter
         && ((RegisterPairParameter) targetparameter).getRegisterPair() == RegisterPair.SP
@@ -588,7 +588,7 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
         && sourceparameter instanceof RegisterParameter
         && ((RegisterParameter) sourceparameter).getRegister() == Register.R) {
       result = selectMask(masks.get(11));
-    } else if ((registerIndex = getRegisterSsIndex(targetparameter)) != -1
+    } else if ((registerIndex = getRegisterSSIndex(targetparameter)) != -1
         && sourceparameter instanceof ExpressionParameter) {
       result = generateWithExpressionValue(
           compilationContext, selectMask(masks.get(12)), (ExpressionParameter) sourceparameter, 1);
@@ -643,11 +643,11 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
     
     if (result == null) {
       if (targetparameter instanceof ImmediateAddressingParameter
-          && (registerIndex = getRegisterSsIndex(sourceparameter)) != -1) {
+          && (registerIndex = getRegisterSSIndex(sourceparameter)) != -1) {
         result = generateWithImmediateValue(compilationContext, selectMask(masks.get(20)), targetparameter, 2);
         result[1] |= (registerIndex << 4) & 0x38;
       } else if (sourceparameter instanceof ImmediateAddressingParameter
-          && (registerIndex = getRegisterSsIndex(targetparameter)) != -1) {
+          && (registerIndex = getRegisterSSIndex(targetparameter)) != -1) {
         result = generateWithImmediateValue(compilationContext, selectMask(masks.get(21)), sourceparameter, 2);
         result[1] |= (registerIndex << 4) & 0x38;
       } else if (targetparameter instanceof RegisterPairParameter

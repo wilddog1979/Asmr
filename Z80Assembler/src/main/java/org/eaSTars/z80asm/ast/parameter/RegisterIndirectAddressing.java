@@ -3,10 +3,10 @@ package org.eastars.z80asm.ast.parameter;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+@Getter
 @RequiredArgsConstructor
 public class RegisterIndirectAddressing extends AddressingParameter {
 
-  @Getter
   private final RegisterPair registerPair;
 
   @Override
@@ -16,9 +16,9 @@ public class RegisterIndirectAddressing extends AddressingParameter {
 
   @Override
   public boolean equals(Object obj) {
-    return obj instanceof RegisterIndirectAddressing &&
-        ((registerPair == null && ((RegisterIndirectAddressing)obj).getRegisterPair() == null) ||
-            (registerPair != null && registerPair == ((RegisterIndirectAddressing)obj).getRegisterPair()));
+    return obj instanceof RegisterIndirectAddressing
+        && ((registerPair == null && ((RegisterIndirectAddressing) obj).getRegisterPair() == null)
+        || (registerPair != null && registerPair == ((RegisterIndirectAddressing) obj).getRegisterPair()));
   }
 
 }

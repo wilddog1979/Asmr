@@ -23,14 +23,14 @@ public class INVisitor extends TwoParameterInstructionVisitor<IN, INContext, Ins
   protected Parameter getSourceParameter(InstructionINparametersContext paramCtx) {
     return getRegister(paramCtx.C, Register.C)
         .orElseGet(() -> getExpression(paramCtx.hex8bits())
-            .orElseGet(() -> null));
+            .orElse(null));
   }
 
   @Override
   protected Parameter getTargetParameter(InstructionINparametersContext paramCtx) {
     return getRegister(paramCtx.A, Register.A)
         .orElseGet(() -> getRegisters(paramCtx.registers())
-            .orElseGet(() -> null));
+            .orElse(null));
   }
 
 }

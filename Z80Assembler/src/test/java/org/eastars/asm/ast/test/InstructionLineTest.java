@@ -39,10 +39,11 @@ public class InstructionLineTest extends AssemblerLineTester {
   
   @ParameterizedTest
   @ArgumentsSource(InstructionLineArgumentProvider.class)
-  public void testInstructionLine(String testInstruction, String label, Class<? extends Instruction> instruction, String comment, String tostring) {
+  public void testInstructionLine(String testInstruction, String label, Class<? extends Instruction> instruction,
+                                  String comment, String tostring) {
     AssemblerLine result = invokeParser(testInstruction);
-    
-    assertTrue(result instanceof InstructionLine, "result must be an instance of InstructionLine");
+
+    assertInstanceOf(InstructionLine.class, result, "result must be an instance of InstructionLine");
     InstructionLine instructionLineResult = (InstructionLine) result;
     
     if (label != null) {
@@ -70,7 +71,9 @@ public class InstructionLineTest extends AssemblerLineTester {
 
   @Test
   public void testRepeatedLabel() {
-    assertThrows(LabelAlreadyDefinedException.class, () -> invokeParser("# some comment\n\tNOP\n@mylabel:\tNOP\n\tNOP\n\t@mylabel:\tNOP\n\tNOP\n"), "LabelAlreadyDefinedException expected");
+    assertThrows(LabelAlreadyDefinedException.class,
+        () -> invokeParser("# some comment\n\tNOP\n@mylabel:\tNOP\n\tNOP\n\t@mylabel:\tNOP\n\tNOP\n"),
+        "LabelAlreadyDefinedException expected");
   }
   
 }

@@ -6,7 +6,8 @@ import org.eastars.z80asm.ast.instructions.TwoParameterInstruction;
 import org.eastars.z80asm.ast.parameter.Parameter;
 import org.eastars.z80asm.parser.Z80AssemblerParser.InstructionContext;
 
-public abstract class TwoParameterInstructionVisitor<T extends TwoParameterInstruction, C extends InstructionContext, P extends ParserRuleContext> extends ParameterizedVisitor<T, C, P> {
+public abstract class TwoParameterInstructionVisitor<T extends TwoParameterInstruction, C extends InstructionContext,
+    P extends ParserRuleContext> extends ParameterizedVisitor<T, C, P> {
 
   protected abstract Parameter getSourceParameter(P paramCtx);
   

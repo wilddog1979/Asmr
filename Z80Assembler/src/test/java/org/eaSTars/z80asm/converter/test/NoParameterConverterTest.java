@@ -77,8 +77,10 @@ public class NoParameterConverterTest {
 
   @ParameterizedTest
   @ArgumentsSource(ConverterArgumentProvider.class)
-  public void testNoParameterConverterToInstruction(NoParameterInstruction instruction, byte[] assembly) throws IOException {
-    NoParameterInstruction result = new NoParameterInstructionConverter().convert(new PushbackInputStream(new ByteArrayInputStream(assembly)));
+  public void testNoParameterConverterToInstruction(NoParameterInstruction instruction, byte[] assembly)
+      throws IOException {
+    NoParameterInstruction result = new NoParameterInstructionConverter().convert(new PushbackInputStream(
+        new ByteArrayInputStream(assembly)));
 
     assertNotNull(result, "Converted result expected");
     assertEquals(instruction.getClass(), result.getClass(), "Class type must match");

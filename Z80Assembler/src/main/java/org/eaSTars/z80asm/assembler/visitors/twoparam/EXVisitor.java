@@ -26,8 +26,8 @@ public class EXVisitor extends TwoParameterInstructionVisitor<EX, EXContext, Ins
 
     if (paramCtx instanceof ExafafmarkedContext) {
       parameter = new RegisterPairParameter(RegisterPair.AFMarked);
-    } else if (paramCtx instanceof ExrefsphlContext ||
-        paramCtx instanceof ExdehlContext) {
+    } else if (paramCtx instanceof ExrefsphlContext
+        || paramCtx instanceof ExdehlContext) {
       parameter = new RegisterPairParameter(RegisterPair.HL);
     } else if (paramCtx instanceof ExrefspixContext) {
       parameter = new RegisterPairParameter(RegisterPair.IX);
@@ -44,9 +44,9 @@ public class EXVisitor extends TwoParameterInstructionVisitor<EX, EXContext, Ins
 
     if (paramCtx instanceof ExafafmarkedContext) {
       parameter = new RegisterPairParameter(RegisterPair.AF);
-    } else if (paramCtx instanceof ExrefsphlContext ||
-        paramCtx instanceof ExrefspixContext ||
-        paramCtx instanceof ExrefspiyContext) {
+    } else if (paramCtx instanceof ExrefsphlContext
+        || paramCtx instanceof ExrefspixContext
+        || paramCtx instanceof ExrefspiyContext) {
       parameter = new RegisterIndirectAddressing(RegisterPair.SP);
     } else if (paramCtx instanceof ExdehlContext) {
       parameter = new RegisterPairParameter(RegisterPair.DE);

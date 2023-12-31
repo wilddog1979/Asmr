@@ -6,13 +6,12 @@ import org.eastars.asm.assember.CompilationContext;
 import org.eastars.asm.assember.MismatchingParameterSizeException;
 import org.eastars.z80asm.ast.expression.Expression;
 
+@Getter
 @RequiredArgsConstructor
 public class ExpressionParameter extends Parameter {
 
-  @Getter
   private final Expression expression;
 
-  @Getter
   private final int expectedBitCount;
 
   @Override
@@ -32,9 +31,9 @@ public class ExpressionParameter extends Parameter {
 
   @Override
   public boolean equals(Object obj) {
-    return obj instanceof ExpressionParameter &&
-        ((expression == null && ((ExpressionParameter)obj).expression == null) ||
-            (expression != null && expression.equals(((ExpressionParameter)obj).expression)));
+    return obj instanceof ExpressionParameter
+        && ((expression == null && ((ExpressionParameter) obj).expression == null)
+        || (expression != null && expression.equals(((ExpressionParameter) obj).expression)));
   }
 
 }

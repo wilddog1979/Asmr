@@ -17,7 +17,7 @@ public class NoParameterInstructionConverter extends AbstractZ80InstructionConve
   }
 
   private static final List<InstructionEntry> instructionlist = Arrays.asList(
-    new InstructionEntry(CCF.class, new MaskedOpcode<>(new byte[] {(byte)0x3f})),
+    new InstructionEntry(CCF.class, new MaskedOpcode<>(new byte[] {(byte) 0x3f})),
     new InstructionEntry(CPD.class, new MaskedOpcode<>(new byte[] {(byte) 0xed, (byte) 0xa9})),
     new InstructionEntry(CPDR.class, new MaskedOpcode<>(new byte[] {(byte) 0xed, (byte) 0xb9})),
     new InstructionEntry(CPI.class, new MaskedOpcode<>(new byte[] {(byte) 0xed, (byte) 0xa1})),
@@ -64,7 +64,9 @@ public class NoParameterInstructionConverter extends AbstractZ80InstructionConve
           Collectors.toMap(
               m -> new OpcodeMask<>(m.mask.mask, m.mask.value),
               m -> m.instruction,
-              (u,v) -> { throw new IllegalStateException(String.format("Duplicate key %s", u)); },
+              (u, v) -> {
+                throw new IllegalStateException(String.format("Duplicate key %s", u));
+              },
               MaskedOpcodeMap<NoParameterInstruction>::new)));
 
   @Override

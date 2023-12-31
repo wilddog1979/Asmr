@@ -23,14 +23,14 @@ public class OUTVisitor extends TwoParameterInstructionVisitor<OUT, OUTContext, 
   protected Parameter getSourceParameter(InstructionOUTparametersContext paramCtx) {
     return getRegister(paramCtx.A, Register.A)
         .orElseGet(() -> getRegisters(paramCtx.registers())
-            .orElseGet(() -> null));
+            .orElse(null));
   }
 
   @Override
   protected Parameter getTargetParameter(InstructionOUTparametersContext paramCtx) {
     return getRegister(paramCtx.C, Register.C)
         .orElseGet(() -> getExpression(paramCtx.hex8bits())
-            .orElseGet(() -> null));
+            .orElse(null));
   }
 
 }

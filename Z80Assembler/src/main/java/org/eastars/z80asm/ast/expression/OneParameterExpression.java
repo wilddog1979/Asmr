@@ -39,11 +39,11 @@ public class OneParameterExpression implements Expression {
 
   @Override
   public boolean equals(Object obj) {
-    return obj instanceof OneParameterExpression &&
-        ((operation == null && ((OneParameterExpression)obj).operation == null) ||
-            (operation != null && operation == ((OneParameterExpression)obj).operation)) &&
-        ((parameter == null && ((OneParameterExpression)obj).parameter == null) ||
-            (parameter != null && parameter.equals(((OneParameterExpression)obj).parameter)));
+    return obj instanceof OneParameterExpression
+        && ((operation == null && ((OneParameterExpression) obj).operation == null)
+        || (operation != null && operation == ((OneParameterExpression) obj).operation))
+        && ((parameter == null && ((OneParameterExpression) obj).parameter == null)
+        || (parameter != null && parameter.equals(((OneParameterExpression) obj).parameter)));
   }
 
 }

@@ -8,10 +8,10 @@ import org.eastars.z80asm.ast.parameter.ConstantValueParameter;
 
 import java.util.Optional;
 
+@Getter
 @RequiredArgsConstructor
 public class ConstantValueExpression implements Expression {
 
-  @Getter
   private final ConstantValueParameter constantValueParameter;
 
   @Override
@@ -33,9 +33,10 @@ public class ConstantValueExpression implements Expression {
 
   @Override
   public boolean equals(Object obj) {
-    return obj instanceof ConstantValueExpression &&
-        ((constantValueParameter == null && ((ConstantValueExpression)obj).getConstantValueParameter() == null) ||
-            (constantValueParameter != null && constantValueParameter.equals(((ConstantValueExpression)obj).getConstantValueParameter())));
+    return obj instanceof ConstantValueExpression
+        && ((constantValueParameter == null && ((ConstantValueExpression) obj).getConstantValueParameter() == null)
+        || (constantValueParameter != null
+        && constantValueParameter.equals(((ConstantValueExpression) obj).getConstantValueParameter())));
   }
 
 }

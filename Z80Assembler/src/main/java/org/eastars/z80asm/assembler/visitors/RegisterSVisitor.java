@@ -6,7 +6,7 @@ import org.eastars.z80asm.ast.parameter.RegisterParameter;
 import org.eastars.z80asm.parser.Z80AssemblerBaseVisitor;
 import org.eastars.z80asm.parser.Z80AssemblerParser.RegistersContext;
 
-public class RegistersVisitor extends Z80AssemblerBaseVisitor<Parameter> {
+public class RegisterSVisitor extends Z80AssemblerBaseVisitor<Parameter> {
 
   @Override
   public Parameter visitRegisters(RegistersContext ctx) {

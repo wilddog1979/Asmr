@@ -5,7 +5,7 @@ import org.eastars.asm.ast.AssemblerLine;
 import org.eastars.asm.ast.Directive;
 import org.eastars.asm.ast.DirectiveLine;
 import org.eastars.asm.ast.directives.Org;
-import org.eastars.z80asm.ast.directives.Equ;
+import org.eastars.z80asm.ast.directives.EQU;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -26,7 +26,7 @@ public class DirectiveLineTest extends AssemblerLineTester {
       return Stream.of(new Object[][] {
         {"org 7a00h\n", Org.class, null, "org 7a00h"},
         {"org 7a00h #comment\n", Org.class, "#comment", "org 7a00h"},
-        {"@label1: equ 0340h\n", Equ.class, null, "@label1: equ 0340h"}
+        {"@label1: equ 0340h\n", EQU.class, null, "@label1: equ 0340h"}
       }).map(Arguments::of);
     }
     
@@ -34,10 +34,11 @@ public class DirectiveLineTest extends AssemblerLineTester {
   
   @ParameterizedTest
   @ArgumentsSource(DirectiveArgumentProvider.class)
-  public void testInstructionLine(String testInstruction, Class<? extends Directive> instruction, String comment, String tostring) {
+  public void testInstructionLine(String testInstruction, Class<? extends Directive> instruction, String comment,
+                                  String tostring) {
     AssemblerLine result = invokeParser(testInstruction);
-    
-    assertTrue(result instanceof DirectiveLine, "result must be an instance of DirectiveLine");
+
+    assertInstanceOf(DirectiveLine.class, result, "result must be an instance of DirectiveLine");
     DirectiveLine directiveLineResult = (DirectiveLine) result;
     assertNotNull(directiveLineResult.getDirective());
     assertEquals(directiveLineResult.getDirective().getClass(), instruction);
@@ -53,7 +54,8 @@ public class DirectiveLineTest extends AssemblerLineTester {
   
   @Test
   public void testOrgRepeated() {
-    assertThrows(RecognitionException.class, () -> invokeParser("org 5000h\n\tNOP\n\norg 7b00h\n\tNOP\n"), "RecognitionException expected");
+    assertThrows(RecognitionException.class,
+        () -> invokeParser("org 5000h\n\tNOP\n\norg 7b00h\n\tNOP\n"), "RecognitionException expected");
   }
   
 }

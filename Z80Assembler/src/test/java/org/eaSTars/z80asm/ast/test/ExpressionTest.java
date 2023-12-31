@@ -58,11 +58,13 @@ public class ExpressionTest extends AbstractTester {
 
   @ParameterizedTest
   @ArgumentsSource(TwoParameterExpressionArgumentProvider.class)
-  public void testTwoParameterExpressions(String testExpression, TwoOperandExpression.Operation operation, int leftValue, int rightValue, int evaluated, String assembly) {
+  public void testTwoParameterExpressions(String testExpression, TwoOperandExpression.Operation operation,
+                                          int leftValue, int rightValue, int evaluated, String assembly) {
     Expression result = getExpression(testExpression);
 
     assertNotNull(result, "Instruction must be recognized");
-    assertTrue(result instanceof TwoOperandExpression, "Test expression must be an instance of TwoOperandExpression");
+    assertTrue(result instanceof TwoOperandExpression,
+        "Test expression must be an instance of TwoOperandExpression");
 
     TwoOperandExpression twoOperandExpression = (TwoOperandExpression) result;
 
@@ -71,18 +73,21 @@ public class ExpressionTest extends AbstractTester {
     assertParameter("Left", twoOperandExpression.getLeftOperand(), leftValue);
     assertParameter("Right", twoOperandExpression.getRightOperand(), rightValue);
 
-    assertEquals(evaluated, result.evaluate(new CompilationContext()), "The expression evaluation should match");
+    assertEquals(evaluated, result.evaluate(new CompilationContext()),
+        "The expression evaluation should match");
 
     assertEquals(assembly, result.getAssembly(), "Assembly must match");
   }
 
   @ParameterizedTest
   @ArgumentsSource(OneParameterExpressionArgumentProvider.class)
-  public void testOneParameterExpressions(String testExpression, OneParameterExpression.Operation operation, int intvalue, int evaluated, String assembly) {
+  public void testOneParameterExpressions(String testExpression, OneParameterExpression.Operation operation,
+                                          int intvalue, int evaluated, String assembly) {
     Expression result = getExpression(testExpression);
 
     assertNotNull(result, "Instruction must be recognized");
-    assertTrue(result instanceof OneParameterExpression, "Test expression must be an instance of OneOperandExpression");
+    assertTrue(result instanceof OneParameterExpression,
+        "Test expression must be an instance of OneOperandExpression");
 
     OneParameterExpression oneParameterExpression = (OneParameterExpression) result;
 
@@ -90,7 +95,8 @@ public class ExpressionTest extends AbstractTester {
 
     assertParameter("The", oneParameterExpression.getParameter(), intvalue);
 
-    assertEquals(evaluated, result.evaluate(new CompilationContext()), "The expression evaluation should match");
+    assertEquals(evaluated, result.evaluate(new CompilationContext()),
+        "The expression evaluation should match");
 
     assertEquals(assembly, result.getAssembly(), "Assembly must match");
   }
@@ -98,17 +104,22 @@ public class ExpressionTest extends AbstractTester {
   private void assertParameter(String prefix, Expression parameter, int intValue) {
     assertNotNull(parameter, () -> String.format("%s parameter should not be null", prefix));
 
-    assertTrue(parameter instanceof ConstantValueExpression, () -> String.format("%s expression must be an instance of ConstantValueExpression", prefix));
+    assertInstanceOf(ConstantValueExpression.class, parameter,
+        () -> String.format("%s expression must be an instance of ConstantValueExpression", prefix));
 
     ConstantValueExpression constantValueExpression = (ConstantValueExpression) parameter;
 
-    ConstantValueParameter contantValueParameter = constantValueExpression.getConstantValueParameter();
+    ConstantValueParameter constantValueParameter = constantValueExpression.getConstantValueParameter();
 
-    assertNotNull(contantValueParameter, () -> String.format("ContantValueParameter of %s expression should not be null", prefix.toLowerCase()));
+    assertNotNull(constantValueParameter,
+        () -> String.format("ConstantValueParameter of %s expression should not be null", prefix.toLowerCase()));
 
-    assertNull(contantValueParameter.getValue(), () -> String.format("Value of ContantValueParameter in %s expression should be null", prefix.toLowerCase()));
-    assertNotNull(contantValueParameter.getIntValue(), String.format("IntValue of ConstantValueParameter in %s expression should not be null", prefix.toLowerCase()));
-    assertEquals(intValue, contantValueParameter.getIntValue().intValue(), () -> String.format("IntValue of ConstantValueParameter in %s expression should match", prefix.toLowerCase()));
+    assertNull(constantValueParameter.getValue(),
+        () -> String.format("Value of ConstantValueParameter in %s expression should be null", prefix.toLowerCase()));
+    assertNotNull(constantValueParameter.getIntValue(),
+        String.format("IntValue of ConstantValueParameter in %s expression should not be null", prefix.toLowerCase()));
+    assertEquals(intValue, constantValueParameter.getIntValue().intValue(),
+        () -> String.format("IntValue of ConstantValueParameter in %s expression should match", prefix.toLowerCase()));
   }
 
   @Test
@@ -116,17 +127,20 @@ public class ExpressionTest extends AbstractTester {
     Expression result = getExpression("0045h");
 
     assertNotNull(result, "Instruction must be recognized");
-    assertTrue(result instanceof ConstantValueExpression, "Test expression must be an instance of ConstantValueExpression");
+    assertInstanceOf(ConstantValueExpression.class, result,
+        "Test expression must be an instance of ConstantValueExpression");
 
     ConstantValueExpression constantValueExpression = (ConstantValueExpression) result;
 
-    ConstantValueParameter contantValueParameter = constantValueExpression.getConstantValueParameter();
+    ConstantValueParameter constantValueParameter = constantValueExpression.getConstantValueParameter();
 
-    assertNotNull(contantValueParameter, "ContantValueParameter of the expression should not be null");
+    assertNotNull(constantValueParameter, "ConstantValueParameter of the expression should not be null");
 
-    assertNull(contantValueParameter.getValue(), "Value of ContantValueParameter should be null");
-    assertNotNull(contantValueParameter.getIntValue(), "IntValue of ConstantValueParameter should not be null");
-    assertEquals(0x45, contantValueParameter.getIntValue().intValue(), "IntValue of ConstantValueParameter should match");
+    assertNull(constantValueParameter.getValue(), "Value of ConstantValueParameter should be null");
+    assertNotNull(constantValueParameter.getIntValue(),
+        "IntValue of ConstantValueParameter should not be null");
+    assertEquals(0x45, constantValueParameter.getIntValue().intValue(),
+        "IntValue of ConstantValueParameter should match");
 
     CompilationContext compilationContext = new CompilationContext();
 
@@ -138,7 +152,8 @@ public class ExpressionTest extends AbstractTester {
     Expression result = getExpression("@testlabel12");
 
     assertNotNull(result, "Instruction must be recognized");
-    assertTrue(result instanceof ConstantValueExpression, "Test expression must be an instance of ConstantValueExpression");
+    assertInstanceOf(ConstantValueExpression.class, result,
+        "Test expression must be an instance of ConstantValueExpression");
 
     ConstantValueExpression constantValueExpression = (ConstantValueExpression) result;
 
@@ -147,7 +162,8 @@ public class ExpressionTest extends AbstractTester {
     assertNotNull(contantValueParameter, "ContantValueParameter of the expression should not be null");
 
     assertNull(contantValueParameter.getIntValue(), "IntValue of ConstantValueParameter should be null");
-    assertEquals("@testlabel12", contantValueParameter.getValue(), "Value of ConstantValueParameter should match");
+    assertEquals("@testlabel12", contantValueParameter.getValue(),
+        "Value of ConstantValueParameter should match");
 
     CompilationContext compilationContext = new CompilationContext();
     compilationContext.setAddress(0xcafe);
@@ -156,7 +172,8 @@ public class ExpressionTest extends AbstractTester {
     compilationContext.addInstructionLine(instructionline, 0);
     compilationContext.setPhase(Phase.COMPILATION);
 
-    assertEquals(0xcafe, result.evaluate(compilationContext), "The expression evaluation should match");
+    assertEquals(0xcafe, result.evaluate(compilationContext),
+        "The expression evaluation should match");
   }
 
   @Test
@@ -164,7 +181,8 @@ public class ExpressionTest extends AbstractTester {
     Expression result = getExpression("@testlabel12");
 
     assertNotNull(result, "Instruction must be recognized");
-    assertTrue(result instanceof ConstantValueExpression, "Test expression must be an instance of ConstantValueExpression");
+    assertInstanceOf(ConstantValueExpression.class, result,
+        "Test expression must be an instance of ConstantValueExpression");
 
     ConstantValueExpression constantValueExpression = (ConstantValueExpression) result;
 
@@ -173,7 +191,8 @@ public class ExpressionTest extends AbstractTester {
     assertNotNull(contantValueParameter, "ContantValueParameter of the expression should not be null");
 
     assertNull(contantValueParameter.getIntValue(), "IntValue of ConstantValueParameter should be null");
-    assertEquals("@testlabel12", contantValueParameter.getValue(), "Value of ConstantValueParameter should match");
+    assertEquals("@testlabel12", contantValueParameter.getValue(),
+        "Value of ConstantValueParameter should match");
 
     CompilationContext compilationContext = new CompilationContext();
     InstructionLine instructionline = new InstructionLine();
@@ -181,7 +200,8 @@ public class ExpressionTest extends AbstractTester {
     compilationContext.addInstructionLine(instructionline, 0);
     compilationContext.setPhase(Phase.COMPILATION);
 
-    assertThrows(LabelNotFoundException.class, () -> result.evaluate(compilationContext), "LabelNotFoundException expected");
+    assertThrows(LabelNotFoundException.class, () -> result.evaluate(compilationContext),
+        "LabelNotFoundException expected");
   }
 
   @Test
@@ -189,7 +209,8 @@ public class ExpressionTest extends AbstractTester {
     Expression result = getExpression("(0045h)");
 
     assertNotNull(result, "Instruction must be recognized");
-    assertTrue(result instanceof ConstantValueExpression, "Test expression must be an instance of ConstantValueExpression");
+    assertInstanceOf(ConstantValueExpression.class, result,
+        "Test expression must be an instance of ConstantValueExpression");
 
     ConstantValueExpression constantValueExpression = (ConstantValueExpression) result;
 
@@ -198,8 +219,10 @@ public class ExpressionTest extends AbstractTester {
     assertNotNull(contantValueParameter, "ContantValueParameter of the expression should not be null");
 
     assertNull(contantValueParameter.getValue(), "Value of ContantValueParameter should be null");
-    assertNotNull(contantValueParameter.getIntValue(), "IntValue of ConstantValueParameter should not be null");
-    assertEquals(0x45, contantValueParameter.getIntValue().intValue(), "IntValue of ConstantValueParameter should match");
+    assertNotNull(contantValueParameter.getIntValue(),
+        "IntValue of ConstantValueParameter should not be null");
+    assertEquals(0x45, contantValueParameter.getIntValue().intValue(),
+        "IntValue of ConstantValueParameter should match");
   }
 
   @Test
@@ -217,7 +240,8 @@ public class ExpressionTest extends AbstractTester {
     Expression result = getExpression("2100h");
     ExpressionParameter parameter = new ExpressionParameter(result, 8);
 
-    assertThrows(MismatchingParameterSizeException.class, () -> parameter.getExpressionValue(null), "MismatchingParameterSizeException expected");
+    assertThrows(MismatchingParameterSizeException.class,
+        () -> parameter.getExpressionValue(null), "MismatchingParameterSizeException expected");
   }
 
 }

@@ -4,12 +4,11 @@ import lombok.Getter;
 import org.eastars.z80asm.ast.Z80Instruction;
 import org.eastars.z80asm.ast.parameter.Parameter;
 
+@Getter
 public abstract class TwoParameterInstruction extends Z80Instruction {
 
-  @Getter
   private Parameter target;
 
-  @Getter
   private Parameter source;
   
   @Override

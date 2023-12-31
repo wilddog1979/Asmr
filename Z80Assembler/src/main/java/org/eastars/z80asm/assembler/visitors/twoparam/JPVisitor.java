@@ -27,7 +27,7 @@ public class JPVisitor extends TwoParameterInstructionVisitor<JP, JPContext, Ins
         .orElseGet(() -> getRegisterIndirectAddressing(paramCtx.IX, RegisterPair.IX)
             .orElseGet(() -> getRegisterIndirectAddressing(paramCtx.IY, RegisterPair.IY)
                 .orElseGet(() -> getExpression(paramCtx.hex16bits())
-                    .orElseGet(() -> null))));
+                    .orElse(null))));
   }
 
   @Override

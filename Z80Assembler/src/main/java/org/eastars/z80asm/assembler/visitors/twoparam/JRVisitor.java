@@ -22,7 +22,7 @@ public class JRVisitor extends TwoParameterInstructionVisitor<JR, JRContext, Ins
   
   @Override
   protected Parameter getSourceParameter(InstructionJRparametersContext paramCtx) {
-    return getExpression(paramCtx.hex8bits()).orElseGet(() -> null);
+    return getExpression(paramCtx.hex8bits()).orElse(null);
   }
 
   @Override

@@ -10,23 +10,24 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Optional;
 
-public abstract class ParameterizedVisitor<T, C extends InstructionContext, P extends ParserRuleContext> extends Z80AssemblerBaseVisitor<T> {
+public abstract class ParameterizedVisitor<T, C extends InstructionContext, P extends ParserRuleContext>
+    extends Z80AssemblerBaseVisitor<T> {
 
-  private final RegistersVisitor registersVisitor = new RegistersVisitor();
+  private final RegisterSVisitor registersVisitor = new RegisterSVisitor();
   
   private final RegistersMarkedVisitor registersMarkedVisitor = new RegistersMarkedVisitor();
   
-  private final RegisterSSVisitor registerSSVisitor = new RegisterSSVisitor();
+  private final RegisterSSVisitor registerSsVisitor = new RegisterSSVisitor();
   
-  private final RegisterPPVisitor registerPPVisitor = new RegisterPPVisitor();
+  private final RegisterPPVisitor registerPpVisitor = new RegisterPPVisitor();
   
-  private final RegisterRRVisitor registerRRVisitor = new RegisterRRVisitor();
+  private final RegisterRRVisitor registerRrVisitor = new RegisterRRVisitor();
   
-  private final RegisterQQVisitor registerQQVisitor = new RegisterQQVisitor();
+  private final RegisterQQVisitor registerQqVisitor = new RegisterQQVisitor();
   
   private final RegistersWithReferenceVisitor registersWithReferenceVisitor = new RegistersWithReferenceVisitor();
   
-  private final ParameterTVisitor parameterTVisitor = new ParameterTVisitor();
+  private final ParameterTVisitor parametertVisitor = new ParameterTVisitor();
   
   private final IndexedReferenceVisitor indexedReferenceVisitor = new IndexedReferenceVisitor();
   
@@ -36,16 +37,20 @@ public abstract class ParameterizedVisitor<T, C extends InstructionContext, P ex
   
   protected abstract P getInstructionParameters(C ctx);
   
-  private interface MethodCaller <CTX extends ParserRuleContext> {
-    public Parameter callmethod(CTX ctx);
+  private interface MethodCaller<CT extends ParserRuleContext> {
+    Parameter callMethod(CT ctx);
   }
   
-  private <PT, CTX extends ParserRuleContext> Optional<Parameter> getParameter(P paramCtx, Class<PT> type, String methodname, Class<CTX> ctxtype, MethodCaller<CTX> methodCaller) {
+  private <PT, CT extends ParserRuleContext> Optional<Parameter> getParameter(
+      P paramCtx, Class<PT> type,
+      String methodName,
+      Class<CT> ctxType,
+      MethodCaller<CT> methodCaller) {
     if (type.isAssignableFrom(paramCtx.getClass())) {
       try {
-        Method method = type.getMethod(methodname);
+        Method method = type.getMethod(methodName);
         Object ctx = method.invoke(paramCtx);
-        return Optional.of(methodCaller.callmethod(ctxtype.cast(ctx)));
+        return Optional.of(methodCaller.callMethod(ctxType.cast(ctx)));
       } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
           | NoSuchMethodException | SecurityException e) {
         // incorrect declaration?
@@ -54,28 +59,30 @@ public abstract class ParameterizedVisitor<T, C extends InstructionContext, P ex
     return Optional.empty();
   }
   
-  protected <PT> Optional<Parameter> getRegisterSSParameter(P paramCtx, Class<PT> type) {
-    return getParameter(paramCtx, type, "registerSS", RegisterSSContext.class, registerSSVisitor::visitRegisterSS);
+  protected <PT> Optional<Parameter> getRegisterSsParameter(P paramCtx, Class<PT> type) {
+    return getParameter(
+        paramCtx, type, "registerSS", RegisterSSContext.class, registerSsVisitor::visitRegisterSS);
   }
   
-  protected Optional<Parameter> getRegisterSSParameter(RegisterSSContext ctx) {
-    return Optional.ofNullable(ctx).map(registerSSVisitor::visitRegisterSS);
+  protected Optional<Parameter> getRegisterSsParameter(RegisterSSContext ctx) {
+    return Optional.ofNullable(ctx).map(registerSsVisitor::visitRegisterSS);
   }
   
-  protected Optional<Parameter> getRegisterPPParameter(RegisterPPContext ctx) {
-    return Optional.ofNullable(ctx).map(registerPPVisitor::visitRegisterPP);
+  protected Optional<Parameter> getRegisterPpParameter(RegisterPPContext ctx) {
+    return Optional.ofNullable(ctx).map(registerPpVisitor::visitRegisterPP);
   }
   
-  protected Optional<Parameter> getRegisterRRParameter(RegisterRRContext ctx) {
-    return Optional.ofNullable(ctx).map(registerRRVisitor::visitRegisterRR);
+  protected Optional<Parameter> getRegisterRrParameter(RegisterRRContext ctx) {
+    return Optional.ofNullable(ctx).map(registerRrVisitor::visitRegisterRR);
   }
   
-  protected Optional<Parameter> getRegisterQQParameter(RegisterQQContext ctx) {
-    return Optional.ofNullable(ctx).map(registerQQVisitor::visitRegisterQQ);
+  protected Optional<Parameter> getRegisterQqParameter(RegisterQQContext ctx) {
+    return Optional.ofNullable(ctx).map(registerQqVisitor::visitRegisterQQ);
   }
   
   protected <PT> Optional<Parameter> getRegistersWithReference(P paramCtx, Class<PT> type) {
-    return getParameter(paramCtx, type, "registersWithReference", RegistersWithReferenceContext.class, registersWithReferenceVisitor::visitRegistersWithReference);
+    return getParameter(paramCtx, type, "registersWithReference", RegistersWithReferenceContext.class,
+        registersWithReferenceVisitor::visitRegistersWithReference);
   }
   
   protected Optional<Parameter> getRegistersWithReference(RegistersWithReferenceContext ctx) {
@@ -83,7 +90,8 @@ public abstract class ParameterizedVisitor<T, C extends InstructionContext, P ex
   }
   
   protected <PT> Optional<Parameter> getRegisters(P paramCtx, Class<PT> type) {
-    return getParameter(paramCtx, type, "registers", RegistersContext.class, registersVisitor::visitRegisters);
+    return getParameter(paramCtx, type, "registers", RegistersContext.class,
+        registersVisitor::visitRegisters);
   }
   
   protected Optional<Parameter> getRegisters(RegistersContext ctx) {
@@ -91,15 +99,17 @@ public abstract class ParameterizedVisitor<T, C extends InstructionContext, P ex
   }
   
   protected <PT> Optional<Parameter> getRegistersMarked(P paramCtx, Class<PT> type) {
-    return getParameter(paramCtx, type, "registersmarked", RegistersmarkedContext.class, registersMarkedVisitor::visitRegistersmarked);
+    return getParameter(paramCtx, type, "registersmarked", RegistersmarkedContext.class,
+        registersMarkedVisitor::visitRegistersmarked);
   }
   
   protected Optional<Parameter> getParameterT(ParameterTContext ctx) {
-    return Optional.ofNullable(ctx).map(parameterTVisitor::visitParameterT);
+    return Optional.ofNullable(ctx).map(parametertVisitor::visitParameterT);
   }
   
   protected <PT> Optional<Parameter> getIndexedReference(P paramCtx, Class<PT> type) {
-    return getParameter(paramCtx, type, "indexedReference", IndexedReferenceContext.class, indexedReferenceVisitor::visitIndexedReference);
+    return getParameter(paramCtx, type, "indexedReference", IndexedReferenceContext.class,
+        indexedReferenceVisitor::visitIndexedReference);
   }
   
   protected Optional<Parameter> getIndexedReference(IndexedReferenceContext ctx) {

@@ -22,13 +22,13 @@ public class ADDVisitor extends TwoParameterInstructionVisitor<ADD, ADDContext, 
 
   @Override
   protected Parameter getSourceParameter(InstructionADDparametersContext paramCtx) {
-    return getRegisterSSParameter(paramCtx.registerSS())
+    return getRegisterSsParameter(paramCtx.registerSS())
         .orElseGet(() -> getRegistersWithReference(paramCtx.registersWithReference())
-            .orElseGet(() -> getRegisterPPParameter(paramCtx.registerPP())
-                .orElseGet(() -> getRegisterRRParameter(paramCtx.registerRR())
+            .orElseGet(() -> getRegisterPpParameter(paramCtx.registerPP())
+                .orElseGet(() -> getRegisterRrParameter(paramCtx.registerRR())
                     .orElseGet(() -> getIndexedReference(paramCtx.indexedReference())
                         .orElseGet(() -> getExpression(paramCtx.hex8bits())
-                            .orElseGet(() -> null))))));
+                            .orElse(null))))));
   }
 
   @Override
@@ -37,7 +37,7 @@ public class ADDVisitor extends TwoParameterInstructionVisitor<ADD, ADDContext, 
         .orElseGet(() -> getRegister(paramCtx.A, Register.A)
             .orElseGet(() -> getRegisterPair(paramCtx.IX, RegisterPair.IX)
                 .orElseGet(() -> getRegisterPair(paramCtx.IY, RegisterPair.IY)
-                    .orElseGet(() -> null))));
+                    .orElse(null))));
   }
 
 }

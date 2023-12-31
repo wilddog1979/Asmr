@@ -215,16 +215,20 @@ public class OneParamTest extends InstructionTester {
 
   @ParameterizedTest
   @ArgumentsSource(InstructionArgumentProvider.class)
-  public void testOneParameterInstructions(String testInstruction, Class<? extends OneParameterInstruction> instructionclass,
+  public void testOneParameterInstructions(
+      String testInstruction,
+      Class<? extends OneParameterInstruction> instructionclass,
       Class<? extends Parameter> parameterclass, String parameterstring) {
     Z80Instruction result = getZ80Instruction(testInstruction);
 
     assertNotNull(result, "Instruction must be recognized");
-    assertTrue(result.getClass().isAssignableFrom(instructionclass), () -> String.format("Test instruction must be an instance of %s", instructionclass.getName()));
+    assertTrue(result.getClass().isAssignableFrom(instructionclass),
+        () -> String.format("Test instruction must be an instance of %s", instructionclass.getName()));
     
-    Parameter resultparameter = ((OneParameterInstruction)result).getParameter();
+    Parameter resultparameter = ((OneParameterInstruction) result).getParameter();
     if (parameterclass != null) {
-      assertTrue(resultparameter.getClass().isAssignableFrom(parameterclass), () -> String.format("Parameter must be an instance of %s", parameterclass.getName()));
+      assertTrue(resultparameter.getClass().isAssignableFrom(parameterclass),
+          () -> String.format("Parameter must be an instance of %s", parameterclass.getName()));
       
       assertNotNull(resultparameter, "Instruction parameter must be presented");
       assertEquals(parameterstring, resultparameter.getAssembly(), "Parameter string does not match");

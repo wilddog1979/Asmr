@@ -6,7 +6,8 @@ import org.eastars.z80asm.ast.instructions.OneParameterInstruction;
 import org.eastars.z80asm.ast.parameter.Parameter;
 import org.eastars.z80asm.parser.Z80AssemblerParser.InstructionContext;
 
-public abstract class OneParameterVisitor<T extends OneParameterInstruction, C extends InstructionContext, P extends ParserRuleContext> extends ParameterizedVisitor<T, C, P> {
+public abstract class OneParameterVisitor<T extends OneParameterInstruction, C extends InstructionContext,
+    P extends ParserRuleContext> extends ParameterizedVisitor<T, C, P> {
   
   protected abstract Parameter getParameter(P paramCtx);
   

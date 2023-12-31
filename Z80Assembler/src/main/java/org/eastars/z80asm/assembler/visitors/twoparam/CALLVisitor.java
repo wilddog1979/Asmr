@@ -22,7 +22,7 @@ public class CALLVisitor extends TwoParameterInstructionVisitor<CALL, CALLContex
 
   @Override
   protected Parameter getSourceParameter(InstructionCALLparametersContext paramCtx) {
-    return getExpression(paramCtx.hex16bits()).orElseGet(() -> null);
+    return getExpression(paramCtx.hex16bits()).orElse(null);
   }
 
   @Override
