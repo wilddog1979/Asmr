@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class OrgTest extends DirectiveTest {
+public class ORGTest extends DirectiveTest {
 
   @Test
   public void testORGNormal() {
