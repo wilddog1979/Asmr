@@ -11,7 +11,7 @@ repositories {
 }
 
 dependencies {
-  antlr 'org.antlr:antlr4:4.13.0'
+  antlr 'org.antlr:antlr4:4.13.1'
 
   implementation project(':Assembler')
   implementation 'org.antlr:antlr4-runtime:4.13.1'
