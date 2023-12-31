@@ -14,7 +14,7 @@ dependencies {
   antlr 'org.antlr:antlr4:4.13.0'
 
   implementation project(':Assembler')
-  implementation 'org.antlr:antlr4-runtime:4.13.0'
+  implementation 'org.antlr:antlr4-runtime:4.13.1'
 
   compileOnly 'org.projectlombok:lombok:1.18.30'
   annotationProcessor 'org.projectlombok:lombok:1.18.30'
