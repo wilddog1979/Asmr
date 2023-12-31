@@ -1,7 +1,7 @@
 package org.eastars.asm.test;
 
 import org.eastars.asm.ast.Directive;
-import org.eastars.asm.ast.directives.OORG;
+import org.eastars.asm.ast.directives.ORG;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
