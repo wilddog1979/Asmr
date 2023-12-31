@@ -7,7 +7,7 @@ import org.eastars.asm.assember.CompilationContext;
 import org.eastars.asm.ast.Directive;
 
 @AllArgsConstructor
-public class Org extends Directive {
+public class ORG extends Directive {
 
   @Getter
   @Setter

@@ -4,7 +4,7 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.eastars.asm.ast.AssemblerLine;
 import org.eastars.asm.ast.Directive;
 import org.eastars.asm.ast.DirectiveLine;
-import org.eastars.asm.ast.directives.Org;
+import org.eastars.asm.ast.directives.ORG;
 import org.eastars.z80asm.ast.directives.EQU;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -24,8 +24,8 @@ public class DirectiveLineTest extends AssemblerLineTester {
     @Override
     public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
       return Stream.of(new Object[][] {
-        {"org 7a00h\n", Org.class, null, "org 7a00h"},
-        {"org 7a00h #comment\n", Org.class, "#comment", "org 7a00h"},
+        {"org 7a00h\n", ORG.class, null, "org 7a00h"},
+        {"org 7a00h #comment\n", ORG.class, "#comment", "org 7a00h"},
         {"@label1: equ 0340h\n", EQU.class, null, "@label1: equ 0340h"}
       }).map(Arguments::of);
     }

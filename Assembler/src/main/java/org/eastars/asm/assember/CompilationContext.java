@@ -6,7 +6,7 @@ import org.eastars.asm.ast.AssemblerLine;
 import org.eastars.asm.ast.Directive;
 import org.eastars.asm.ast.DirectiveLine;
 import org.eastars.asm.ast.InstructionLine;
-import org.eastars.asm.ast.directives.Org;
+import org.eastars.asm.ast.directives.ORG;
 
 import java.util.*;
 
@@ -34,8 +34,8 @@ public class CompilationContext {
   public void addInstructionLine(AssemblerLine assemblerLine, int length) {
     if (assemblerLine instanceof DirectiveLine) {
       Directive directive = ((DirectiveLine) assemblerLine).getDirective();
-      if (directive instanceof Org) {
-        setAddress(((Org) directive).getValue());
+      if (directive instanceof ORG) {
+        setAddress(((ORG) directive).getValue());
       }
     }
     CompilationLine cline = new CompilationLine(getAddress(), assemblerLine);
