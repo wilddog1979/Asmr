@@ -4,12 +4,12 @@ import lombok.Getter;
 
 import java.io.Serial;
 
+@Getter
 public class LabelAlreadyDefinedException extends RuntimeException {
 
   @Serial
   private static final long serialVersionUID = -7531480576547923852L;
 
-  @Getter
   private final String label;
   
   public LabelAlreadyDefinedException(String label) {

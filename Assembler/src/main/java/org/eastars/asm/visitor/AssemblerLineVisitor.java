@@ -11,10 +11,10 @@ import org.eastars.asm.ast.InstructionLine;
 
 import java.util.Optional;
 
+@Getter
 @AllArgsConstructor
 public class AssemblerLineVisitor {
 
-  @Getter
   private AbstractParseTreeVisitor<? extends Instruction> instructionVisitor;
 
   public AssemblerLine visitAssemblerLine(TerminalNode label, ParserRuleContext instruction, TerminalNode comment) {
