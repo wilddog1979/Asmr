@@ -14,8 +14,6 @@ import org.eastars.z80asm.parser.Z80AssemblerParser.Z80assemblerlineContext;
 import org.eastars.z80asm.parser.Z80AssemblerParser.Z80compilationUnitContext;
 import org.eastars.z80asm.parser.Z80AssemblerParser.Z80directivesContext;
 
-import java.util.Optional;
-
 public class Z80CompilationUnitVisitor extends Z80AssemblerBaseVisitor<CompilationUnit> {
 
   private final AssemblerLineVisitor assemblerLineVisitor = new AssemblerLineVisitor(new Z80InstructionVisitor());
@@ -59,7 +57,9 @@ public class Z80CompilationUnitVisitor extends Z80AssemblerBaseVisitor<Compilati
         DirectiveLine directiveline = new DirectiveLine();
         Directive directive = directivesVisitor.visit(directivectx.directive());
         directiveline.setDirective(directive);
-        Optional.ofNullable(directivectx.COMMENT()).ifPresent(c -> directiveline.setComment(c.getText()));
+        if (directivectx.COMMENT() != null) {
+          directiveline.setComment(directivectx.COMMENT().getText());
+        }
         compilationUnit.addLine(directiveline);
       }
     }
