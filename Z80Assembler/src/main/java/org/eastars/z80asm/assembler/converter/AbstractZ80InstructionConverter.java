@@ -5,9 +5,6 @@ import org.eastars.asm.assember.CompilationContext;
 import org.eastars.asm.assember.PushbackInputStream;
 import org.eastars.asm.ast.Instruction;
 import org.eastars.z80asm.ast.expression.ConstantValueExpression;
-import org.eastars.z80asm.ast.instructions.NoParameterInstruction;
-import org.eastars.z80asm.ast.instructions.OneParameterInstruction;
-import org.eastars.z80asm.ast.instructions.TwoParameterInstruction;
 import org.eastars.z80asm.ast.parameter.*;
 
 import java.io.IOException;
@@ -61,40 +58,6 @@ public abstract class AbstractZ80InstructionConverter<T extends Instruction> ext
       RegisterPair.HL,
       RegisterPair.SP);
 
-  private static final NoParameterInstructionConverter noParameterInstructionConverter =
-      new NoParameterInstructionConverter();
-
-  private static final OneParameterInstructionConverter oneParameterInstructionConverter =
-      new OneParameterInstructionConverter();
-
-  private static final TwoParameterInstructionConverter twoParameterInstructionconverter =
-      new TwoParameterInstructionConverter();
-
-  public static Instruction convertInstruction(PushbackInputStream pushbackInputStream) throws IOException {
-    Instruction result = noParameterInstructionConverter.convert(pushbackInputStream);
-    if (result == null) {
-      result = oneParameterInstructionConverter.convert(pushbackInputStream);
-    }
-    if (result == null) {
-      result = twoParameterInstructionconverter.convert(pushbackInputStream);
-    }
-
-    return result;
-  }
-
-  public static byte[] convertInstruction(CompilationContext compilationContext, Instruction instruction) {
-    byte[] result = null;
-    if (instruction instanceof NoParameterInstruction) {
-      result = noParameterInstructionConverter.convert(compilationContext, (NoParameterInstruction) instruction);
-    } else if (instruction instanceof OneParameterInstruction) {
-      result = oneParameterInstructionConverter.convert(compilationContext, (OneParameterInstruction) instruction);
-    } else if (instruction instanceof TwoParameterInstruction) {
-      result = twoParameterInstructionconverter.convert(compilationContext, (TwoParameterInstruction) instruction);
-    }
-
-    return result;
-  }
-
   private static int tableLookup(List<RegisterPair> map, Parameter parameter) {
     int result = -1;
 
@@ -145,8 +108,8 @@ public abstract class AbstractZ80InstructionConverter<T extends Instruction> ext
     int result = getRegisterRIndex(parameter);
 
     if (result == -1
-        && parameter instanceof RegisterIndirectAddressing
-        && ((RegisterIndirectAddressing) parameter).getRegisterPair() == RegisterPair.HL) {
+        && parameter instanceof RegisterIndirectAddressingParameter
+        && ((RegisterIndirectAddressingParameter) parameter).getRegisterPair() == RegisterPair.HL) {
       result = 6;
     }
 
@@ -184,7 +147,7 @@ public abstract class AbstractZ80InstructionConverter<T extends Instruction> ext
     Parameter result = null;
 
     if (index == 6) {
-      result = new RegisterIndirectAddressing(RegisterPair.HL);
+      result = new RegisterIndirectAddressingParameter(RegisterPair.HL);
     } else {
       result = reverseRegisterR(index);
     }

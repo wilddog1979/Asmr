@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static org.eastars.z80asm.utilities.Utilities.defaultNull;
+
 public class NoParameterInstructionConverter extends AbstractZ80InstructionConverter<NoParameterInstruction> {
 
   private record InstructionEntry(Class<? extends NoParameterInstruction> instruction,
@@ -76,12 +78,7 @@ public class NoParameterInstructionConverter extends AbstractZ80InstructionConve
 
   @Override
   public byte[] convert(CompilationContext compilationContext, NoParameterInstruction instruction) {
-    byte[] result = null;
-    MaskedOpcode<NoParameterInstruction> lookupResult = instructions.get(instruction.getClass());
-    if (lookupResult != null) {
-      result = Arrays.copyOf(lookupResult.value, lookupResult.value.length);
-    }
-    return result;
+    return defaultNull(instructions.get(instruction.getClass()), r -> Arrays.copyOf(r.value, r.value.length));
   }
 
 }

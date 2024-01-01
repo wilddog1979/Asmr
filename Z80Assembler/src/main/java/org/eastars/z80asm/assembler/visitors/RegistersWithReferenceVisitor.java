@@ -23,7 +23,7 @@ public class RegistersWithReferenceVisitor extends Z80AssemblerBaseVisitor<Param
     } else if (ctx.L != null) {
       parameter = new RegisterParameter(Register.L);
     } else if (ctx.refHL != null) {
-      parameter = new RegisterIndirectAddressing(RegisterPair.HL);
+      parameter = new RegisterIndirectAddressingParameter(RegisterPair.HL);
     } else if (ctx.A != null) {
       parameter = new RegisterParameter(Register.A);
     }

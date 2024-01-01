@@ -3,7 +3,7 @@ package org.eastars.z80asm.assembler.visitors.twoparam;
 import org.eastars.z80asm.assembler.visitors.TwoParameterInstructionVisitor;
 import org.eastars.z80asm.ast.instructions.twoparam.EX;
 import org.eastars.z80asm.ast.parameter.Parameter;
-import org.eastars.z80asm.ast.parameter.RegisterIndirectAddressing;
+import org.eastars.z80asm.ast.parameter.RegisterIndirectAddressingParameter;
 import org.eastars.z80asm.ast.parameter.RegisterPair;
 import org.eastars.z80asm.ast.parameter.RegisterPairParameter;
 import org.eastars.z80asm.parser.Z80AssemblerParser.*;
@@ -47,7 +47,7 @@ public class EXVisitor extends TwoParameterInstructionVisitor<EX, EXContext, Ins
     } else if (paramCtx instanceof ExrefsphlContext
         || paramCtx instanceof ExrefspixContext
         || paramCtx instanceof ExrefspiyContext) {
-      parameter = new RegisterIndirectAddressing(RegisterPair.SP);
+      parameter = new RegisterIndirectAddressingParameter(RegisterPair.SP);
     } else if (paramCtx instanceof ExdehlContext) {
       parameter = new RegisterPairParameter(RegisterPair.DE);
     }

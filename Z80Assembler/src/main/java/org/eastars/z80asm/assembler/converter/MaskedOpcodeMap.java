@@ -25,8 +25,11 @@ public class MaskedOpcodeMap<T1 extends Instruction> extends HashMap<OpcodeMask<
   }
 
   public T1 getInstruction(byte[] values) {
-    return entrySet().stream().filter(e -> e.getKey().mask.length == values.length && checkMask(values, e.getKey()))
-        .findFirst().map(e -> initialize(e.getValue(), e.getKey().parameterExtractor, values)).orElse(null);
+    return entrySet().stream()
+        .filter(e -> e.getKey().mask.length == values.length && checkMask(values, e.getKey()))
+        .findFirst()
+        .map(e -> initialize(e.getValue(), e.getKey().parameterExtractor, values))
+        .orElse(null);
   }
 
   private boolean checkMask(byte[] values, OpcodeMask<T1> mask) {
