@@ -3,10 +3,10 @@ package org.eastars.asm.ast;
 import lombok.Getter;
 import lombok.Setter;
 
+@Setter
+@Getter
 public class DirectiveLine extends AssemblerLine {
 
-  @Getter
-  @Setter
   private Directive directive;
 
   @Override

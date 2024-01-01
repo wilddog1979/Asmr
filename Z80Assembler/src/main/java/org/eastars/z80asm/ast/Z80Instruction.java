@@ -102,8 +102,8 @@ public abstract class Z80Instruction implements Instruction {
     int result = getRegisterRIndex(parameter);
     
     if (result == -1
-        && parameter instanceof RegisterIndirectAddressing
-        && ((RegisterIndirectAddressing) parameter).getRegisterPair() == RegisterPair.HL) {
+        && parameter instanceof RegisterIndirectAddressingParameter
+        && ((RegisterIndirectAddressingParameter) parameter).getRegisterPair() == RegisterPair.HL) {
       result = 6;
     }
     

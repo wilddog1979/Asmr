@@ -5,9 +5,6 @@ import org.eastars.asm.assember.CompilationContext;
 import org.eastars.asm.assember.PushbackInputStream;
 import org.eastars.asm.ast.Instruction;
 import org.eastars.z80asm.ast.expression.ConstantValueExpression;
-import org.eastars.z80asm.ast.instructions.NoParameterInstruction;
-import org.eastars.z80asm.ast.instructions.OneParameterInstruction;
-import org.eastars.z80asm.ast.instructions.TwoParameterInstruction;
 import org.eastars.z80asm.ast.parameter.*;
 
 import java.io.IOException;
@@ -61,40 +58,6 @@ public abstract class AbstractZ80InstructionConverter<T extends Instruction> ext
       RegisterPair.HL,
       RegisterPair.SP);
 
-  private static final NoParameterInstructionConverter noParameterInstructionConverter =
-      new NoParameterInstructionConverter();
-
-  private static final OneParameterInstructionConverter oneParameterInstructionConverter =
-      new OneParameterInstructionConverter();
-
-  private static final TwoParameterInstructionConverter twoParameterInstructionconverter =
-      new TwoParameterInstructionConverter();
-
-  public static Instruction convertInstruction(PushbackInputStream pushbackInputStream) throws IOException {
-    Instruction result = noParameterInstructionConverter.convert(pushbackInputStream);
-    if (result == null) {
-      result = oneParameterInstructionConverter.convert(pushbackInputStream);
-    }
-    if (result == null) {
-      result = twoParameterInstructionconverter.convert(pushbackInputStream);
-    }
-
-    return result;
-  }
-
-  public static byte[] convertInstruction(CompilationContext compilationContext, Instruction instruction) {
-    byte[] result = null;
-    if (instruction instanceof NoParameterInstruction) {
-      result = noParameterInstructionConverter.convert(compilationContext, (NoParameterInstruction) instruction);
-    } else if (instruction instanceof OneParameterInstruction) {
-      result = oneParameterInstructionConverter.convert(compilationContext, (OneParameterInstruction) instruction);
-    } else if (instruction instanceof TwoParameterInstruction) {
-      result = twoParameterInstructionconverter.convert(compilationContext, (TwoParameterInstruction) instruction);
-    }
-
-    return result;
-  }
-
   private static int tableLookup(List<RegisterPair> map, Parameter parameter) {
     int result = -1;
 
@@ -107,16 +70,6 @@ public abstract class AbstractZ80InstructionConverter<T extends Instruction> ext
 
   protected static int getRegisterSSIndex(Parameter parameter) {
     return tableLookup(TABLE_SS, parameter);
-  }
-
-  protected static Parameter reverseRegisterSS(int index) {
-    Parameter result = null;
-
-    if (index >= 0 && index < 4) {
-      result = new RegisterPairParameter(TABLE_SS.get(index));
-    }
-
-    return result;
   }
 
   protected static int getRegisterPPIndex(Parameter parameter) {
@@ -155,49 +108,46 @@ public abstract class AbstractZ80InstructionConverter<T extends Instruction> ext
     int result = getRegisterRIndex(parameter);
 
     if (result == -1
-        && parameter instanceof RegisterIndirectAddressing
-        && ((RegisterIndirectAddressing) parameter).getRegisterPair() == RegisterPair.HL) {
+        && parameter instanceof RegisterIndirectAddressingParameter
+        && ((RegisterIndirectAddressingParameter) parameter).getRegisterPair() == RegisterPair.HL) {
       result = 6;
     }
 
     return result;
   }
 
-  protected static Parameter reverseRegisterPP(int index) {
+
+  private static Parameter genericReverseRegister(List<RegisterPair> registerPairs, int index) {
     Parameter result = null;
 
     if (index >= 0 && index < 4) {
-      result = new RegisterPairParameter(TABLE_PP.get(index));
+      result = new RegisterPairParameter(registerPairs.get(index));
     }
 
     return result;
+  }
+
+  protected static Parameter reverseRegisterSS(int index) {
+    return genericReverseRegister(TABLE_SS, index);
+  }
+
+  protected static Parameter reverseRegisterPP(int index) {
+    return genericReverseRegister(TABLE_PP, index);
   }
 
   protected static Parameter reverseRegisterQQ(int index) {
-    Parameter result = null;
-
-    if (index >= 0 && index < 4) {
-      result = new RegisterPairParameter(TABLE_QQ.get(index));
-    }
-
-    return result;
+    return genericReverseRegister(TABLE_QQ, index);
   }
 
   protected static Parameter reverseRegisterRR(int index) {
-    Parameter result = null;
-
-    if (index >= 0 && index < 4) {
-      result = new RegisterPairParameter(TABLE_RR.get(index));
-    }
-
-    return result;
+    return genericReverseRegister(TABLE_RR, index);
   }
 
   protected static Parameter reverseRegisterRH(int index) {
     Parameter result = null;
 
     if (index == 6) {
-      result = new RegisterIndirectAddressing(RegisterPair.HL);
+      result = new RegisterIndirectAddressingParameter(RegisterPair.HL);
     } else {
       result = reverseRegisterR(index);
     }
@@ -226,25 +176,14 @@ public abstract class AbstractZ80InstructionConverter<T extends Instruction> ext
   }
 
   protected static Parameter reverseRegisterPPRR(boolean ix, int index) {
-    Parameter result = null;
-
-    if (ix) {
-      result = reverseRegisterPP(index);
-    } else {
-      result = reverseRegisterRR(index);
-    }
-
-    return result;
+    return ix ? reverseRegisterPP(index) : reverseRegisterRR(index);
   }
 
   protected static Parameter reverseIndexedAddressing(boolean ix, int displacement) {
-    return new IndexedAddressingParameter(
-        ix ? RegisterPair.IX : RegisterPair.IY,
-        new ExpressionParameter(new ConstantValueExpression(new ConstantValueParameter(displacement & 0xff)),
-            8));
+    return new IndexedAddressingParameter(ix ? RegisterPair.IX : RegisterPair.IY, reverseImmediate8(displacement));
   }
 
-  protected static Parameter reverseImmediate8(int value) {
+  protected static ExpressionParameter reverseImmediate8(int value) {
     return new ExpressionParameter(
         new ConstantValueExpression(new ConstantValueParameter(value & 0xff)),
         8);

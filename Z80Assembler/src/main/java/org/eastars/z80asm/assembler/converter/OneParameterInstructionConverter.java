@@ -45,7 +45,7 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
           (r, v) -> r.setParameter(reverseImmediate8(v[1]))),
       new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00}, new byte[] {(byte) 0xdd, (byte) 0xa6, 0x00},
           (r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
-      ), OneParameterInstructionConverter::generateSubAndXorOrCp),
+      ), OneParameterInstructionConverter::generateSUBANDXORORCP),
     new InstructionEntry(CP.class, Arrays.asList(
         new MaskedOpcode<>(new byte[] {(byte) 0xf8}, new byte[] {(byte) 0xb8},
             (r, v) -> r.setParameter(reverseRegisterRH(v[0] & 0x07))),
@@ -53,7 +53,7 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
             (r, v) -> r.setParameter(reverseImmediate8(v[1]))),
       new MaskedOpcode<>(new byte[]{(byte) 0xdf, (byte) 0xff, 0x00}, new byte[]{(byte) 0xdd, (byte) 0xbe, 0x00},
           (r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
-        ), OneParameterInstructionConverter::generateSubAndXorOrCp),
+        ), OneParameterInstructionConverter::generateSUBANDXORORCP),
     new InstructionEntry(DEC.class, Arrays.asList(
         new MaskedOpcode<>(new byte[] {(byte) 0xcf}, new byte[] {0x0b},
             (r, v) -> r.setParameter(reverseRegisterSS((v[0] >> 4) & 0x03))),
@@ -63,11 +63,11 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
             (r, v) -> r.setParameter(reverseIXIY((v[0] & 0x20) == 0x00))),
         new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00}, new byte[] {(byte) 0xdd, 0x35, 0x00},
             (r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
-        ), OneParameterInstructionConverter::generateIncDec),
+        ), OneParameterInstructionConverter::generateINCDEC),
     new InstructionEntry(DJNZ.class, List.of(
       new MaskedOpcode<>(new byte[]{(byte) 0xff, 0x00}, new byte[]{0x10, 0x00},
           (r, v) -> r.setParameter(reverseImmediate8(v[1] + 2)))
-    ), OneParameterInstructionConverter::generateDjnz),
+    ), OneParameterInstructionConverter::generateDJNZ),
     new InstructionEntry(INC.class, Arrays.asList(
         new MaskedOpcode<>(new byte[] {(byte) 0xcf}, new byte[] {0x03},
             (r, v) -> r.setParameter(reverseRegisterSS((v[0] >> 4) & 0x03))),
@@ -77,7 +77,7 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
             (r, v) -> r.setParameter(reverseIXIY((v[0] & 0x20) == 0x00))),
         new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00}, new byte[] {(byte) 0xdd, 0x34, 0x00},
             (r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
-        ), OneParameterInstructionConverter::generateIncDec),
+        ), OneParameterInstructionConverter::generateINCDEC),
     new InstructionEntry(OR.class, Arrays.asList(
         new MaskedOpcode<>(new byte[] {(byte) 0xf8}, new byte[] {(byte) 0xb0},
             (r, v) -> r.setParameter(reverseRegisterRH(v[0] & 0x07))),
@@ -85,25 +85,25 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
             (r, v) -> r.setParameter(reverseImmediate8(v[1]))),
         new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00}, new byte[] {(byte) 0xdd, (byte) 0xb6, 0x00},
             (r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
-        ), OneParameterInstructionConverter::generateSubAndXorOrCp),
+        ), OneParameterInstructionConverter::generateSUBANDXORORCP),
     new InstructionEntry(POP.class, Arrays.asList(
         new MaskedOpcode<>(new byte[] {(byte) 0xcf}, new byte[] {(byte) 0xc1},
             (r, v) -> r.setParameter(reverseRegisterQQ((v[0] >> 4) & 0x03))),
         new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff}, new byte[] {(byte) 0xdd, (byte) 0xe1},
             (r, v) -> r.setParameter(reverseIXIY((v[0] & 0x20) == 0x00)))
-        ), OneParameterInstructionConverter::generatePushPop),
+        ), OneParameterInstructionConverter::generatePUSHPOP),
     new InstructionEntry(PUSH.class, Arrays.asList(
         new MaskedOpcode<>(new byte[] {(byte) 0xcf}, new byte[] {(byte) 0xc5},
             (r, v) -> r.setParameter(reverseRegisterQQ((v[0] >> 4) & 0x03))),
         new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff}, new byte[] {(byte) 0xdd, (byte) 0xe5},
             (r, v) -> r.setParameter(reverseIXIY((v[0] & 0x20) == 0x00)))
-        ), OneParameterInstructionConverter::generatePushPop),
+        ), OneParameterInstructionConverter::generatePUSHPOP),
     new InstructionEntry(RET.class, Arrays.asList(
         new MaskedOpcode<>(new byte[] {(byte) 0xff}, new byte[] {(byte) 0xc9},
             (r, v) -> r.setParameter(null)),
         new MaskedOpcode<>(new byte[] {(byte) 0xc7}, new byte[] {(byte) 0xc0},
             (r, v) -> r.setParameter(reverseCondition((v[0] >> 3) & 0x07)))
-        ), (c, p, m) -> generateRet(p, m)),
+        ), (c, p, m) -> generateRET(p, m)),
     new InstructionEntry(RL.class, Arrays.asList(
         new MaskedOpcode<>(new byte[] {(byte) 0xff, (byte) 0xf8}, new byte[] {(byte) 0xca, 0x10},
             (r, v) -> r.setParameter(reverseRegisterRH(v[1] & 0x07))),
@@ -134,7 +134,7 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
     new InstructionEntry(RST.class, List.of(
       new MaskedOpcode<>(new byte[]{(byte) 0xc7}, new byte[]{(byte) 0xc7},
           (r, v) -> r.setParameter(reverseRSTValue(v[0] & 0x38)))
-    ), (c, p, m) -> generateRst(p, m)),
+    ), (c, p, m) -> generateRST(p, m)),
     new InstructionEntry(SLA.class, Arrays.asList(
         new MaskedOpcode<>(new byte[] {(byte) 0xff, (byte) 0xf8}, new byte[] {(byte) 0xca, 0x20},
             (r, v) -> r.setParameter(reverseRegisterRH(v[1] & 0x07))),
@@ -163,7 +163,7 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
             (r, v) -> r.setParameter(reverseImmediate8(v[1]))),
         new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00}, new byte[] {(byte) 0xdd, (byte) 0x96, 0x00},
             (r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
-        ), OneParameterInstructionConverter::generateSubAndXorOrCp),
+        ), OneParameterInstructionConverter::generateSUBANDXORORCP),
     new InstructionEntry(XOR.class, Arrays.asList(
         new MaskedOpcode<>(new byte[] {(byte) 0xf8}, new byte[] {(byte) 0xa8},
             (r, v) -> r.setParameter(reverseRegisterRH(v[0] & 0x07))),
@@ -171,7 +171,7 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
             (r, v) -> r.setParameter(reverseImmediate8(v[1]))),
         new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00}, new byte[] {(byte) 0xdd, (byte) 0xae, 0x00},
             (r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
-        ), OneParameterInstructionConverter::generateSubAndXorOrCp));
+        ), OneParameterInstructionConverter::generateSUBANDXORORCP));
 
   private static final Map<Class<? extends OneParameterInstruction>, InstructionEntry> instructions =
       instructionlist.stream().collect(Collectors.toMap(e -> e.instruction, e -> e));
@@ -202,7 +202,7 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
     return result;
   }
 
-  private static byte[] generateSubAndXorOrCp(
+  private static byte[] generateSUBANDXORORCP(
       CompilationContext compilationContext,
       Parameter parameter,
       List<MaskedOpcode<OneParameterInstruction>> masks) {
@@ -224,7 +224,7 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
     return result;
   }
 
-  private static byte[] generateIncDec(
+  private static byte[] generateINCDEC(
       CompilationContext compilationContext,
       Parameter parameter,
       List<MaskedOpcode<OneParameterInstruction>> masks) {
@@ -246,7 +246,7 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
     return result;
   }
 
-  private static byte[] generateDjnz(
+  private static byte[] generateDJNZ(
       CompilationContext compilationContext,
       Parameter parameter,
       List<MaskedOpcode<OneParameterInstruction>> masks) {
@@ -262,7 +262,7 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
     return result;
   }
 
-  private static byte[] generatePushPop(
+  private static byte[] generatePUSHPOP(
       CompilationContext compilationContext,
       Parameter parameter,
       List<MaskedOpcode<OneParameterInstruction>> masks) {
@@ -296,7 +296,7 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
     return result;
   }
 
-  private static byte[] generateRet(Parameter parameter, List<MaskedOpcode<OneParameterInstruction>> masks) {
+  private static byte[] generateRET(Parameter parameter, List<MaskedOpcode<OneParameterInstruction>> masks) {
     byte[] result = null;
 
     if (parameter == null || parameter instanceof ConditionParameter) {
@@ -312,7 +312,7 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
     return result;
   }
 
-  private static byte[] generateRst(Parameter parameter, List<MaskedOpcode<OneParameterInstruction>> masks) {
+  private static byte[] generateRST(Parameter parameter, List<MaskedOpcode<OneParameterInstruction>> masks) {
     byte[] result = null;
 
     if (parameter instanceof ConstantValueParameter constantValeParameter) {

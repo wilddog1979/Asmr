@@ -3,6 +3,7 @@ package org.eastars.z80asm.assembler.converter;
 import org.eastars.asm.ast.Instruction;
 
 import java.io.Serial;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 public class MaskedOpcodeMap<T1 extends Instruction> extends HashMap<OpcodeMask<T1>, Class<? extends T1>> {
@@ -12,20 +13,23 @@ public class MaskedOpcodeMap<T1 extends Instruction> extends HashMap<OpcodeMask<
 
   private T1 initialize(Class<? extends T1> clazz, ParameterExtractor<T1> extractor, byte[] values) {
     try {
-      T1 result =  clazz.newInstance();
+      T1 result = clazz.getDeclaredConstructor().newInstance();
 
       if (extractor != null) {
         result = extractor.extract(result, values);
       }
       return result;
-    } catch (InstantiationException | IllegalAccessException e) {
+    } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
       return null;
     }
   }
 
   public T1 getInstruction(byte[] values) {
-    return entrySet().stream().filter(e -> e.getKey().mask.length == values.length && checkMask(values, e.getKey()))
-        .findFirst().map(e -> initialize(e.getValue(), e.getKey().parameterExtractor, values)).orElse(null);
+    return entrySet().stream()
+        .filter(e -> e.getKey().mask.length == values.length && checkMask(values, e.getKey()))
+        .findFirst()
+        .map(e -> initialize(e.getValue(), e.getKey().parameterExtractor, values))
+        .orElse(null);
   }
 
   private boolean checkMask(byte[] values, OpcodeMask<T1> mask) {

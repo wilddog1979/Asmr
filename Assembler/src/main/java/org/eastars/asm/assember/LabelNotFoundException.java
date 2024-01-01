@@ -4,12 +4,12 @@ import lombok.Getter;
 
 import java.io.Serial;
 
+@Getter
 public class LabelNotFoundException extends RuntimeException {
 
   @Serial
   private static final long serialVersionUID = -5692979883104582747L;
 
-  @Getter
   private final String label;
   
   public LabelNotFoundException(String label) {

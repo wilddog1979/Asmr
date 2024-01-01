@@ -137,7 +137,7 @@ public abstract class ParameterizedVisitor<T, C extends InstructionContext, P ex
   }
   
   protected Optional<Parameter> getRegisterIndirectAddressing(Token token, RegisterPair register) {
-    return Optional.ofNullable(token).map(t -> new RegisterIndirectAddressing(register));
+    return Optional.ofNullable(token).map(t -> new RegisterIndirectAddressingParameter(register));
   }
 
 }

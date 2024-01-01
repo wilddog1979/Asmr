@@ -6,11 +6,11 @@ import lombok.Setter;
 import org.eastars.asm.assember.CompilationContext;
 import org.eastars.asm.ast.Directive;
 
+@Setter
+@Getter
 @AllArgsConstructor
 public class ORG extends Directive {
 
-  @Getter
-  @Setter
   private Integer value;
 
   @Override

@@ -31,10 +31,10 @@ public class LDVisitor extends TwoParameterInstructionVisitor<LD, LDContext, Ins
     } else if (paramCtx instanceof LDarContext) {
       parameter = new RegisterParameter(Register.R);
     } else if (paramCtx instanceof LDfromAddressToAContext) {
-      parameter = new RegisterIndirectAddressing(
+      parameter = new RegisterIndirectAddressingParameter(
           ((LDfromAddressToAContext) paramCtx).refbc != null ? RegisterPair.BC : RegisterPair.DE);
     } else if (paramCtx instanceof LDrefhltoregContext) {
-      parameter = new RegisterIndirectAddressing(RegisterPair.HL);
+      parameter = new RegisterIndirectAddressingParameter(RegisterPair.HL);
     } else if (paramCtx instanceof LDsphlContext
         || paramCtx instanceof LDrefnum16hlContext) {
       parameter = new RegisterPairParameter(RegisterPair.HL);
@@ -86,7 +86,7 @@ public class LDVisitor extends TwoParameterInstructionVisitor<LD, LDContext, Ins
     Parameter parameter = null;
 
     if (paramCtx instanceof LDfromAToAddressContext) {
-      parameter = new RegisterIndirectAddressing(
+      parameter = new RegisterIndirectAddressingParameter(
           ((LDfromAToAddressContext) paramCtx).refbc != null ? RegisterPair.BC : RegisterPair.DE);
     } else if (paramCtx instanceof LDfromAddressToAContext
         || paramCtx instanceof LDaiContext
@@ -100,7 +100,7 @@ public class LDVisitor extends TwoParameterInstructionVisitor<LD, LDContext, Ins
     } else if (paramCtx instanceof LDhlrefnum16Context) {
       parameter = new RegisterPairParameter(RegisterPair.HL);
     } else if (paramCtx instanceof LDregtorefhlContext) {
-      parameter = new RegisterIndirectAddressing(RegisterPair.HL);
+      parameter = new RegisterIndirectAddressingParameter(RegisterPair.HL);
     } else if (paramCtx instanceof LDsphlContext
         || paramCtx instanceof LDspixContext
         || paramCtx instanceof LDspiyContext) {
