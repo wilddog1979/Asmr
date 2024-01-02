@@ -2,6 +2,7 @@ package org.eastars.z80asm.assembler.converter;
 
 import lombok.Builder;
 import org.eastars.asm.assember.CompilationContext;
+import org.eastars.z80asm.ast.Z80Instruction;
 import org.eastars.z80asm.ast.instructions.OneParameterInstruction;
 import org.eastars.z80asm.ast.instructions.oneparam.*;
 import org.eastars.z80asm.ast.parameter.*;
@@ -14,13 +15,13 @@ import java.util.stream.Collectors;
 public class OneParameterInstructionConverter extends AbstractZ80InstructionConverter<OneParameterInstruction> {
 
   @Builder
-  private record InstructionEntry(Class<? extends OneParameterInstruction> instruction,
-                                  List<MaskedOpcode<OneParameterInstruction>> masks,
-                                  InstructionAssemblyGenerator generator) {
+  private record InstructionEntry<T extends Z80Instruction>(Class<? extends T> instruction,
+                                  List<MaskedOpcode<T>> masks,
+                                  InstructionAssemblyGenerator<T> generator) {
     private InstructionEntry(
-        Class<? extends OneParameterInstruction> instruction,
-        List<MaskedOpcode<OneParameterInstruction>> masks,
-        InstructionAssemblyGenerator generator) {
+        Class<? extends T> instruction,
+        List<MaskedOpcode<T>> masks,
+        InstructionAssemblyGenerator<T> generator) {
       this.instruction = instruction;
       this.masks = masks;
       masks.forEach(m -> m.setInstruction(instruction));
@@ -30,17 +31,17 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
   }
 
   @FunctionalInterface
-  protected interface InstructionAssemblyGenerator {
+  protected interface InstructionAssemblyGenerator<T extends Z80Instruction> {
 
     byte[] generate(
         CompilationContext compilationContext,
         Parameter parameter,
-        List<MaskedOpcode<OneParameterInstruction>> masks);
+        List<MaskedOpcode<T>> masks);
 
   }
 
-  private static final List<InstructionEntry> instructionlist = Arrays.asList(
-      InstructionEntry.builder()
+  private static final List<InstructionEntry<OneParameterInstruction>> instructionlist = Arrays.asList(
+      InstructionEntry.<OneParameterInstruction>builder()
         .instruction(AND.class)
         .masks(List.of(
             MaskedOpcode.<OneParameterInstruction>builder()
@@ -57,7 +58,7 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
                 .extractor((r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))).build()
         ))
         .generator(OneParameterInstructionConverter::generateSUBANDXORORCP).build(),
-      InstructionEntry.builder()
+      InstructionEntry.<OneParameterInstruction>builder()
           .instruction(CP.class)
           .masks(List.of(
               MaskedOpcode.<OneParameterInstruction>builder()
@@ -74,7 +75,7 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
                   .extractor((r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))).build()
           ))
           .generator(OneParameterInstructionConverter::generateSUBANDXORORCP).build(),
-        InstructionEntry.builder()
+        InstructionEntry.<OneParameterInstruction>builder()
           .instruction(DEC.class)
           .masks(List.of(
               MaskedOpcode.<OneParameterInstruction>builder()
@@ -95,7 +96,7 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
                   .extractor((r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))).build()
           ))
           .generator(OneParameterInstructionConverter::generateINCDEC).build(),
-      InstructionEntry.builder()
+      InstructionEntry.<OneParameterInstruction>builder()
           .instruction(DJNZ.class)
           .masks(List.of(
               MaskedOpcode.<OneParameterInstruction>builder()
@@ -104,7 +105,7 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
                   .extractor((r, v) -> r.setParameter(reverseImmediate8(v[1] + 2))).build()
           ))
           .generator(OneParameterInstructionConverter::generateDJNZ).build(),
-      InstructionEntry.builder()
+      InstructionEntry.<OneParameterInstruction>builder()
           .instruction(INC.class)
           .masks(List.of(
               MaskedOpcode.<OneParameterInstruction>builder()
@@ -125,7 +126,7 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
                   .extractor((r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))).build()
           ))
           .generator(OneParameterInstructionConverter::generateINCDEC).build(),
-      InstructionEntry.builder()
+      InstructionEntry.<OneParameterInstruction>builder()
           .instruction(OR.class)
           .masks(List.of(
               MaskedOpcode.<OneParameterInstruction>builder()
@@ -142,7 +143,7 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
                   .extractor((r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))).build()
           ))
           .generator(OneParameterInstructionConverter::generateSUBANDXORORCP).build(),
-      InstructionEntry.builder()
+      InstructionEntry.<OneParameterInstruction>builder()
           .instruction(POP.class)
           .masks(List.of(
               MaskedOpcode.<OneParameterInstruction>builder()
@@ -155,7 +156,7 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
                   .extractor((r, v) -> r.setParameter(reverseIXIY((v[0] & 0x20) == 0x00))).build()
           ))
           .generator(OneParameterInstructionConverter::generatePUSHPOP).build(),
-      InstructionEntry.builder()
+      InstructionEntry.<OneParameterInstruction>builder()
           .instruction(PUSH.class)
           .masks(List.of(
               MaskedOpcode.<OneParameterInstruction>builder()
@@ -168,7 +169,7 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
                   .extractor((r, v) -> r.setParameter(reverseIXIY((v[0] & 0x20) == 0x00))).build()
           ))
           .generator(OneParameterInstructionConverter::generatePUSHPOP).build(),
-      InstructionEntry.builder()
+      InstructionEntry.<OneParameterInstruction>builder()
           .instruction(RET.class)
           .masks(List.of(
               MaskedOpcode.<OneParameterInstruction>builder()
@@ -181,7 +182,7 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
                   .extractor((r, v) -> r.setParameter(reverseCondition((v[0] >> 3) & 0x07))).build()
           ))
           .generator((c, p, m) -> generateRET(p, m)).build(),
-      InstructionEntry.builder()
+      InstructionEntry.<OneParameterInstruction>builder()
           .instruction(RL.class)
           .masks(List.of(
               MaskedOpcode.<OneParameterInstruction>builder()
@@ -194,7 +195,7 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
                   .extractor((r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))).build()
           ))
           .generator(OneParameterInstructionConverter::generateBitRotating).build(),
-      InstructionEntry.builder()
+      InstructionEntry.<OneParameterInstruction>builder()
           .instruction(RLC.class)
           .masks(List.of(
               MaskedOpcode.<OneParameterInstruction>builder()
@@ -207,7 +208,7 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
                   .extractor((r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))).build()
           ))
           .generator(OneParameterInstructionConverter::generateBitRotating).build(),
-      InstructionEntry.builder()
+      InstructionEntry.<OneParameterInstruction>builder()
           .instruction(RR.class)
           .masks(List.of(
               MaskedOpcode.<OneParameterInstruction>builder()
@@ -220,7 +221,7 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
                   .extractor((r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))).build()
           ))
           .generator(OneParameterInstructionConverter::generateBitRotating).build(),
-      InstructionEntry.builder()
+      InstructionEntry.<OneParameterInstruction>builder()
           .instruction(RRC.class)
           .masks(List.of(
               MaskedOpcode.<OneParameterInstruction>builder()
@@ -233,7 +234,7 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
                   .extractor((r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))).build()
           ))
           .generator(OneParameterInstructionConverter::generateBitRotating).build(),
-      InstructionEntry.builder()
+      InstructionEntry.<OneParameterInstruction>builder()
           .instruction(RST.class)
           .masks(List.of(
               MaskedOpcode.<OneParameterInstruction>builder()
@@ -242,7 +243,7 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
                   .extractor((r, v) -> r.setParameter(reverseRSTValue(v[0] & 0x38))).build()
           ))
           .generator((c, p, m) -> generateRST(p, m)).build(),
-      InstructionEntry.builder()
+      InstructionEntry.<OneParameterInstruction>builder()
           .instruction(SLA.class)
           .masks(List.of(
               MaskedOpcode.<OneParameterInstruction>builder()
@@ -255,7 +256,7 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
                   .extractor((r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))).build()
           ))
           .generator(OneParameterInstructionConverter::generateBitRotating).build(),
-      InstructionEntry.builder()
+      InstructionEntry.<OneParameterInstruction>builder()
           .instruction(SRA.class)
           .masks(List.of(
               MaskedOpcode.<OneParameterInstruction>builder()
@@ -268,7 +269,7 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
                   .extractor((r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))).build()
           ))
           .generator(OneParameterInstructionConverter::generateBitRotating).build(),
-      InstructionEntry.builder()
+      InstructionEntry.<OneParameterInstruction>builder()
           .instruction(SRL.class)
           .masks(List.of(
               MaskedOpcode.<OneParameterInstruction>builder()
@@ -281,7 +282,7 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
                   .extractor((r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))).build()
           ))
           .generator(OneParameterInstructionConverter::generateBitRotating).build(),
-      InstructionEntry.builder()
+      InstructionEntry.<OneParameterInstruction>builder()
           .instruction(SUB.class)
           .masks(List.of(
               MaskedOpcode.<OneParameterInstruction>builder()
@@ -298,7 +299,7 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
                   .extractor((r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))).build()
           ))
           .generator(OneParameterInstructionConverter::generateSUBANDXORORCP).build(),
-      InstructionEntry.builder()
+      InstructionEntry.<OneParameterInstruction>builder()
           .instruction(XOR.class)
           .masks(List.of(
               MaskedOpcode.<OneParameterInstruction>builder()
@@ -316,7 +317,8 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
           ))
           .generator(OneParameterInstructionConverter::generateSUBANDXORORCP).build());
 
-  private static final Map<Class<? extends OneParameterInstruction>, InstructionEntry> instructions =
+  private static final Map<
+      Class<? extends OneParameterInstruction>, InstructionEntry<OneParameterInstruction>> instructions =
       instructionlist.stream().collect(Collectors.toMap(e -> e.instruction, e -> e));
 
   private static final Map<Integer, MaskedOpcodeMap<OneParameterInstruction>> reverse =
@@ -338,7 +340,7 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
   @Override
   public byte[] convert(CompilationContext compilationContext, OneParameterInstruction instruction) {
     byte[] result = null;
-    InstructionEntry entry = instructions.get(instruction.getClass());
+    InstructionEntry<OneParameterInstruction> entry = instructions.get(instruction.getClass());
     if (entry != null && entry.generator != null) {
       result = entry.generator.generate(compilationContext, instruction.getParameter(), entry.masks);
     }

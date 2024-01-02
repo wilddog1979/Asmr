@@ -1,6 +1,8 @@
 package org.eastars.z80asm.assembler.converter;
 
+import lombok.Builder;
 import org.eastars.asm.assember.CompilationContext;
+import org.eastars.z80asm.ast.Z80Instruction;
 import org.eastars.z80asm.ast.instructions.TwoParameterInstruction;
 import org.eastars.z80asm.ast.instructions.twoparam.*;
 import org.eastars.z80asm.ast.parameter.*;
@@ -14,33 +16,35 @@ import static org.eastars.z80asm.assembler.converter.Check.*;
 
 public class TwoParameterInstructionConverter extends AbstractZ80InstructionConverter<TwoParameterInstruction> {
 
-  private record InstructionEntry(Class<? extends TwoParameterInstruction> instruction,
-                                  List<MaskedOpcode<TwoParameterInstruction>> masks,
-                                  InstructionAssemblyGenerator generator) {
+  @Builder
+  private record InstructionEntry<T extends Z80Instruction>(Class<? extends T> instruction,
+                                                            List<MaskedOpcode<T>> masks,
+                                                            InstructionAssemblyGenerator<T> generator) {
     private InstructionEntry(
-        Class<? extends TwoParameterInstruction> instruction,
-        List<MaskedOpcode<TwoParameterInstruction>> masks,
-        InstructionAssemblyGenerator generator) {
+        Class<? extends T> instruction,
+        List<MaskedOpcode<T>> masks,
+        InstructionAssemblyGenerator<T> generator) {
       this.instruction = instruction;
       this.masks = masks;
       masks.forEach(m -> m.setInstruction(instruction));
       this.generator = generator;
     }
+
   }
   
   @FunctionalInterface
-  protected interface InstructionAssemblyGenerator {
+  protected interface InstructionAssemblyGenerator<T extends Z80Instruction> {
     
     byte[] generate(
         CompilationContext compilationContext,
         Parameter targetparameter,
         Parameter sourceparameter,
-        List<MaskedOpcode<TwoParameterInstruction>> masks);
+        List<MaskedOpcode<T>> masks);
     
   }
 
-  private static final List<InstructionEntry> instructionlist = Arrays.asList(
-    new InstructionEntry(ADC.class, Arrays.asList(
+  private static final List<InstructionEntry<TwoParameterInstruction>> instructionlist = Arrays.asList(
+    new InstructionEntry<TwoParameterInstruction>(ADC.class, Arrays.asList(
       new MaskedOpcode<>(new byte[] {(byte) 0xf8}, new byte[] {(byte) 0x88}, (r, v) ->
           r.setTarget(new RegisterParameter(Register.A)).setSource(reverseRegisterRH(v[0] & 0x07))),
       new MaskedOpcode<>(new byte[] {(byte) 0xff, 0x00}, new byte[] {(byte) 0xce, 0x00}, (r, v) ->
@@ -52,7 +56,7 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
           (r, v) -> r.setTarget(new RegisterParameter(Register.A))
               .setSource(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
       ), TwoParameterInstructionConverter::generateADCSBC),
-    new InstructionEntry(ADD.class, Arrays.asList(
+    new InstructionEntry<TwoParameterInstruction>(ADD.class, Arrays.asList(
         new MaskedOpcode<>(new byte[] {(byte) 0xcf}, new byte[] {0x09}, (r, v) ->
             r.setTarget(new RegisterPairParameter(RegisterPair.HL))
                 .setSource(reverseRegisterSS((v[0] >> 4) & 0x03))),
@@ -67,7 +71,7 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
             r.setTarget(reverseIXIY((v[0] & 0x20) == 0x00))
                 .setSource(reverseRegisterPPRR((v[0] & 0x20) == 0x00, (v[1] >> 4) & 0x03)))
         ), TwoParameterInstructionConverter::generateADD),
-    new InstructionEntry(BIT.class, Arrays.asList(
+    new InstructionEntry<TwoParameterInstruction>(BIT.class, Arrays.asList(
         new MaskedOpcode<>(new byte[] {(byte) 0xff, (byte) 0xc0}, new byte[] {(byte) 0xcb, 0x40}, (r, v) ->
             r.setTarget(reverseImmediate8((v[1] >> 3) & 0x07)).setSource(reverseRegisterRH(v[1] & 0x07))),
         new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00, (byte) 0xc7}, new byte[] {(byte) 0xdd,
@@ -75,13 +79,13 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
             r.setTarget(reverseImmediate8((v[3] >> 3) & 0x07))
                 .setSource(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
         ), TwoParameterInstructionConverter::generateBITRESSET),
-    new InstructionEntry(CALL.class, Arrays.asList(
+    new InstructionEntry<TwoParameterInstruction>(CALL.class, Arrays.asList(
         new MaskedOpcode<>(new byte[] {(byte) 0xc7, 0x00, 0x00}, new byte[] {(byte) 0xc4, 0x00, 0x00}, (r, v) ->
             r.setTarget(reverseCondition((v[0] >> 3) & 0x07)).setSource(reverseImmediate16(v[2], v[1]))),
         new MaskedOpcode<>(new byte[] {(byte) 0xff, 0x00, 0x00}, new byte[] {(byte) 0xcd, 0x00, 0x00}, (r, v) ->
             r.setSource(reverseImmediate16(v[2], v[1])))
         ), TwoParameterInstructionConverter::generateCALL),
-    new InstructionEntry(EX.class, Arrays.asList(
+    new InstructionEntry<TwoParameterInstruction>(EX.class, Arrays.asList(
         new MaskedOpcode<>(new byte[] {(byte) 0xff}, new byte[] {0x08}, (r, v) ->
             r.setTarget(new RegisterPairParameter(RegisterPair.AF))
                 .setSource(new RegisterPairParameter(RegisterPair.AFMarked))),
@@ -94,13 +98,13 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
         new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff}, new byte[] {(byte) 0xdd, (byte) 0xe3}, (r, v) ->
             r.setTarget(new RegisterIndirectAddressingParameter(RegisterPair.SP))
                 .setSource(reverseIXIY((v[0] & 0x20) == 0x00)))), (c, t, s, m) -> generateEX(t, s, m)),
-    new InstructionEntry(IN.class, Arrays.asList(
+    new InstructionEntry<TwoParameterInstruction>(IN.class, Arrays.asList(
         new MaskedOpcode<>(new byte[] {(byte) 0xff, 0x00}, new byte[] {(byte) 0xdb, 0x00}, (r, v) ->
             r.setTarget(new RegisterParameter(Register.A)).setSource(reverseImmediate8(v[1]))),
         new MaskedOpcode<>(new byte[] {(byte) 0xff, (byte) 0xc7}, new byte[] {(byte) 0xed, 0x40}, (r, v) ->
             r.setTarget(reverseRegisterR((v[1] >> 3) & 0x07)).setSource(new RegisterParameter(Register.C)))
         ), TwoParameterInstructionConverter::generateIN),
-    new InstructionEntry(JP.class, Arrays.asList(
+    new InstructionEntry<TwoParameterInstruction>(JP.class, Arrays.asList(
         new MaskedOpcode<>(new byte[] {(byte) 0xff}, new byte[] {(byte) 0xe9}, (r, v) ->
             r.setSource(new RegisterIndirectAddressingParameter(RegisterPair.HL))),
         new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff}, new byte[] {(byte) 0xdd, (byte) 0xe9}, (r, v) ->
@@ -111,13 +115,13 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
         new MaskedOpcode<>(new byte[] {(byte) 0xff, 0x00, 0x00}, new byte[] {(byte) 0xc3, 0x00, 0x00}, (r, v) ->
             r.setSource(reverseImmediate16(v[2], v[1])))
         ), TwoParameterInstructionConverter::generateJP),
-    new InstructionEntry(JR.class, Arrays.asList(
+    new InstructionEntry<TwoParameterInstruction>(JR.class, Arrays.asList(
         new MaskedOpcode<>(new byte[] {(byte) 0xe7, 0x00}, new byte[] {0x20, 0x00}, (r, v) ->
             r.setTarget(reverseCondition((v[0] >> 3) & 0x03)).setSource(reverseImmediate8(v[1] + 2))),
         new MaskedOpcode<>(new byte[] {(byte) 0xff, 0x00}, new byte[] {0x18, 0x00}, (r, v) ->
             r.setSource(reverseImmediate8(v[1] + 2)))
         ), TwoParameterInstructionConverter::generateJR),
-    new InstructionEntry(LD.class, Arrays.asList(
+    new InstructionEntry<TwoParameterInstruction>(LD.class, Arrays.asList(
         new MaskedOpcode<>(new byte[] {(byte) 0xff}, new byte[] {0x02}, (r, v) ->
             r.setTarget(new RegisterIndirectAddressingParameter(RegisterPair.BC))
                 .setSource(new RegisterParameter(Register.A))),
@@ -200,13 +204,13 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
             r.setTarget(reverseIXIY((v[0] & 0x20) == 0x00))
                 .setSource(new ImmediateAddressingParameter((ExpressionParameter) reverseImmediate16(v[3], v[2]))))
         ), TwoParameterInstructionConverter::generateLD),
-    new InstructionEntry(OUT.class, Arrays.asList(
+    new InstructionEntry<TwoParameterInstruction>(OUT.class, Arrays.asList(
         new MaskedOpcode<>(new byte[] {(byte) 0xff, 0x00}, new byte[] {(byte) 0xd3, 0x00}, (r, v) ->
             r.setTarget(reverseImmediate8(v[1])).setSource(new RegisterParameter(Register.A))),
         new MaskedOpcode<>(new byte[] {(byte) 0xff, (byte) 0xc7}, new byte[] {(byte) 0xed, 0x41}, (r, v) ->
             r.setTarget(new RegisterParameter(Register.C)).setSource(reverseRegisterR((v[1] >> 3) & 0x07)))
         ), TwoParameterInstructionConverter::generateOUT),
-    new InstructionEntry(RES.class, Arrays.asList(
+    new InstructionEntry<TwoParameterInstruction>(RES.class, Arrays.asList(
         new MaskedOpcode<>(new byte[] {(byte) 0xff, (byte) 0xc0}, new byte[] {(byte) 0xcb, (byte) 0x80}, (r, v) ->
             r.setTarget(reverseImmediate8((v[1] >> 3) & 0x07)).setSource(reverseRegisterRH(v[1] & 0x07))),
         new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00, (byte) 0xc7}, new byte[] {(byte) 0xdd,
@@ -214,7 +218,7 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
             r.setTarget(reverseImmediate8((v[3] >> 3) & 0x07))
                 .setSource(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
         ), TwoParameterInstructionConverter::generateBITRESSET),
-    new InstructionEntry(SBC.class, Arrays.asList(
+    new InstructionEntry<TwoParameterInstruction>(SBC.class, Arrays.asList(
         new MaskedOpcode<>(new byte[] {(byte) 0xf8}, new byte[] {(byte) 0x98}, (r, v) ->
             r.setTarget(new RegisterParameter(Register.A)).setSource(reverseRegisterRH(v[0] & 0x07))),
         new MaskedOpcode<>(new byte[] {(byte) 0xff, 0x00}, new byte[] {(byte) 0xde, 0x00}, (r, v) ->
@@ -226,7 +230,7 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
             (r, v) -> r.setTarget(new RegisterParameter(Register.A))
                 .setSource(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
         ), TwoParameterInstructionConverter::generateADCSBC),
-    new InstructionEntry(SET.class, Arrays.asList(
+    new InstructionEntry<>(SET.class, Arrays.asList(
         new MaskedOpcode<>(new byte[] {(byte) 0xff, (byte) 0xc0}, new byte[] {(byte) 0xcb, (byte) 0xc0}, (r, v) ->
             r.setTarget(reverseImmediate8((v[1] >> 3) & 0x07)).setSource(reverseRegisterRH(v[1] & 0x07))),
         new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00, (byte) 0xc7}, new byte[] {(byte) 0xdd,
@@ -235,7 +239,8 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
                 .setSource(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
         ), TwoParameterInstructionConverter::generateBITRESSET));
   
-  private static final Map<Class<? extends TwoParameterInstruction>, InstructionEntry> instructions =
+  private static final Map<
+      Class<? extends TwoParameterInstruction>, InstructionEntry<TwoParameterInstruction>> instructions =
       instructionlist.stream().collect(Collectors.toMap(e -> e.instruction, e -> e));
   
   private static final Map<Integer, MaskedOpcodeMap<TwoParameterInstruction>> reverse =
@@ -243,7 +248,7 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
           m -> m.getMask().length,
           Collectors.toMap(
               m -> new OpcodeMask<>(m.getMask(), m.getValue(), m.getExtractor()),
-              m -> m.getInstruction(),
+              MaskedOpcode::getInstruction,
               (u, v) -> {
                 throw new IllegalStateException(String.format("Duplicate key %s", u));
               },
@@ -257,7 +262,7 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
   @Override
   public byte[] convert(CompilationContext compilationContext, TwoParameterInstruction instruction) {
     byte[] result = null;
-    InstructionEntry entry = instructions.get(instruction.getClass());
+    InstructionEntry<TwoParameterInstruction> entry = instructions.get(instruction.getClass());
     if (entry != null && entry.generator != null) {
       result = entry.generator
           .generate(compilationContext, instruction.getTarget(), instruction.getSource(), entry.masks);
