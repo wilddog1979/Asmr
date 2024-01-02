@@ -9,6 +9,8 @@ import org.eastars.asm.ast.AssemblerLine;
 import org.eastars.asm.ast.Instruction;
 import org.eastars.asm.ast.InstructionLine;
 
+import static org.eastars.asm.utilities.Utilities.ifNotNull;
+
 @Getter
 @AllArgsConstructor
 public class AssemblerLineVisitor {
@@ -16,22 +18,10 @@ public class AssemblerLineVisitor {
   private AbstractParseTreeVisitor<? extends Instruction> instructionVisitor;
 
   public AssemblerLine visitAssemblerLine(TerminalNode label, ParserRuleContext instruction, TerminalNode comment) {
-    if (label == null && instruction == null && comment == null) {
-      return null;
-    }
     InstructionLine line = new InstructionLine();
-
-    if (label != null) {
-      line.setLabel(label.getText());
-    }
-    if (instruction != null) {
-      line.setInstruction(getInstructionVisitor().visit(instruction));
-    }
-    if (comment != null) {
-      line.setComment(comment.getText());
-    }
-
-    return line;
+    return ifNotNull(label, l -> line.setLabel(l.getText()))
+        | ifNotNull(instruction, i -> line.setInstruction(getInstructionVisitor().visit(i)))
+        | ifNotNull(comment, c -> line.setComment(c.getText())) ? line : null;
   }
 
 }
