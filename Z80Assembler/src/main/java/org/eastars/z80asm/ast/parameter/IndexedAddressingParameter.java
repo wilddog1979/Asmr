@@ -1,9 +1,11 @@
 package org.eastars.z80asm.ast.parameter;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
+@EqualsAndHashCode(callSuper = false)
 @RequiredArgsConstructor
 public class IndexedAddressingParameter extends AddressingParameter {
 
@@ -14,15 +16,6 @@ public class IndexedAddressingParameter extends AddressingParameter {
   @Override
   public String getAssembly() {
     return String.format("[%s+%s]", registerPair.getValue(), displacement.getAssembly());
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    return obj instanceof IndexedAddressingParameter
-        && ((registerPair == null && ((IndexedAddressingParameter) obj).getRegisterPair() == null)
-        || (registerPair != null && registerPair == ((IndexedAddressingParameter) obj).getRegisterPair()))
-        && ((displacement == null && ((IndexedAddressingParameter) obj).getDisplacement() == null)
-        || (displacement != null && displacement.equals(((IndexedAddressingParameter) obj).getDisplacement())));
   }
   
 }

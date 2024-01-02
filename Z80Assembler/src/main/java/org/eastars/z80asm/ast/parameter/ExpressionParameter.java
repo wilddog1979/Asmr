@@ -1,5 +1,6 @@
 package org.eastars.z80asm.ast.parameter;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.eastars.asm.assember.CompilationContext;
@@ -7,6 +8,7 @@ import org.eastars.asm.assember.MismatchingParameterSizeException;
 import org.eastars.z80asm.ast.expression.Expression;
 
 @Getter
+@EqualsAndHashCode(callSuper = false)
 @RequiredArgsConstructor
 public class ExpressionParameter extends Parameter {
 
@@ -27,13 +29,6 @@ public class ExpressionParameter extends Parameter {
     }
 
     return result;
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    return obj instanceof ExpressionParameter
-        && ((expression == null && ((ExpressionParameter) obj).expression == null)
-        || (expression != null && expression.equals(((ExpressionParameter) obj).expression)));
   }
 
 }

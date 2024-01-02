@@ -1,5 +1,6 @@
 package org.eastars.z80asm.ast.parameter;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,6 +8,7 @@ import java.util.Optional;
 
 @Setter
 @Getter
+@EqualsAndHashCode(callSuper = false)
 public class ConstantValueParameter extends Parameter {
 
   private Integer intValue;
@@ -24,15 +26,6 @@ public class ConstantValueParameter extends Parameter {
   @Override
   public String getAssembly() {
     return Optional.ofNullable(intValue).map(i -> String.format("%xh", intValue)).orElseGet(() -> value);
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    return obj instanceof ConstantValueParameter
-        && ((intValue == null && ((ConstantValueParameter) obj).getIntValue() == null)
-        || (intValue != null && intValue.equals(((ConstantValueParameter) obj).getIntValue())))
-        && ((value == null && ((ConstantValueParameter) obj).getValue() == null)
-        || (value != null && value.equals(((ConstantValueParameter) obj).getValue())));
   }
   
 }

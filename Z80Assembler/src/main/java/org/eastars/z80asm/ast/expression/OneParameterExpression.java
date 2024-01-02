@@ -1,25 +1,26 @@
 package org.eastars.z80asm.ast.expression;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.eastars.asm.assember.CompilationContext;
 
+@Getter
+@EqualsAndHashCode
 @RequiredArgsConstructor
 public class OneParameterExpression implements Expression {
 
+  @Getter
   @RequiredArgsConstructor
   public enum Operation {
     MINUS("-"), NOT("!");
 
-    @Getter
     private final String value;
 
   }
 
-  @Getter
   private final Operation operation;
 
-  @Getter
   private final Expression parameter;
 
   @Override
@@ -35,15 +36,6 @@ public class OneParameterExpression implements Expression {
   @Override
   public String getAssembly() {
     return String.format("%s(%s)", operation.getValue(), parameter.getAssembly());
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    return obj instanceof OneParameterExpression
-        && ((operation == null && ((OneParameterExpression) obj).operation == null)
-        || (operation != null && operation == ((OneParameterExpression) obj).operation))
-        && ((parameter == null && ((OneParameterExpression) obj).parameter == null)
-        || (parameter != null && parameter.equals(((OneParameterExpression) obj).parameter)));
   }
 
 }

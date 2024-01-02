@@ -1,5 +1,6 @@
 package org.eastars.z80asm.ast.expression;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.eastars.asm.assember.CompilationContext;
@@ -9,6 +10,7 @@ import org.eastars.z80asm.ast.parameter.ConstantValueParameter;
 import java.util.Optional;
 
 @Getter
+@EqualsAndHashCode
 @RequiredArgsConstructor
 public class ConstantValueExpression implements Expression {
 
@@ -29,14 +31,6 @@ public class ConstantValueExpression implements Expression {
           String result = "0000" + Integer.toHexString(i) + "h";
           return result.substring(result.length() - 5);
         }).orElseGet(constantValueParameter::getValue);
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    return obj instanceof ConstantValueExpression
-        && ((constantValueParameter == null && ((ConstantValueExpression) obj).getConstantValueParameter() == null)
-        || (constantValueParameter != null
-        && constantValueParameter.equals(((ConstantValueExpression) obj).getConstantValueParameter())));
   }
 
 }
