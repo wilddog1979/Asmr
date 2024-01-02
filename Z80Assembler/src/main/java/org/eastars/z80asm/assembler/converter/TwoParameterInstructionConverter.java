@@ -23,7 +23,7 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
         InstructionAssemblyGenerator generator) {
       this.instruction = instruction;
       this.masks = masks;
-      masks.forEach(m -> m.instruction = instruction);
+      masks.forEach(m -> m.setInstruction(instruction));
       this.generator = generator;
     }
   }
@@ -240,10 +240,10 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
   
   private static final Map<Integer, MaskedOpcodeMap<TwoParameterInstruction>> reverse =
       instructionlist.stream().flatMap(e -> e.masks.stream()).collect(Collectors.groupingBy(
-          m -> m.mask.length,
+          m -> m.getMask().length,
           Collectors.toMap(
-              m -> new OpcodeMask<>(m.mask, m.value, m.extractor),
-              m -> m.instruction,
+              m -> new OpcodeMask<>(m.getMask(), m.getValue(), m.getExtractor()),
+              m -> m.getInstruction(),
               (u, v) -> {
                 throw new IllegalStateException(String.format("Duplicate key %s", u));
               },
@@ -282,7 +282,7 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
         result[1] = (byte) ((ExpressionParameter) sourceparameter).getExpressionValue(compilationContext);
       } else if (sourceparameter instanceof IndexedAddressingParameter) {
         result = generateIndexedAddressing(
-            compilationContext, (IndexedAddressingParameter) sourceparameter, masks.get(3).value);
+            compilationContext, (IndexedAddressingParameter) sourceparameter, masks.get(3).getValue());
       }
     } else if (checkRegisterPairParameter(targetparameter, RegisterPair.HL)) {
       int sourceIndex = getRegisterSSIndex(sourceparameter);
@@ -311,7 +311,7 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
           result[1] |= (byte) ((value << 3) | sourceIndex);
         } else if (sourceparameter instanceof IndexedAddressingParameter) {
           result = generateIndexedAddressing(
-              compilationContext, (IndexedAddressingParameter) sourceparameter, masks.get(1).value);
+              compilationContext, (IndexedAddressingParameter) sourceparameter, masks.get(1).getValue());
           if (result != null) {
             result[3] |= (byte) (value << 3);
           }
@@ -357,7 +357,7 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
         if (registerPair == RegisterPair.HL) {
           result = selectMask(masks.get(0));
         } else {
-          result = generateIndexRegisters(registerPair, masks.get(1).value);
+          result = generateIndexRegisters(registerPair, masks.get(1).getValue());
         }
       } else if (sourceparameter instanceof ExpressionParameter) {
         result = generateWithExpressionValue(
@@ -455,7 +455,7 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
         if (registerPair == RegisterPair.HL) {
           result = selectMask(masks.get(2));
         } else {
-          result = generateIndexRegisters(registerPair, masks.get(3).value);
+          result = generateIndexRegisters(registerPair, masks.get(3).getValue());
         }
       }
     }
@@ -485,11 +485,12 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
         result[1] |= (byte) ((ExpressionParameter) sourceparameter).getExpressionValue(compilationContext);
       } else if (sourceparameter instanceof IndexedAddressingParameter) {
         result = generateIndexedAddressing(
-            compilationContext, (IndexedAddressingParameter) sourceparameter, masks.get(3).value);
+            compilationContext, (IndexedAddressingParameter) sourceparameter, masks.get(3).getValue());
       }
     }
     if (result == null && targetparameter instanceof RegisterPairParameter) {
-      result = generateIndexRegisters(((RegisterPairParameter) targetparameter).getRegisterPair(), masks.get(4).value);
+      result = generateIndexRegisters(((RegisterPairParameter) targetparameter).getRegisterPair(),
+          masks.get(4).getValue());
       if (result != null
           && ((sourceIndex = getRegisterPPIndex(sourceparameter)) != -1
             || (sourceIndex = getRegisterRRIndex(sourceparameter)) != -1)) {
@@ -544,7 +545,8 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
       result[1] = (byte) (value & 0xff);
     } else if (checkRegisterPairParameter(targetparameter, RegisterPair.SP)
         && checkRegisterPairParameterIXorIY(sourceparameter)) {
-      result = generateIndexRegisters(((RegisterPairParameter) sourceparameter).getRegisterPair(), masks.get(7).value);
+      result = generateIndexRegisters(((RegisterPairParameter) sourceparameter).getRegisterPair(),
+          masks.get(7).getValue());
     } else if (checkRegisterParameter(targetparameter, Register.I)
         && checkRegisterParameter(sourceparameter, Register.A)) {
       result = selectMask(masks.get(8));
@@ -577,7 +579,7 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
     } else if (targetparameter instanceof IndexedAddressingParameter
         && (registerIndex = getRegisterRIndex(sourceparameter)) != -1) {
       result = generateIndexedAddressing(
-          compilationContext, (IndexedAddressingParameter) targetparameter, masks.get(17).value);
+          compilationContext, (IndexedAddressingParameter) targetparameter, masks.get(17).getValue());
       if (result != null) {
         result[1] |= (byte) (registerIndex & 0x07);
       }
@@ -587,7 +589,7 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
       if (sourceparameter instanceof IndexedAddressingParameter
           && (registerIndex = getRegisterRIndex(targetparameter)) != -1) {
         result = generateIndexedAddressing(
-            compilationContext, (IndexedAddressingParameter) sourceparameter, masks.get(18).value);
+            compilationContext, (IndexedAddressingParameter) sourceparameter, masks.get(18).getValue());
         if (result != null) {
           result[1] |= (byte) ((registerIndex << 3) & 0x38);
         }
@@ -598,7 +600,7 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
       if (targetparameter instanceof IndexedAddressingParameter
           && sourceparameter instanceof ExpressionParameter) {
         result = generateIndexedAddressing(
-            compilationContext, (IndexedAddressingParameter) targetparameter, masks.get(19).value);
+            compilationContext, (IndexedAddressingParameter) targetparameter, masks.get(19).getValue());
         if (result != null) {
           int value = ((ExpressionParameter) sourceparameter).getExpressionValue(compilationContext);
           result[3] = (byte) (value & 0xff);
@@ -619,21 +621,24 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
           && sourceparameter instanceof ExpressionParameter) {
         result = generateWithExpressionValue(
             compilationContext,
-            generateIndexRegisters(((RegisterPairParameter) targetparameter).getRegisterPair(), masks.get(22).value),
+            generateIndexRegisters(((RegisterPairParameter) targetparameter).getRegisterPair(),
+                masks.get(22).getValue()),
             (ExpressionParameter) sourceparameter,
             2);
       } else if (targetparameter instanceof ImmediateAddressingParameter
           && checkRegisterPairParameterIXorIY(sourceparameter)) {
         result = generateWithImmediateValue(
             compilationContext,
-            generateIndexRegisters(((RegisterPairParameter) sourceparameter).getRegisterPair(), masks.get(23).value),
+            generateIndexRegisters(((RegisterPairParameter) sourceparameter).getRegisterPair(),
+                masks.get(23).getValue()),
             targetparameter,
             2);
       } else if (sourceparameter instanceof ImmediateAddressingParameter
           && checkRegisterPairParameterIXorIY(targetparameter)) {
         result = generateWithImmediateValue(
             compilationContext,
-            generateIndexRegisters(((RegisterPairParameter) targetparameter).getRegisterPair(), masks.get(24).value),
+            generateIndexRegisters(((RegisterPairParameter) targetparameter).getRegisterPair(),
+                masks.get(24).getValue()),
             sourceparameter,
             2);
       }
