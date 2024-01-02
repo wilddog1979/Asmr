@@ -1,9 +1,11 @@
 package org.eastars.z80asm.ast.parameter;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
+@EqualsAndHashCode(callSuper = false)
 @RequiredArgsConstructor
 public class ConditionParameter extends Parameter {
 
@@ -12,13 +14,6 @@ public class ConditionParameter extends Parameter {
   @Override
   public String getAssembly() {
     return condition.getValue();
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    return obj instanceof ConditionParameter
-        && ((condition == null && ((ConditionParameter) obj).getCondition() == null)
-        || (condition != null && condition == ((ConditionParameter) obj).getCondition()));
   }
 
 }

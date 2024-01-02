@@ -1,9 +1,11 @@
 package org.eastars.z80asm.ast.parameter;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
+@EqualsAndHashCode(callSuper = false)
 @RequiredArgsConstructor
 public class RegisterParameter extends Parameter {
 
@@ -12,13 +14,6 @@ public class RegisterParameter extends Parameter {
   @Override
   public String getAssembly() {
     return register.getValue();
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    return obj instanceof RegisterParameter
-        && ((register == null && ((RegisterParameter) obj).getRegister() == null)
-        || (register != null && register == ((RegisterParameter) obj).getRegister()));
   }
 
 }

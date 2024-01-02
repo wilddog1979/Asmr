@@ -21,7 +21,7 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
         InstructionAssemblyGenerator generator) {
       this.instruction = instruction;
       this.masks = masks;
-      masks.forEach(m -> m.instruction = instruction);
+      masks.forEach(m -> m.setInstruction(instruction));
       this.generator = generator;
     }
 
@@ -178,14 +178,14 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
 
   private static final Map<Integer, MaskedOpcodeMap<OneParameterInstruction>> reverse =
       instructionlist.stream().flatMap(e -> e.masks.stream()).collect(Collectors.groupingBy(
-          m -> m.mask.length,
+          m -> m.getMask().length,
           Collectors.toMap(
-              m -> new OpcodeMask<>(m.mask, m.value, m.extractor),
-              m -> m.instruction,
+              m -> new OpcodeMask<>(m.getMask(), m.getValue(), m.getExtractor()),
+              MaskedOpcode::getInstruction,
               (u, v) -> {
                 throw new IllegalStateException(String.format("Duplicate key %s", u));
               },
-              MaskedOpcodeMap<OneParameterInstruction>::new)));
+              MaskedOpcodeMap::new)));
 
   @Override
   protected MaskedOpcodeMap<OneParameterInstruction> getReverse(int index) {
@@ -210,15 +210,15 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
 
     int registerIndex = getRegisterRHIndex(parameter);
     if (registerIndex != -1) {
-      result = new byte[] {(byte) (masks.get(0).value[0] | registerIndex)};
+      result = new byte[] {(byte) (masks.get(0).getValue()[0] | registerIndex)};
     } else if (parameter instanceof ExpressionParameter) {
       int value = ((ExpressionParameter) parameter).getExpressionValue(compilationContext);
-      result = new byte[] {masks.get(1).value[0], 0};
+      result = new byte[] {masks.get(1).getValue()[0], 0};
       result[1] = (byte) (value & 0xff);
     }
     if (result == null && parameter instanceof IndexedAddressingParameter) {
       result = generateIndexedAddressing(
-          compilationContext, (IndexedAddressingParameter) parameter, masks.get(2).value);
+          compilationContext, (IndexedAddressingParameter) parameter, masks.get(2).getValue());
     }
 
     return result;
@@ -232,15 +232,15 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
 
     int registerIndex = getRegisterSSIndex(parameter);
     if (registerIndex != -1) {
-      result = new byte[] {(byte) (masks.get(0).value[0] | (registerIndex << 4))};
+      result = new byte[] {(byte) (masks.get(0).getValue()[0] | (registerIndex << 4))};
     } else if ((registerIndex = getRegisterRHIndex(parameter)) != -1) {
-      result = new byte[] {(byte) (masks.get(1).value[0] | (registerIndex << 3))};
+      result = new byte[] {(byte) (masks.get(1).getValue()[0] | (registerIndex << 3))};
     } else if (parameter instanceof RegisterPairParameter) {
-      result = generateIndexRegisters(((RegisterPairParameter) parameter).getRegisterPair(), masks.get(2).value);
+      result = generateIndexRegisters(((RegisterPairParameter) parameter).getRegisterPair(), masks.get(2).getValue());
     }
     if (result == null && parameter instanceof IndexedAddressingParameter) {
       result = generateIndexedAddressing(
-          compilationContext, (IndexedAddressingParameter) parameter, masks.get(3).value);
+          compilationContext, (IndexedAddressingParameter) parameter, masks.get(3).getValue());
     }
 
     return result;
@@ -254,7 +254,7 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
 
     if (parameter instanceof ExpressionParameter expressionParameter) {
       result = new byte[] {
-          masks.get(0).value[0],
+          masks.get(0).getValue()[0],
           (byte) (expressionParameter.getExpressionValue(compilationContext) - 2)
       };
     }
@@ -270,9 +270,9 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
 
     int registerIndex = getRegisterQQIndex(parameter);
     if (registerIndex != -1) {
-      result = new byte[] {(byte) (masks.get(0).value[0] | (registerIndex << 4))};
+      result = new byte[] {(byte) (masks.get(0).getValue()[0] | (registerIndex << 4))};
     } else if (parameter instanceof RegisterPairParameter) {
-      result = generateIndexRegisters(((RegisterPairParameter) parameter).getRegisterPair(), masks.get(1).value);
+      result = generateIndexRegisters(((RegisterPairParameter) parameter).getRegisterPair(), masks.get(1).getValue());
     }
 
     return result;
@@ -286,11 +286,11 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
 
     int registerIndex = getRegisterRHIndex(parameter);
     if (registerIndex != -1) {
-      result = Arrays.copyOf(masks.get(0).value, 2);
+      result = Arrays.copyOf(masks.get(0).getValue(), 2);
       result[1] |= (byte) registerIndex;
     } else if (parameter instanceof IndexedAddressingParameter) {
       result = generateIndexedAddressing(
-          compilationContext, (IndexedAddressingParameter) parameter, masks.get(1).value);
+          compilationContext, (IndexedAddressingParameter) parameter, masks.get(1).getValue());
     }
 
     return result;
@@ -302,10 +302,10 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
     if (parameter == null || parameter instanceof ConditionParameter) {
       result = parameter == null
           ? new byte[] {
-              masks.get(0).value[0]
+              masks.get(0).getValue()[0]
           } :
           new byte[] {
-              (byte) (masks.get(1).value[0] | (((ConditionParameter) parameter).getCondition().getOpcode() << 3))
+              (byte) (masks.get(1).getValue()[0] | (((ConditionParameter) parameter).getCondition().getOpcode() << 3))
           };
     }
 
@@ -319,7 +319,7 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
       int value = Integer.parseInt(constantValeParameter.getValue(), 16);
       if (value == 0x00 || value == 0x08 || value == 0x10 || value == 0x18
           || value == 0x20 || value == 0x28 || value == 0x30 || value == 0x38) {
-        result = new byte[] {(byte) (masks.get(0).value[0] | value)};
+        result = new byte[] {(byte) (masks.get(0).getValue()[0] | value)};
       }
     }
 

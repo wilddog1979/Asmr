@@ -62,9 +62,9 @@ public class NoParameterInstructionConverter extends AbstractZ80InstructionConve
 
   private static final Map<Integer, MaskedOpcodeMap<NoParameterInstruction>> reverse =
       instructionlist.stream().collect(Collectors.groupingBy(
-          m -> m.mask.mask.length,
+          m -> m.mask.getMask().length,
           Collectors.toMap(
-              m -> new OpcodeMask<>(m.mask.mask, m.mask.value),
+              m -> new OpcodeMask<>(m.mask.getMask(), m.mask.getValue()),
               m -> m.instruction,
               (u, v) -> {
                 throw new IllegalStateException(String.format("Duplicate key %s", u));
@@ -78,7 +78,7 @@ public class NoParameterInstructionConverter extends AbstractZ80InstructionConve
 
   @Override
   public byte[] convert(CompilationContext compilationContext, NoParameterInstruction instruction) {
-    return defaultNull(instructions.get(instruction.getClass()), r -> Arrays.copyOf(r.value, r.value.length));
+    return defaultNull(instructions.get(instruction.getClass()), r -> Arrays.copyOf(r.getValue(), r.getValue().length));
   }
 
 }

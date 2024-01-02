@@ -249,7 +249,7 @@ public abstract class AbstractZ80InstructionConverter<T extends Instruction> ext
   }
 
   protected static byte[] selectMask(MaskedOpcode<? extends Instruction> mask) {
-    return Arrays.copyOf(mask.value, mask.value.length);
+    return Arrays.copyOf(mask.getValue(), mask.getValue().length);
   }
 
   protected abstract MaskedOpcodeMap<T> getReverse(int index);
@@ -262,7 +262,7 @@ public abstract class AbstractZ80InstructionConverter<T extends Instruction> ext
       byte[] currentBuffer = Arrays.copyOf(buffer, buffer.length + 1);
       currentBuffer[buffer.length] = (byte) current;
       result = Optional.ofNullable(getReverse(currentBuffer.length)).map(
-          r -> r.getInstruction(currentBuffer)).orElseGet(() -> null);
+          r -> r.getInstruction(currentBuffer)).orElse(null);
       if (result == null && (result = convertRecursive(pushbackInputStream, currentBuffer)) == null) {
         pushbackInputStream.unread((byte) current);
       }

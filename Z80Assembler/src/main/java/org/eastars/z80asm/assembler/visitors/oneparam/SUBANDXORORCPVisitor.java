@@ -14,7 +14,7 @@ public abstract class SUBANDXORORCPVisitor<T extends OneParameterInstruction, C 
     return getRegistersWithReference(paramCtx.registersWithReference())
         .orElseGet(() -> getIndexedReference(paramCtx.indexedReference())
             .orElseGet(() -> getExpression(paramCtx.hex8bits())
-                .orElseGet(() -> null)));
+                .orElse(null)));
   }
 
 }

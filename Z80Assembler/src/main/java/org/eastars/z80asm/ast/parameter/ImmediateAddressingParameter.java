@@ -1,9 +1,11 @@
 package org.eastars.z80asm.ast.parameter;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
+@EqualsAndHashCode(callSuper = false)
 @RequiredArgsConstructor
 public class ImmediateAddressingParameter extends AddressingParameter {
 
@@ -12,13 +14,6 @@ public class ImmediateAddressingParameter extends AddressingParameter {
   @Override
   public String getAssembly() {
     return String.format("[%s]", value.getAssembly());
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    return obj instanceof ImmediateAddressingParameter
-        && ((value == null && ((ImmediateAddressingParameter) obj).value == null)
-        || (value != null && value.equals(((ImmediateAddressingParameter) obj).value)));
   }
 
 }

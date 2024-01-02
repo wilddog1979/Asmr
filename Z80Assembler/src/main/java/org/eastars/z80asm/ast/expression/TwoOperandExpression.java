@@ -1,12 +1,16 @@
 package org.eastars.z80asm.ast.expression;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.eastars.asm.assember.CompilationContext;
 
+@Getter
+@EqualsAndHashCode
 @RequiredArgsConstructor
 public class TwoOperandExpression implements Expression {
 
+  @Getter
   @RequiredArgsConstructor
   public enum Operation {
     PLUS("+"),
@@ -19,18 +23,14 @@ public class TwoOperandExpression implements Expression {
     XOR("^"),
     OR("|");
 
-    @Getter
     private final String value;
 
   }
 
-  @Getter
   private final Expression leftOperand;
 
-  @Getter
   private final Operation operation;
 
-  @Getter
   private final Expression rightOperand;
 
   @Override
@@ -61,17 +61,6 @@ public class TwoOperandExpression implements Expression {
   @Override
   public String getAssembly() {
     return String.format("(%s) %s (%s)", leftOperand.getAssembly(), operation.getValue(), rightOperand.getAssembly());
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    return obj instanceof TwoOperandExpression
-        && ((leftOperand == null && ((TwoOperandExpression) obj).leftOperand == null)
-        || (leftOperand != null && leftOperand.equals(((TwoOperandExpression) obj).leftOperand)))
-        && ((operation == null && ((TwoOperandExpression) obj).operation == null)
-        || (operation != null && operation == ((TwoOperandExpression) obj).operation))
-        && ((rightOperand == null && ((TwoOperandExpression) obj).rightOperand == null)
-        || (rightOperand != null && rightOperand.equals(((TwoOperandExpression) obj).rightOperand)));
   }
 
 }

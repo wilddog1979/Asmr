@@ -12,7 +12,7 @@ public abstract class PUSHPOPVisitor<T extends OneParameterInstruction, C extend
 
   @Override
   protected Parameter getParameter(InstructionPUSHPOPparametersContext paramCtx) {
-    return getRegisterQqParameter(paramCtx.registerQQ())
+    return getRegisterQQParameter(paramCtx.registerQQ())
         .orElseGet(() -> getRegisterPair(paramCtx.IX, RegisterPair.IX)
             .orElseGet(() -> getRegisterPair(paramCtx.IY, RegisterPair.IY)
                 .orElse(null)));
