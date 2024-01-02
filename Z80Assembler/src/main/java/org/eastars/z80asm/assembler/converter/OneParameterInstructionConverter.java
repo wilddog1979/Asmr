@@ -1,5 +1,6 @@
 package org.eastars.z80asm.assembler.converter;
 
+import lombok.Builder;
 import org.eastars.asm.assember.CompilationContext;
 import org.eastars.z80asm.ast.instructions.OneParameterInstruction;
 import org.eastars.z80asm.ast.instructions.oneparam.*;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 
 public class OneParameterInstructionConverter extends AbstractZ80InstructionConverter<OneParameterInstruction> {
 
+  @Builder
   private record InstructionEntry(Class<? extends OneParameterInstruction> instruction,
                                   List<MaskedOpcode<OneParameterInstruction>> masks,
                                   InstructionAssemblyGenerator generator) {
@@ -38,140 +40,281 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
   }
 
   private static final List<InstructionEntry> instructionlist = Arrays.asList(
-    new InstructionEntry(AND.class, Arrays.asList(
-      new MaskedOpcode<>(new byte[] {(byte) 0xf8}, new byte[] {(byte) 0xa0},
-          (r, v) -> r.setParameter(reverseRegisterRH(v[0] & 0x07))),
-      new MaskedOpcode<>(new byte[] {(byte) 0xff, 0x00}, new byte[] {(byte) 0xe6, 0x00},
-          (r, v) -> r.setParameter(reverseImmediate8(v[1]))),
-      new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00}, new byte[] {(byte) 0xdd, (byte) 0xa6, 0x00},
-          (r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
-      ), OneParameterInstructionConverter::generateSUBANDXORORCP),
-    new InstructionEntry(CP.class, Arrays.asList(
-        new MaskedOpcode<>(new byte[] {(byte) 0xf8}, new byte[] {(byte) 0xb8},
-            (r, v) -> r.setParameter(reverseRegisterRH(v[0] & 0x07))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xff, 0x00}, new byte[] {(byte) 0xfe, 0x00},
-            (r, v) -> r.setParameter(reverseImmediate8(v[1]))),
-      new MaskedOpcode<>(new byte[]{(byte) 0xdf, (byte) 0xff, 0x00}, new byte[]{(byte) 0xdd, (byte) 0xbe, 0x00},
-          (r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
-        ), OneParameterInstructionConverter::generateSUBANDXORORCP),
-    new InstructionEntry(DEC.class, Arrays.asList(
-        new MaskedOpcode<>(new byte[] {(byte) 0xcf}, new byte[] {0x0b},
-            (r, v) -> r.setParameter(reverseRegisterSS((v[0] >> 4) & 0x03))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xc7}, new byte[] {0x05},
-            (r, v) -> r.setParameter(reverseRegisterRH((v[0] >> 3) & 0x07))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff}, new byte[] {(byte) 0xdd, 0x2b},
-            (r, v) -> r.setParameter(reverseIXIY((v[0] & 0x20) == 0x00))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00}, new byte[] {(byte) 0xdd, 0x35, 0x00},
-            (r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
-        ), OneParameterInstructionConverter::generateINCDEC),
-    new InstructionEntry(DJNZ.class, List.of(
-      new MaskedOpcode<>(new byte[]{(byte) 0xff, 0x00}, new byte[]{0x10, 0x00},
-          (r, v) -> r.setParameter(reverseImmediate8(v[1] + 2)))
-    ), OneParameterInstructionConverter::generateDJNZ),
-    new InstructionEntry(INC.class, Arrays.asList(
-        new MaskedOpcode<>(new byte[] {(byte) 0xcf}, new byte[] {0x03},
-            (r, v) -> r.setParameter(reverseRegisterSS((v[0] >> 4) & 0x03))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xc7}, new byte[] {0x04},
-            (r, v) -> r.setParameter(reverseRegisterRH((v[0] >> 3) & 0x07))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff}, new byte[] {(byte) 0xdd, 0x23},
-            (r, v) -> r.setParameter(reverseIXIY((v[0] & 0x20) == 0x00))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00}, new byte[] {(byte) 0xdd, 0x34, 0x00},
-            (r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
-        ), OneParameterInstructionConverter::generateINCDEC),
-    new InstructionEntry(OR.class, Arrays.asList(
-        new MaskedOpcode<>(new byte[] {(byte) 0xf8}, new byte[] {(byte) 0xb0},
-            (r, v) -> r.setParameter(reverseRegisterRH(v[0] & 0x07))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xff, 0x00}, new byte[] {(byte) 0xf6, 0x00},
-            (r, v) -> r.setParameter(reverseImmediate8(v[1]))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00}, new byte[] {(byte) 0xdd, (byte) 0xb6, 0x00},
-            (r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
-        ), OneParameterInstructionConverter::generateSUBANDXORORCP),
-    new InstructionEntry(POP.class, Arrays.asList(
-        new MaskedOpcode<>(new byte[] {(byte) 0xcf}, new byte[] {(byte) 0xc1},
-            (r, v) -> r.setParameter(reverseRegisterQQ((v[0] >> 4) & 0x03))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff}, new byte[] {(byte) 0xdd, (byte) 0xe1},
-            (r, v) -> r.setParameter(reverseIXIY((v[0] & 0x20) == 0x00)))
-        ), OneParameterInstructionConverter::generatePUSHPOP),
-    new InstructionEntry(PUSH.class, Arrays.asList(
-        new MaskedOpcode<>(new byte[] {(byte) 0xcf}, new byte[] {(byte) 0xc5},
-            (r, v) -> r.setParameter(reverseRegisterQQ((v[0] >> 4) & 0x03))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff}, new byte[] {(byte) 0xdd, (byte) 0xe5},
-            (r, v) -> r.setParameter(reverseIXIY((v[0] & 0x20) == 0x00)))
-        ), OneParameterInstructionConverter::generatePUSHPOP),
-    new InstructionEntry(RET.class, Arrays.asList(
-        new MaskedOpcode<>(new byte[] {(byte) 0xff}, new byte[] {(byte) 0xc9},
-            (r, v) -> r.setParameter(null)),
-        new MaskedOpcode<>(new byte[] {(byte) 0xc7}, new byte[] {(byte) 0xc0},
-            (r, v) -> r.setParameter(reverseCondition((v[0] >> 3) & 0x07)))
-        ), (c, p, m) -> generateRET(p, m)),
-    new InstructionEntry(RL.class, Arrays.asList(
-        new MaskedOpcode<>(new byte[] {(byte) 0xff, (byte) 0xf8}, new byte[] {(byte) 0xca, 0x10},
-            (r, v) -> r.setParameter(reverseRegisterRH(v[1] & 0x07))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00, (byte) 0xff}, new byte[] {(byte) 0xdd,
-            (byte) 0xca, 0x00, 0x16},
-            (r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
-        ), OneParameterInstructionConverter::generateBitRotating),
-    new InstructionEntry(RLC.class, Arrays.asList(
-        new MaskedOpcode<>(new byte[] {(byte) 0xff, (byte) 0xf8}, new byte[] {(byte) 0xca, 0x00},
-            (r, v) -> r.setParameter(reverseRegisterRH(v[1] & 0x07))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00, (byte) 0xff}, new byte[] {(byte) 0xdd,
-            (byte) 0xca, 0x00, 0x06},
-            (r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
-        ), OneParameterInstructionConverter::generateBitRotating),
-    new InstructionEntry(RR.class, Arrays.asList(
-      new MaskedOpcode<>(new byte[]{(byte) 0xff, (byte) 0xf8}, new byte[]{(byte) 0xca, 0x18},
-          (r, v) -> r.setParameter(reverseRegisterRH(v[1] & 0x07))),
-      new MaskedOpcode<>(new byte[]{(byte) 0xdf, (byte) 0xff, 0x00, (byte) 0xff}, new byte[]{(byte) 0xdd, (byte) 0xca,
-          0x00, 0x1e}, (r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
-        ), OneParameterInstructionConverter::generateBitRotating),
-    new InstructionEntry(RRC.class, Arrays.asList(
-        new MaskedOpcode<>(new byte[] {(byte) 0xff, (byte) 0xf8}, new byte[] {(byte) 0xca, 0x08},
-            (r, v) -> r.setParameter(reverseRegisterRH(v[1] & 0x07))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00, (byte) 0xff}, new byte[] {(byte) 0xdd,
-            (byte) 0xca, 0x00, 0x0e},
-            (r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
-        ), OneParameterInstructionConverter::generateBitRotating),
-    new InstructionEntry(RST.class, List.of(
-      new MaskedOpcode<>(new byte[]{(byte) 0xc7}, new byte[]{(byte) 0xc7},
-          (r, v) -> r.setParameter(reverseRSTValue(v[0] & 0x38)))
-    ), (c, p, m) -> generateRST(p, m)),
-    new InstructionEntry(SLA.class, Arrays.asList(
-        new MaskedOpcode<>(new byte[] {(byte) 0xff, (byte) 0xf8}, new byte[] {(byte) 0xca, 0x20},
-            (r, v) -> r.setParameter(reverseRegisterRH(v[1] & 0x07))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00, (byte) 0xff}, new byte[] {(byte) 0xdd,
-            (byte) 0xca, 0x00, 0x26},
-            (r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
-        ), OneParameterInstructionConverter::generateBitRotating),
-    new InstructionEntry(SRA.class, Arrays.asList(
-        new MaskedOpcode<>(new byte[] {(byte) 0xff, (byte) 0xf8}, new byte[] {(byte) 0xca, 0x28},
-            (r, v) -> r.setParameter(reverseRegisterRH(v[1] & 0x07))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00, (byte) 0xff}, new byte[] {(byte) 0xdd,
-            (byte) 0xca, 0x00, 0x2e},
-            (r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
-        ), OneParameterInstructionConverter::generateBitRotating),
-    new InstructionEntry(SRL.class, Arrays.asList(
-        new MaskedOpcode<>(new byte[] {(byte) 0xff, (byte) 0xf8}, new byte[] {(byte) 0xca, 0x38},
-            (r, v) -> r.setParameter(reverseRegisterRH(v[1] & 0x07))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00, (byte) 0xff}, new byte[] {(byte) 0xdd,
-            (byte) 0xca, 0x00, 0x3e},
-            (r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
-        ), OneParameterInstructionConverter::generateBitRotating),
-    new InstructionEntry(SUB.class, Arrays.asList(
-        new MaskedOpcode<>(new byte[] {(byte) 0xf8}, new byte[] {(byte) 0x90},
-            (r, v) -> r.setParameter(reverseRegisterRH(v[0] & 0x07))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xff, 0x00}, new byte[] {(byte) 0xd6, 0x00},
-            (r, v) -> r.setParameter(reverseImmediate8(v[1]))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00}, new byte[] {(byte) 0xdd, (byte) 0x96, 0x00},
-            (r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
-        ), OneParameterInstructionConverter::generateSUBANDXORORCP),
-    new InstructionEntry(XOR.class, Arrays.asList(
-        new MaskedOpcode<>(new byte[] {(byte) 0xf8}, new byte[] {(byte) 0xa8},
-            (r, v) -> r.setParameter(reverseRegisterRH(v[0] & 0x07))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xff, 0x00}, new byte[] {(byte) 0xee, 0x00},
-            (r, v) -> r.setParameter(reverseImmediate8(v[1]))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00}, new byte[] {(byte) 0xdd, (byte) 0xae, 0x00},
-            (r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
-        ), OneParameterInstructionConverter::generateSUBANDXORORCP));
+      InstructionEntry.builder()
+        .instruction(AND.class)
+        .masks(List.of(
+            MaskedOpcode.<OneParameterInstruction>builder()
+                .mask(new byte[] {(byte) 0xf8})
+                .value(new byte[] {(byte) 0xa0})
+                .extractor((r, v) -> r.setParameter(reverseRegisterRH(v[0] & 0x07))).build(),
+            MaskedOpcode.<OneParameterInstruction>builder()
+                .mask(new byte[] {(byte) 0xff, 0x00})
+                .value(new byte[] {(byte) 0xe6, 0x00})
+                .extractor((r, v) -> r.setParameter(reverseImmediate8(v[1]))).build(),
+            MaskedOpcode.<OneParameterInstruction>builder()
+                .mask(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00})
+                .value(new byte[] {(byte) 0xdd, (byte) 0xa6, 0x00})
+                .extractor((r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))).build()
+        ))
+        .generator(OneParameterInstructionConverter::generateSUBANDXORORCP).build(),
+      InstructionEntry.builder()
+          .instruction(CP.class)
+          .masks(List.of(
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xf8})
+                  .value(new byte[] {(byte) 0xb8})
+                  .extractor((r, v) -> r.setParameter(reverseRegisterRH(v[0] & 0x07))).build(),
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff, 0x00})
+                  .value(new byte[] {(byte) 0xfe, 0x00})
+                  .extractor((r, v) -> r.setParameter(reverseImmediate8(v[1]))).build(),
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[]{(byte) 0xdf, (byte) 0xff, 0x00})
+                  .value(new byte[]{(byte) 0xdd, (byte) 0xbe, 0x00})
+                  .extractor((r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))).build()
+          ))
+          .generator(OneParameterInstructionConverter::generateSUBANDXORORCP).build(),
+        InstructionEntry.builder()
+          .instruction(DEC.class)
+          .masks(List.of(
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xcf})
+                  .value(new byte[] {0x0b})
+                  .extractor((r, v) -> r.setParameter(reverseRegisterSS((v[0] >> 4) & 0x03))).build(),
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xc7})
+                  .value(new byte[] {0x05})
+                  .extractor((r, v) -> r.setParameter(reverseRegisterRH((v[0] >> 3) & 0x07))).build(),
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xdf, (byte) 0xff})
+                  .value(new byte[] {(byte) 0xdd, 0x2b})
+                  .extractor((r, v) -> r.setParameter(reverseIXIY((v[0] & 0x20) == 0x00))).build(),
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00})
+                  .value(new byte[] {(byte) 0xdd, 0x35, 0x00})
+                  .extractor((r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))).build()
+          ))
+          .generator(OneParameterInstructionConverter::generateINCDEC).build(),
+      InstructionEntry.builder()
+          .instruction(DJNZ.class)
+          .masks(List.of(
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[]{(byte) 0xff, 0x00})
+                  .value(new byte[]{0x10, 0x00})
+                  .extractor((r, v) -> r.setParameter(reverseImmediate8(v[1] + 2))).build()
+          ))
+          .generator(OneParameterInstructionConverter::generateDJNZ).build(),
+      InstructionEntry.builder()
+          .instruction(INC.class)
+          .masks(List.of(
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xcf})
+                  .value(new byte[] {0x03})
+                  .extractor((r, v) -> r.setParameter(reverseRegisterSS((v[0] >> 4) & 0x03))).build(),
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xc7})
+                  .value(new byte[] {0x04})
+                  .extractor((r, v) -> r.setParameter(reverseRegisterRH((v[0] >> 3) & 0x07))).build(),
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xdf, (byte) 0xff})
+                  .value(new byte[] {(byte) 0xdd, 0x23})
+                  .extractor((r, v) -> r.setParameter(reverseIXIY((v[0] & 0x20) == 0x00))).build(),
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00})
+                  .value(new byte[] {(byte) 0xdd, 0x34, 0x00})
+                  .extractor((r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))).build()
+          ))
+          .generator(OneParameterInstructionConverter::generateINCDEC).build(),
+      InstructionEntry.builder()
+          .instruction(OR.class)
+          .masks(List.of(
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xf8})
+                  .value(new byte[] {(byte) 0xb0})
+                  .extractor((r, v) -> r.setParameter(reverseRegisterRH(v[0] & 0x07))).build(),
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff, 0x00})
+                  .value(new byte[] {(byte) 0xf6, 0x00})
+                  .extractor((r, v) -> r.setParameter(reverseImmediate8(v[1]))).build(),
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00})
+                  .value(new byte[] {(byte) 0xdd, (byte) 0xb6, 0x00})
+                  .extractor((r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))).build()
+          ))
+          .generator(OneParameterInstructionConverter::generateSUBANDXORORCP).build(),
+      InstructionEntry.builder()
+          .instruction(POP.class)
+          .masks(List.of(
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xcf})
+                  .value(new byte[] {(byte) 0xc1})
+                  .extractor((r, v) -> r.setParameter(reverseRegisterQQ((v[0] >> 4) & 0x03))).build(),
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xdf, (byte) 0xff})
+                  .value(new byte[] {(byte) 0xdd, (byte) 0xe1})
+                  .extractor((r, v) -> r.setParameter(reverseIXIY((v[0] & 0x20) == 0x00))).build()
+          ))
+          .generator(OneParameterInstructionConverter::generatePUSHPOP).build(),
+      InstructionEntry.builder()
+          .instruction(PUSH.class)
+          .masks(List.of(
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xcf})
+                  .value(new byte[] {(byte) 0xc5})
+                  .extractor((r, v) -> r.setParameter(reverseRegisterQQ((v[0] >> 4) & 0x03))).build(),
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xdf, (byte) 0xff})
+                  .value(new byte[] {(byte) 0xdd, (byte) 0xe5})
+                  .extractor((r, v) -> r.setParameter(reverseIXIY((v[0] & 0x20) == 0x00))).build()
+          ))
+          .generator(OneParameterInstructionConverter::generatePUSHPOP).build(),
+      InstructionEntry.builder()
+          .instruction(RET.class)
+          .masks(List.of(
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff})
+                  .value(new byte[] {(byte) 0xc9})
+                  .extractor((r, v) -> r.setParameter(null)).build(),
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xc7})
+                  .value(new byte[] {(byte) 0xc0})
+                  .extractor((r, v) -> r.setParameter(reverseCondition((v[0] >> 3) & 0x07))).build()
+          ))
+          .generator((c, p, m) -> generateRET(p, m)).build(),
+      InstructionEntry.builder()
+          .instruction(RL.class)
+          .masks(List.of(
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff, (byte) 0xf8})
+                  .value(new byte[] {(byte) 0xca, 0x10})
+                  .extractor((r, v) -> r.setParameter(reverseRegisterRH(v[1] & 0x07))).build(),
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00, (byte) 0xff})
+                  .value(new byte[] {(byte) 0xdd, (byte) 0xca, 0x00, 0x16})
+                  .extractor((r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))).build()
+          ))
+          .generator(OneParameterInstructionConverter::generateBitRotating).build(),
+      InstructionEntry.builder()
+          .instruction(RLC.class)
+          .masks(List.of(
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff, (byte) 0xf8})
+                  .value(new byte[] {(byte) 0xca, 0x00})
+                  .extractor((r, v) -> r.setParameter(reverseRegisterRH(v[1] & 0x07))).build(),
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00, (byte) 0xff})
+                  .value(new byte[] {(byte) 0xdd, (byte) 0xca, 0x00, 0x06})
+                  .extractor((r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))).build()
+          ))
+          .generator(OneParameterInstructionConverter::generateBitRotating).build(),
+      InstructionEntry.builder()
+          .instruction(RR.class)
+          .masks(List.of(
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[]{(byte) 0xff, (byte) 0xf8})
+                  .value(new byte[]{(byte) 0xca, 0x18})
+                  .extractor((r, v) -> r.setParameter(reverseRegisterRH(v[1] & 0x07))).build(),
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[]{(byte) 0xdf, (byte) 0xff, 0x00, (byte) 0xff})
+                  .value(new byte[]{(byte) 0xdd, (byte) 0xca, 0x00, 0x1e})
+                  .extractor((r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))).build()
+          ))
+          .generator(OneParameterInstructionConverter::generateBitRotating).build(),
+      InstructionEntry.builder()
+          .instruction(RRC.class)
+          .masks(List.of(
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[]{(byte) 0xff, (byte) 0xf8})
+                  .value(new byte[]{(byte) 0xca, 0x08})
+                  .extractor((r, v) -> r.setParameter(reverseRegisterRH(v[1] & 0x07))).build(),
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[]{(byte) 0xdf, (byte) 0xff, 0x00, (byte) 0xff})
+                  .value(new byte[]{(byte) 0xdd, (byte) 0xca, 0x00, 0x0e})
+                  .extractor((r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))).build()
+          ))
+          .generator(OneParameterInstructionConverter::generateBitRotating).build(),
+      InstructionEntry.builder()
+          .instruction(RST.class)
+          .masks(List.of(
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[]{(byte) 0xc7})
+                  .value(new byte[]{(byte) 0xc7})
+                  .extractor((r, v) -> r.setParameter(reverseRSTValue(v[0] & 0x38))).build()
+          ))
+          .generator((c, p, m) -> generateRST(p, m)).build(),
+      InstructionEntry.builder()
+          .instruction(SLA.class)
+          .masks(List.of(
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff, (byte) 0xf8})
+                  .value(new byte[] {(byte) 0xca, 0x20})
+                  .extractor((r, v) -> r.setParameter(reverseRegisterRH(v[1] & 0x07))).build(),
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00, (byte) 0xff})
+                  .value(new byte[] {(byte) 0xdd, (byte) 0xca, 0x00, 0x26})
+                  .extractor((r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))).build()
+          ))
+          .generator(OneParameterInstructionConverter::generateBitRotating).build(),
+      InstructionEntry.builder()
+          .instruction(SRA.class)
+          .masks(List.of(
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff, (byte) 0xf8})
+                  .value(new byte[] {(byte) 0xca, 0x28})
+                  .extractor((r, v) -> r.setParameter(reverseRegisterRH(v[1] & 0x07))).build(),
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00, (byte) 0xff})
+                  .value(new byte[] {(byte) 0xdd, (byte) 0xca, 0x00, 0x2e})
+                  .extractor((r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))).build()
+          ))
+          .generator(OneParameterInstructionConverter::generateBitRotating).build(),
+      InstructionEntry.builder()
+          .instruction(SRL.class)
+          .masks(List.of(
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff, (byte) 0xf8})
+                  .value(new byte[] {(byte) 0xca, 0x38})
+                  .extractor((r, v) -> r.setParameter(reverseRegisterRH(v[1] & 0x07))).build(),
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00, (byte) 0xff})
+                  .value(new byte[] {(byte) 0xdd, (byte) 0xca, 0x00, 0x3e})
+                  .extractor((r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))).build()
+          ))
+          .generator(OneParameterInstructionConverter::generateBitRotating).build(),
+      InstructionEntry.builder()
+          .instruction(SUB.class)
+          .masks(List.of(
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xf8})
+                  .value(new byte[] {(byte) 0x90})
+                  .extractor((r, v) -> r.setParameter(reverseRegisterRH(v[0] & 0x07))).build(),
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff, 0x00})
+                  .value(new byte[] {(byte) 0xd6, 0x00})
+                  .extractor((r, v) -> r.setParameter(reverseImmediate8(v[1]))).build(),
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00})
+                  .value(new byte[] {(byte) 0xdd, (byte) 0x96, 0x00})
+                  .extractor((r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))).build()
+          ))
+          .generator(OneParameterInstructionConverter::generateSUBANDXORORCP).build(),
+      InstructionEntry.builder()
+          .instruction(XOR.class)
+          .masks(List.of(
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xf8})
+                  .value(new byte[] {(byte) 0xa8})
+                  .extractor((r, v) -> r.setParameter(reverseRegisterRH(v[0] & 0x07))).build(),
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff, 0x00})
+                  .value(new byte[] {(byte) 0xee, 0x00})
+                  .extractor((r, v) -> r.setParameter(reverseImmediate8(v[1]))).build(),
+              MaskedOpcode.<OneParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00})
+                  .value(new byte[] {(byte) 0xdd, (byte) 0xae, 0x00})
+                  .extractor((r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))).build()
+          ))
+          .generator(OneParameterInstructionConverter::generateSUBANDXORORCP).build());
 
   private static final Map<Class<? extends OneParameterInstruction>, InstructionEntry> instructions =
       instructionlist.stream().collect(Collectors.toMap(e -> e.instruction, e -> e));

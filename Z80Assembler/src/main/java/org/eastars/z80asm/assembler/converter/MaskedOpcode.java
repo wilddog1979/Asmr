@@ -1,24 +1,29 @@
 package org.eastars.z80asm.assembler.converter;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Arrays;
 
 @Getter
-@RequiredArgsConstructor
+@Builder
+@AllArgsConstructor
 public class MaskedOpcode<T2> {
+
+  private byte[] mask;
+
+  private byte[] value;
+
+  private ParameterExtractor<T2> extractor;
 
   @Setter
   private Class<? extends T2> instruction;
 
-  private final byte[] mask;
+  public MaskedOpcode(byte[] mask, byte[] value, ParameterExtractor<T2> extractor) {
+    this.mask = mask;
+    this.value = value;
+    this.extractor = extractor;
+  }
 
-  private final byte[] value;
-
-  private final ParameterExtractor<T2> extractor;
-  
   public MaskedOpcode(byte[] value) {
     this(new byte[value.length], value, null);
     Arrays.fill(mask, (byte) 0xff);
