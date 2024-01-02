@@ -14,7 +14,7 @@ public abstract class INCDECVisitor<T extends OneParameterInstruction, C extends
   protected Parameter getParameter(InstructionINCDECparametersContext paramCtx) {
     return getRegisterPair(paramCtx.IX, RegisterPair.IX)
         .orElseGet(() -> getRegisterPair(paramCtx.IY, RegisterPair.IY)
-            .orElseGet(() -> getRegisterSsParameter(paramCtx.registerSS())
+            .orElseGet(() -> getRegisterSSParameter(paramCtx.registerSS())
                 .orElseGet(() -> getRegistersWithReference(paramCtx.registersWithReference())
                     .orElseGet(() -> getIndexedReference(paramCtx.indexedReference())
                         .orElse(null)))));

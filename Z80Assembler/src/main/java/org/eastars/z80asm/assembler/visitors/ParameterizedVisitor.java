@@ -59,24 +59,24 @@ public abstract class ParameterizedVisitor<T, C extends InstructionContext, P ex
     return Optional.empty();
   }
   
-  protected <PT> Optional<Parameter> getRegisterSsParameter(P paramCtx, Class<PT> type) {
+  protected <PT> Optional<Parameter> getRegisterSSParameter(P paramCtx, Class<PT> type) {
     return getParameter(
         paramCtx, type, "registerSS", RegisterSSContext.class, registerSsVisitor::visitRegisterSS);
   }
   
-  protected Optional<Parameter> getRegisterSsParameter(RegisterSSContext ctx) {
+  protected Optional<Parameter> getRegisterSSParameter(RegisterSSContext ctx) {
     return Optional.ofNullable(ctx).map(registerSsVisitor::visitRegisterSS);
   }
   
-  protected Optional<Parameter> getRegisterPpParameter(RegisterPPContext ctx) {
+  protected Optional<Parameter> getRegisterPPParameter(RegisterPPContext ctx) {
     return Optional.ofNullable(ctx).map(registerPpVisitor::visitRegisterPP);
   }
   
-  protected Optional<Parameter> getRegisterRrParameter(RegisterRRContext ctx) {
+  protected Optional<Parameter> getRegisterRRParameter(RegisterRRContext ctx) {
     return Optional.ofNullable(ctx).map(registerRrVisitor::visitRegisterRR);
   }
   
-  protected Optional<Parameter> getRegisterQqParameter(RegisterQQContext ctx) {
+  protected Optional<Parameter> getRegisterQQParameter(RegisterQQContext ctx) {
     return Optional.ofNullable(ctx).map(registerQqVisitor::visitRegisterQQ);
   }
   

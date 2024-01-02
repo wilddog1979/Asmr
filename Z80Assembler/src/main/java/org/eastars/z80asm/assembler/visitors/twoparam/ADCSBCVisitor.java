@@ -14,7 +14,7 @@ public abstract class ADCSBCVisitor<T extends TwoParameterInstruction, C extends
   @Override
   protected Parameter getSourceParameter(InstructionADCSBCparametersContext paramCtx) {
     return getRegistersWithReference(paramCtx.registersWithReference())
-        .orElseGet(() -> getRegisterSsParameter(paramCtx.registerSS())
+        .orElseGet(() -> getRegisterSSParameter(paramCtx.registerSS())
             .orElseGet(() -> getIndexedReference(paramCtx.indexedReference())
                 .orElseGet(() -> getExpression(paramCtx.hex8bits())
                     .orElse(null))));
