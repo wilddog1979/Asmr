@@ -4,7 +4,7 @@ import lombok.Builder;
 import org.eastars.asm.assember.CompilationContext;
 import org.eastars.z80asm.ast.Z80Instruction;
 import org.eastars.z80asm.ast.instructions.OneParameterInstruction;
-import org.eastars.z80asm.ast.parameter.*;
+import org.eastars.z80asm.ast.parameter.Parameter;
 
 import java.util.List;
 import java.util.Map;
