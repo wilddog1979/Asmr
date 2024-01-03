@@ -34,11 +34,11 @@ public class OneParameterRETConverter extends AbstractZ80InstructionConverter<On
     if (parameter == null || parameter instanceof ConditionParameter) {
       result = parameter == null
           ? new byte[] {
-          masks.get(0).getValue()[0]
-      } :
-          new byte[] {
-              (byte) (masks.get(1).getValue()[0] | (((ConditionParameter) parameter).getCondition().getOpcode() << 3))
-          };
+            masks.get(0).getValue()[0]
+          } :
+            new byte[] {
+                (byte) (masks.get(1).getValue()[0] | (((ConditionParameter) parameter).getCondition().getOpcode() << 3))
+            };
     }
 
     return result;
