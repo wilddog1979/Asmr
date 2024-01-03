@@ -17,10 +17,10 @@ import static org.eastars.z80asm.assembler.converter.Check.*;
 public class TwoParameterInstructionConverter extends AbstractZ80InstructionConverter<TwoParameterInstruction> {
 
   @Builder
-  private record InstructionEntry<T extends Z80Instruction>(Class<? extends T> instruction,
-                                                            List<MaskedOpcode<T>> masks,
-                                                            InstructionAssemblyGenerator<T> generator) {
-    private InstructionEntry(
+  record InstructionEntry<T extends Z80Instruction>(Class<? extends T> instruction,
+                                                    List<MaskedOpcode<T>> masks,
+                                                    InstructionAssemblyGenerator<T> generator) {
+    InstructionEntry(
         Class<? extends T> instruction,
         List<MaskedOpcode<T>> masks,
         InstructionAssemblyGenerator<T> generator) {
@@ -33,7 +33,7 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
   }
   
   @FunctionalInterface
-  protected interface InstructionAssemblyGenerator<T extends Z80Instruction> {
+  interface InstructionAssemblyGenerator<T extends Z80Instruction> {
     
     byte[] generate(
         CompilationContext compilationContext,
