@@ -1,10 +1,14 @@
 package org.eastars.z80asm.ast.instructions;
 
 import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.eastars.z80asm.ast.Z80Instruction;
 import org.eastars.z80asm.ast.parameter.Parameter;
 
 @Getter
+@Setter
+@Accessors(chain = true)
 public abstract class TwoParameterInstruction extends Z80Instruction {
 
   private Parameter target;
@@ -14,16 +18,6 @@ public abstract class TwoParameterInstruction extends Z80Instruction {
   @Override
   public String getAssembly() {
     return String.format("%s %s, %s", getMnemonic(), target.getAssembly(), source.getAssembly());
-  }
-
-  public TwoParameterInstruction setTarget(Parameter target) {
-    this.target = target;
-    return this;
-  }
-
-  public TwoParameterInstruction setSource(Parameter source) {
-    this.source = source;
-    return this;
   }
   
 }
