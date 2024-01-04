@@ -11,9 +11,11 @@ import java.util.List;
 
 public class OneParameterPUSHPOPConverter extends AbstractZ80InstructionConverter<OneParameterInstruction> {
 
-  public static List<InstructionEntry<OneParameterInstruction>> getInstructionList() {
+  public static List<InstructionEntry<OneParameterInstruction,
+      OneParameterInstructionAssemblyGenerator<OneParameterInstruction>>> getInstructionList() {
     return List.of(
-        InstructionEntry.<OneParameterInstruction>builder()
+        InstructionEntry
+            .<OneParameterInstruction, OneParameterInstructionAssemblyGenerator<OneParameterInstruction>>builder()
             .instruction(POP.class)
             .masks(List.of(
                 MaskedOpcode.<OneParameterInstruction>builder()
@@ -26,7 +28,8 @@ public class OneParameterPUSHPOPConverter extends AbstractZ80InstructionConverte
                     .extractor((r, v) -> r.setParameter(reverseIXIY((v[0] & 0x20) == 0x00))).build()
             ))
             .generator(OneParameterPUSHPOPConverter::generate).build(),
-        InstructionEntry.<OneParameterInstruction>builder()
+        InstructionEntry
+            .<OneParameterInstruction, OneParameterInstructionAssemblyGenerator<OneParameterInstruction>>builder()
             .instruction(PUSH.class)
             .masks(List.of(
                 MaskedOpcode.<OneParameterInstruction>builder()
@@ -44,11 +47,11 @@ public class OneParameterPUSHPOPConverter extends AbstractZ80InstructionConverte
 
   private static byte[] generate(
       CompilationContext compilationContext,
-      List<Parameter> parameters,
+      OneParameter oneParameter,
       List<MaskedOpcode<OneParameterInstruction>> masks) {
     byte[] result = null;
 
-    Parameter parameter = parameters.get(0);
+    Parameter parameter = oneParameter.parameter();
     int registerIndex = getRegisterQQIndex(parameter);
     if (registerIndex != -1) {
       result = new byte[] {(byte) (masks.get(0).getValue()[0] | (registerIndex << 4))};

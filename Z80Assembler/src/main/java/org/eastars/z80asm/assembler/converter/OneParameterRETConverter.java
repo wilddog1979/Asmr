@@ -10,9 +10,11 @@ import java.util.List;
 
 public class OneParameterRETConverter extends AbstractZ80InstructionConverter<OneParameterInstruction> {
 
-  public static List<InstructionEntry<OneParameterInstruction>> getInstructionList() {
+  public static List<InstructionEntry<OneParameterInstruction,
+      OneParameterInstructionAssemblyGenerator<OneParameterInstruction>>> getInstructionList() {
     return List.of(
-        InstructionEntry.<OneParameterInstruction>builder()
+        InstructionEntry
+            .<OneParameterInstruction, OneParameterInstructionAssemblyGenerator<OneParameterInstruction>>builder()
             .instruction(RET.class)
             .masks(List.of(
                 MaskedOpcode.<OneParameterInstruction>builder()
@@ -28,17 +30,19 @@ public class OneParameterRETConverter extends AbstractZ80InstructionConverter<On
     );
   }
 
-  private static byte[] generate(List<Parameter> parameters, List<MaskedOpcode<OneParameterInstruction>> masks) {
+  private static byte[] generate(OneParameter oneParameter,
+                                 List<MaskedOpcode<OneParameterInstruction>> masks) {
     byte[] result = null;
 
-    if (parameters.isEmpty() || parameters.get(0) instanceof ConditionParameter) {
-      result = parameters.isEmpty()
+    Parameter parameter = oneParameter.parameter();
+    if (parameter == null || parameter instanceof ConditionParameter) {
+      result = parameter == null
           ? new byte[] {
             masks.get(0).getValue()[0]
           } :
             new byte[] {
                 (byte) (masks.get(1).getValue()[0]
-                    | (((ConditionParameter) parameters.get(0)).getCondition().getOpcode() << 3))
+                    | (((ConditionParameter) parameter).getCondition().getOpcode() << 3))
             };
     }
 

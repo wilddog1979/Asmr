@@ -11,7 +11,8 @@ import static org.eastars.z80asm.utilities.Utilities.concatenate;
 
 public class OneParameterInstructionConverter extends AbstractZ80InstructionConverter<OneParameterInstruction> {
 
-  private static final List<InstructionEntry<OneParameterInstruction>> instructionlist = concatenate(
+  private static final List<InstructionEntry<OneParameterInstruction,
+      OneParameterInstructionAssemblyGenerator<OneParameterInstruction>>> instructionlist = concatenate(
       OneParameterSUBANDXORORCPConverter.getInstructionList(),
       OneParameterINCDECConverter.getInstructionList(),
       OneParameterDJNZConverter.getInstructionList(),
@@ -20,9 +21,9 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
       OneParameterBitRotatingConverter.getInstructionList(),
       OneParameterRSTConverter.getInstructionList());
 
-  private static final Map<
-      Class<? extends OneParameterInstruction>, InstructionEntry<OneParameterInstruction>> instructions =
-      instructionlist.stream().collect(Collectors.toMap(InstructionEntry::instruction, e -> e));
+  private static final Map<Class<? extends OneParameterInstruction>,
+      InstructionEntry<OneParameterInstruction, OneParameterInstructionAssemblyGenerator<OneParameterInstruction>>>
+      instructions = instructionlist.stream().collect(Collectors.toMap(InstructionEntry::instruction, e -> e));
 
   private static final Map<Integer, MaskedOpcodeMap<OneParameterInstruction>> reverse =
       instructionlist.stream().flatMap(e -> e.masks().stream()).collect(Collectors.groupingBy(
@@ -43,11 +44,12 @@ public class OneParameterInstructionConverter extends AbstractZ80InstructionConv
   @Override
   public byte[] convert(CompilationContext compilationContext, OneParameterInstruction instruction) {
     byte[] result = null;
-    InstructionEntry<OneParameterInstruction> entry = instructions.get(instruction.getClass());
+    InstructionEntry<OneParameterInstruction, OneParameterInstructionAssemblyGenerator<OneParameterInstruction>> entry =
+        instructions.get(instruction.getClass());
     if (entry != null && entry.generator() != null) {
       result = entry.generator().generate(
           compilationContext,
-          instruction.getParameter() != null ? List.of(instruction.getParameter()) : List.of(),
+          new OneParameter(instruction.getParameter()),
           entry.masks());
     }
     return result;

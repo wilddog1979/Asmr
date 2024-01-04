@@ -11,9 +11,11 @@ import java.util.List;
 
 public class OneParameterSUBANDXORORCPConverter extends AbstractZ80InstructionConverter<OneParameterInstruction> {
 
-  public static List<InstructionEntry<OneParameterInstruction>> getInstructionList() {
+  public static List<InstructionEntry<OneParameterInstruction,
+      OneParameterInstructionAssemblyGenerator<OneParameterInstruction>>> getInstructionList() {
     return List.of(
-        InstructionEntry.<OneParameterInstruction>builder()
+        InstructionEntry
+            .<OneParameterInstruction, OneParameterInstructionAssemblyGenerator<OneParameterInstruction>>builder()
             .instruction(AND.class)
             .masks(List.of(
                 MaskedOpcode.<OneParameterInstruction>builder()
@@ -31,7 +33,8 @@ public class OneParameterSUBANDXORORCPConverter extends AbstractZ80InstructionCo
                     .build()
             ))
             .generator(OneParameterSUBANDXORORCPConverter::generate).build(),
-        InstructionEntry.<OneParameterInstruction>builder()
+        InstructionEntry
+            .<OneParameterInstruction, OneParameterInstructionAssemblyGenerator<OneParameterInstruction>>builder()
             .instruction(CP.class)
             .masks(List.of(
                 MaskedOpcode.<OneParameterInstruction>builder()
@@ -49,7 +52,8 @@ public class OneParameterSUBANDXORORCPConverter extends AbstractZ80InstructionCo
                     .build()
             ))
             .generator(OneParameterSUBANDXORORCPConverter::generate).build(),
-        InstructionEntry.<OneParameterInstruction>builder()
+        InstructionEntry
+            .<OneParameterInstruction, OneParameterInstructionAssemblyGenerator<OneParameterInstruction>>builder()
             .instruction(OR.class)
             .masks(List.of(
                 MaskedOpcode.<OneParameterInstruction>builder()
@@ -67,7 +71,8 @@ public class OneParameterSUBANDXORORCPConverter extends AbstractZ80InstructionCo
                     .build()
             ))
             .generator(OneParameterSUBANDXORORCPConverter::generate).build(),
-        InstructionEntry.<OneParameterInstruction>builder()
+        InstructionEntry
+            .<OneParameterInstruction, OneParameterInstructionAssemblyGenerator<OneParameterInstruction>>builder()
             .instruction(SUB.class)
             .masks(List.of(
                 MaskedOpcode.<OneParameterInstruction>builder()
@@ -85,7 +90,8 @@ public class OneParameterSUBANDXORORCPConverter extends AbstractZ80InstructionCo
                     .build()
             ))
             .generator(OneParameterSUBANDXORORCPConverter::generate).build(),
-        InstructionEntry.<OneParameterInstruction>builder()
+        InstructionEntry
+            .<OneParameterInstruction, OneParameterInstructionAssemblyGenerator<OneParameterInstruction>>builder()
             .instruction(XOR.class)
             .masks(List.of(
                 MaskedOpcode.<OneParameterInstruction>builder()
@@ -108,11 +114,11 @@ public class OneParameterSUBANDXORORCPConverter extends AbstractZ80InstructionCo
 
   private static byte[] generate(
       CompilationContext compilationContext,
-      List<Parameter> parameters,
+      OneParameter oneParameter,
       List<MaskedOpcode<OneParameterInstruction>> masks) {
     byte[] result = null;
 
-    Parameter parameter = parameters.get(0);
+    Parameter parameter = oneParameter.parameter();
     int registerIndex = getRegisterRHIndex(parameter);
     if (registerIndex != -1) {
       result = new byte[] {(byte) (masks.get(0).getValue()[0] | registerIndex)};

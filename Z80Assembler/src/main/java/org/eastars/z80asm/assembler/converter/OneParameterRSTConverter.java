@@ -4,15 +4,16 @@ import org.eastars.asm.assember.CompilationContext;
 import org.eastars.z80asm.ast.instructions.OneParameterInstruction;
 import org.eastars.z80asm.ast.instructions.oneparam.RST;
 import org.eastars.z80asm.ast.parameter.ConstantValueParameter;
-import org.eastars.z80asm.ast.parameter.Parameter;
 
 import java.util.List;
 
 public class OneParameterRSTConverter extends AbstractZ80InstructionConverter<OneParameterInstruction> {
 
-  public static List<InstructionEntry<OneParameterInstruction>> getInstructionList() {
+  public static List<InstructionEntry<OneParameterInstruction,
+      OneParameterInstructionAssemblyGenerator<OneParameterInstruction>>> getInstructionList() {
     return List.of(
-        InstructionEntry.<OneParameterInstruction>builder()
+        InstructionEntry
+            .<OneParameterInstruction, OneParameterInstructionAssemblyGenerator<OneParameterInstruction>>builder()
             .instruction(RST.class)
             .masks(List.of(
                 MaskedOpcode.<OneParameterInstruction>builder()
@@ -24,10 +25,10 @@ public class OneParameterRSTConverter extends AbstractZ80InstructionConverter<On
     );
   }
 
-  private static byte[] generate(List<Parameter> parameters, List<MaskedOpcode<OneParameterInstruction>> masks) {
+  private static byte[] generate(OneParameter oneParameter, List<MaskedOpcode<OneParameterInstruction>> masks) {
     byte[] result = null;
 
-    if (parameters.get(0) instanceof ConstantValueParameter constantValeParameter) {
+    if (oneParameter.parameter() instanceof ConstantValueParameter constantValeParameter) {
       int value = Integer.parseInt(constantValeParameter.getValue(), 16);
       if (value == 0x00 || value == 0x08 || value == 0x10 || value == 0x18
           || value == 0x20 || value == 0x28 || value == 0x30 || value == 0x38) {

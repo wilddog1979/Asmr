@@ -11,9 +11,11 @@ import java.util.List;
 
 public class OneParameterBitRotatingConverter extends AbstractZ80InstructionConverter<OneParameterInstruction> {
 
-  public static List<InstructionEntry<OneParameterInstruction>> getInstructionList() {
+  public static List<InstructionEntry<OneParameterInstruction,
+      OneParameterInstructionAssemblyGenerator<OneParameterInstruction>>> getInstructionList() {
     return List.of(
-        InstructionEntry.<OneParameterInstruction>builder()
+        InstructionEntry
+            .<OneParameterInstruction, OneParameterInstructionAssemblyGenerator<OneParameterInstruction>>builder()
             .instruction(RL.class)
             .masks(List.of(
                 MaskedOpcode.<OneParameterInstruction>builder()
@@ -27,7 +29,8 @@ public class OneParameterBitRotatingConverter extends AbstractZ80InstructionConv
                     .build()
             ))
             .generator(OneParameterBitRotatingConverter::generate).build(),
-        InstructionEntry.<OneParameterInstruction>builder()
+        InstructionEntry
+            .<OneParameterInstruction, OneParameterInstructionAssemblyGenerator<OneParameterInstruction>>builder()
             .instruction(RLC.class)
             .masks(List.of(
                 MaskedOpcode.<OneParameterInstruction>builder()
@@ -41,7 +44,8 @@ public class OneParameterBitRotatingConverter extends AbstractZ80InstructionConv
                     .build()
             ))
             .generator(OneParameterBitRotatingConverter::generate).build(),
-        InstructionEntry.<OneParameterInstruction>builder()
+        InstructionEntry
+            .<OneParameterInstruction, OneParameterInstructionAssemblyGenerator<OneParameterInstruction>>builder()
             .instruction(RR.class)
             .masks(List.of(
                 MaskedOpcode.<OneParameterInstruction>builder()
@@ -55,7 +59,8 @@ public class OneParameterBitRotatingConverter extends AbstractZ80InstructionConv
                     .build()
             ))
             .generator(OneParameterBitRotatingConverter::generate).build(),
-        InstructionEntry.<OneParameterInstruction>builder()
+        InstructionEntry
+            .<OneParameterInstruction, OneParameterInstructionAssemblyGenerator<OneParameterInstruction>>builder()
             .instruction(RRC.class)
             .masks(List.of(
                 MaskedOpcode.<OneParameterInstruction>builder()
@@ -69,7 +74,8 @@ public class OneParameterBitRotatingConverter extends AbstractZ80InstructionConv
                     .build()
             ))
             .generator(OneParameterBitRotatingConverter::generate).build(),
-        InstructionEntry.<OneParameterInstruction>builder()
+        InstructionEntry
+            .<OneParameterInstruction, OneParameterInstructionAssemblyGenerator<OneParameterInstruction>>builder()
             .instruction(SLA.class)
             .masks(List.of(
                 MaskedOpcode.<OneParameterInstruction>builder()
@@ -83,7 +89,8 @@ public class OneParameterBitRotatingConverter extends AbstractZ80InstructionConv
                     .build()
             ))
             .generator(OneParameterBitRotatingConverter::generate).build(),
-        InstructionEntry.<OneParameterInstruction>builder()
+        InstructionEntry
+            .<OneParameterInstruction, OneParameterInstructionAssemblyGenerator<OneParameterInstruction>>builder()
             .instruction(SRA.class)
             .masks(List.of(
                 MaskedOpcode.<OneParameterInstruction>builder()
@@ -97,7 +104,8 @@ public class OneParameterBitRotatingConverter extends AbstractZ80InstructionConv
                     .build()
             ))
             .generator(OneParameterBitRotatingConverter::generate).build(),
-        InstructionEntry.<OneParameterInstruction>builder()
+        InstructionEntry
+            .<OneParameterInstruction, OneParameterInstructionAssemblyGenerator<OneParameterInstruction>>builder()
             .instruction(SRL.class)
             .masks(List.of(
                 MaskedOpcode.<OneParameterInstruction>builder()
@@ -116,17 +124,18 @@ public class OneParameterBitRotatingConverter extends AbstractZ80InstructionConv
 
   private static byte[] generate(
       CompilationContext compilationContext,
-      List<Parameter> parameters,
+      OneParameter oneParameter,
       List<MaskedOpcode<OneParameterInstruction>> masks) {
     byte[] result = null;
 
-    int registerIndex = getRegisterRHIndex(parameters.get(0));
+    Parameter parameter = oneParameter.parameter();
+    int registerIndex = getRegisterRHIndex(parameter);
     if (registerIndex != -1) {
       result = Arrays.copyOf(masks.get(0).getValue(), 2);
       result[1] |= (byte) registerIndex;
-    } else if (parameters.get(0) instanceof IndexedAddressingParameter) {
+    } else if (parameter instanceof IndexedAddressingParameter) {
       result = generateIndexedAddressing(
-          compilationContext, (IndexedAddressingParameter) parameters.get(0), masks.get(1).getValue());
+          compilationContext, (IndexedAddressingParameter) parameter, masks.get(1).getValue());
     }
 
     return result;
