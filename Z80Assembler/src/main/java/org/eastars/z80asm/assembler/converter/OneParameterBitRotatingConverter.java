@@ -11,9 +11,9 @@ import java.util.List;
 
 public class OneParameterBitRotatingConverter extends AbstractZ80InstructionConverter<OneParameterInstruction> {
 
-  public static List<OneParameterInstructionConverter.InstructionEntry<OneParameterInstruction>> getInstructionList() {
+  public static List<InstructionEntry<OneParameterInstruction>> getInstructionList() {
     return List.of(
-        OneParameterInstructionConverter.InstructionEntry.<OneParameterInstruction>builder()
+        InstructionEntry.<OneParameterInstruction>builder()
             .instruction(RL.class)
             .masks(List.of(
                 MaskedOpcode.<OneParameterInstruction>builder()
@@ -26,8 +26,8 @@ public class OneParameterBitRotatingConverter extends AbstractZ80InstructionConv
                     .extractor((r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
                     .build()
             ))
-            .generator(OneParameterBitRotatingConverter::generateBitRotating).build(),
-        OneParameterInstructionConverter.InstructionEntry.<OneParameterInstruction>builder()
+            .generator(OneParameterBitRotatingConverter::generate).build(),
+        InstructionEntry.<OneParameterInstruction>builder()
             .instruction(RLC.class)
             .masks(List.of(
                 MaskedOpcode.<OneParameterInstruction>builder()
@@ -40,8 +40,8 @@ public class OneParameterBitRotatingConverter extends AbstractZ80InstructionConv
                     .extractor((r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
                     .build()
             ))
-            .generator(OneParameterBitRotatingConverter::generateBitRotating).build(),
-        OneParameterInstructionConverter.InstructionEntry.<OneParameterInstruction>builder()
+            .generator(OneParameterBitRotatingConverter::generate).build(),
+        InstructionEntry.<OneParameterInstruction>builder()
             .instruction(RR.class)
             .masks(List.of(
                 MaskedOpcode.<OneParameterInstruction>builder()
@@ -54,8 +54,8 @@ public class OneParameterBitRotatingConverter extends AbstractZ80InstructionConv
                     .extractor((r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
                     .build()
             ))
-            .generator(OneParameterBitRotatingConverter::generateBitRotating).build(),
-        OneParameterInstructionConverter.InstructionEntry.<OneParameterInstruction>builder()
+            .generator(OneParameterBitRotatingConverter::generate).build(),
+        InstructionEntry.<OneParameterInstruction>builder()
             .instruction(RRC.class)
             .masks(List.of(
                 MaskedOpcode.<OneParameterInstruction>builder()
@@ -68,8 +68,8 @@ public class OneParameterBitRotatingConverter extends AbstractZ80InstructionConv
                     .extractor((r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
                     .build()
             ))
-            .generator(OneParameterBitRotatingConverter::generateBitRotating).build(),
-        OneParameterInstructionConverter.InstructionEntry.<OneParameterInstruction>builder()
+            .generator(OneParameterBitRotatingConverter::generate).build(),
+        InstructionEntry.<OneParameterInstruction>builder()
             .instruction(SLA.class)
             .masks(List.of(
                 MaskedOpcode.<OneParameterInstruction>builder()
@@ -82,8 +82,8 @@ public class OneParameterBitRotatingConverter extends AbstractZ80InstructionConv
                     .extractor((r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
                     .build()
             ))
-            .generator(OneParameterBitRotatingConverter::generateBitRotating).build(),
-        OneParameterInstructionConverter.InstructionEntry.<OneParameterInstruction>builder()
+            .generator(OneParameterBitRotatingConverter::generate).build(),
+        InstructionEntry.<OneParameterInstruction>builder()
             .instruction(SRA.class)
             .masks(List.of(
                 MaskedOpcode.<OneParameterInstruction>builder()
@@ -96,8 +96,8 @@ public class OneParameterBitRotatingConverter extends AbstractZ80InstructionConv
                     .extractor((r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
                     .build()
             ))
-            .generator(OneParameterBitRotatingConverter::generateBitRotating).build(),
-        OneParameterInstructionConverter.InstructionEntry.<OneParameterInstruction>builder()
+            .generator(OneParameterBitRotatingConverter::generate).build(),
+        InstructionEntry.<OneParameterInstruction>builder()
             .instruction(SRL.class)
             .masks(List.of(
                 MaskedOpcode.<OneParameterInstruction>builder()
@@ -110,23 +110,23 @@ public class OneParameterBitRotatingConverter extends AbstractZ80InstructionConv
                     .extractor((r, v) -> r.setParameter(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
                     .build()
             ))
-            .generator(OneParameterBitRotatingConverter::generateBitRotating).build()
+            .generator(OneParameterBitRotatingConverter::generate).build()
     );
   }
 
-  private static byte[] generateBitRotating(
+  private static byte[] generate(
       CompilationContext compilationContext,
-      Parameter parameter,
+      List<Parameter> parameters,
       List<MaskedOpcode<OneParameterInstruction>> masks) {
     byte[] result = null;
 
-    int registerIndex = getRegisterRHIndex(parameter);
+    int registerIndex = getRegisterRHIndex(parameters.get(0));
     if (registerIndex != -1) {
       result = Arrays.copyOf(masks.get(0).getValue(), 2);
       result[1] |= (byte) registerIndex;
-    } else if (parameter instanceof IndexedAddressingParameter) {
+    } else if (parameters.get(0) instanceof IndexedAddressingParameter) {
       result = generateIndexedAddressing(
-          compilationContext, (IndexedAddressingParameter) parameter, masks.get(1).getValue());
+          compilationContext, (IndexedAddressingParameter) parameters.get(0), masks.get(1).getValue());
     }
 
     return result;

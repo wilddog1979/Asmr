@@ -10,9 +10,9 @@ import java.util.List;
 
 public class OneParameterDJNZConverter extends AbstractZ80InstructionConverter<OneParameterInstruction> {
 
-  public static List<OneParameterInstructionConverter.InstructionEntry<OneParameterInstruction>> getInstructionList() {
+  public static List<InstructionEntry<OneParameterInstruction>> getInstructionList() {
     return List.of(
-        OneParameterInstructionConverter.InstructionEntry.<OneParameterInstruction>builder()
+        InstructionEntry.<OneParameterInstruction>builder()
             .instruction(DJNZ.class)
             .masks(List.of(
                 MaskedOpcode.<OneParameterInstruction>builder()
@@ -26,11 +26,11 @@ public class OneParameterDJNZConverter extends AbstractZ80InstructionConverter<O
 
   private static byte[] generate(
       CompilationContext compilationContext,
-      Parameter parameter,
+      List<Parameter> parameters,
       List<MaskedOpcode<OneParameterInstruction>> masks) {
     byte[] result = null;
 
-    if (parameter instanceof ExpressionParameter expressionParameter) {
+    if (parameters.get(0) instanceof ExpressionParameter expressionParameter) {
       result = new byte[] {
           masks.get(0).getValue()[0],
           (byte) (expressionParameter.getExpressionValue(compilationContext) - 2)

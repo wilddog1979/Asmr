@@ -10,9 +10,9 @@ import java.util.List;
 
 public class OneParameterRSTConverter extends AbstractZ80InstructionConverter<OneParameterInstruction> {
 
-  public static List<OneParameterInstructionConverter.InstructionEntry<OneParameterInstruction>> getInstructionList() {
+  public static List<InstructionEntry<OneParameterInstruction>> getInstructionList() {
     return List.of(
-        OneParameterInstructionConverter.InstructionEntry.<OneParameterInstruction>builder()
+        InstructionEntry.<OneParameterInstruction>builder()
             .instruction(RST.class)
             .masks(List.of(
                 MaskedOpcode.<OneParameterInstruction>builder()
@@ -20,14 +20,14 @@ public class OneParameterRSTConverter extends AbstractZ80InstructionConverter<On
                     .value(new byte[]{(byte) 0xc7})
                     .extractor((r, v) -> r.setParameter(reverseRSTValue(v[0] & 0x38))).build()
             ))
-            .generator((c, p, m) -> generateRST(p, m)).build()
+            .generator((c, p, m) -> generate(p, m)).build()
     );
   }
 
-  private static byte[] generateRST(Parameter parameter, List<MaskedOpcode<OneParameterInstruction>> masks) {
+  private static byte[] generate(List<Parameter> parameters, List<MaskedOpcode<OneParameterInstruction>> masks) {
     byte[] result = null;
 
-    if (parameter instanceof ConstantValueParameter constantValeParameter) {
+    if (parameters.get(0) instanceof ConstantValueParameter constantValeParameter) {
       int value = Integer.parseInt(constantValeParameter.getValue(), 16);
       if (value == 0x00 || value == 0x08 || value == 0x10 || value == 0x18
           || value == 0x20 || value == 0x28 || value == 0x30 || value == 0x38) {

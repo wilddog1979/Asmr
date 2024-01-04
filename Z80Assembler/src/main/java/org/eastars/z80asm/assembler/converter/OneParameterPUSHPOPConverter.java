@@ -11,9 +11,9 @@ import java.util.List;
 
 public class OneParameterPUSHPOPConverter extends AbstractZ80InstructionConverter<OneParameterInstruction> {
 
-  public static List<OneParameterInstructionConverter.InstructionEntry<OneParameterInstruction>> getInstructionList() {
+  public static List<InstructionEntry<OneParameterInstruction>> getInstructionList() {
     return List.of(
-        OneParameterInstructionConverter.InstructionEntry.<OneParameterInstruction>builder()
+        InstructionEntry.<OneParameterInstruction>builder()
             .instruction(POP.class)
             .masks(List.of(
                 MaskedOpcode.<OneParameterInstruction>builder()
@@ -25,8 +25,8 @@ public class OneParameterPUSHPOPConverter extends AbstractZ80InstructionConverte
                     .value(new byte[] {(byte) 0xdd, (byte) 0xe1})
                     .extractor((r, v) -> r.setParameter(reverseIXIY((v[0] & 0x20) == 0x00))).build()
             ))
-            .generator(OneParameterPUSHPOPConverter::generatePUSHPOP).build(),
-        OneParameterInstructionConverter.InstructionEntry.<OneParameterInstruction>builder()
+            .generator(OneParameterPUSHPOPConverter::generate).build(),
+        InstructionEntry.<OneParameterInstruction>builder()
             .instruction(PUSH.class)
             .masks(List.of(
                 MaskedOpcode.<OneParameterInstruction>builder()
@@ -38,16 +38,17 @@ public class OneParameterPUSHPOPConverter extends AbstractZ80InstructionConverte
                     .value(new byte[] {(byte) 0xdd, (byte) 0xe5})
                     .extractor((r, v) -> r.setParameter(reverseIXIY((v[0] & 0x20) == 0x00))).build()
             ))
-            .generator(OneParameterPUSHPOPConverter::generatePUSHPOP).build()
+            .generator(OneParameterPUSHPOPConverter::generate).build()
     );
   }
 
-  private static byte[] generatePUSHPOP(
+  private static byte[] generate(
       CompilationContext compilationContext,
-      Parameter parameter,
+      List<Parameter> parameters,
       List<MaskedOpcode<OneParameterInstruction>> masks) {
     byte[] result = null;
 
+    Parameter parameter = parameters.get(0);
     int registerIndex = getRegisterQQIndex(parameter);
     if (registerIndex != -1) {
       result = new byte[] {(byte) (masks.get(0).getValue()[0] | (registerIndex << 4))};

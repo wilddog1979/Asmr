@@ -12,9 +12,9 @@ import java.util.List;
 
 public class OneParameterINCDECConverter extends AbstractZ80InstructionConverter<OneParameterInstruction> {
 
-  public static List<OneParameterInstructionConverter.InstructionEntry<OneParameterInstruction>> getInstructionList() {
+  public static List<InstructionEntry<OneParameterInstruction>> getInstructionList() {
     return List.of(
-        OneParameterInstructionConverter.InstructionEntry.<OneParameterInstruction>builder()
+        InstructionEntry.<OneParameterInstruction>builder()
             .instruction(DEC.class)
             .masks(List.of(
                 MaskedOpcode.<OneParameterInstruction>builder()
@@ -36,7 +36,7 @@ public class OneParameterINCDECConverter extends AbstractZ80InstructionConverter
                     .build()
             ))
             .generator(OneParameterINCDECConverter::generate).build(),
-        OneParameterInstructionConverter.InstructionEntry.<OneParameterInstruction>builder()
+        InstructionEntry.<OneParameterInstruction>builder()
             .instruction(INC.class)
             .masks(List.of(
                 MaskedOpcode.<OneParameterInstruction>builder()
@@ -63,10 +63,11 @@ public class OneParameterINCDECConverter extends AbstractZ80InstructionConverter
 
   private static byte[] generate(
       CompilationContext compilationContext,
-      Parameter parameter,
+      List<Parameter> parameters,
       List<MaskedOpcode<OneParameterInstruction>> masks) {
     byte[] result = null;
 
+    Parameter parameter = parameters.get(0);
     int registerIndex = getRegisterSSIndex(parameter);
     if (registerIndex != -1) {
       result = new byte[] {(byte) (masks.get(0).getValue()[0] | (registerIndex << 4))};
