@@ -1,5 +1,8 @@
 package org.eastars.z80asm.utilities;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -14,6 +17,15 @@ public class Utilities {
       return process.apply(target);
     }
     return defaultValue.get();
+  }
+
+  @SafeVarargs
+  public static <T> List<T> concatenate(List<T>...lists) {
+    List<T> destinationList = new ArrayList<>();
+    for (List<T> list : lists) {
+      destinationList.addAll(list);
+    }
+    return Collections.unmodifiableList(destinationList);
   }
 
 }

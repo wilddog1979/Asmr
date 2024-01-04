@@ -276,4 +276,24 @@ public abstract class AbstractZ80InstructionConverter<T extends Instruction> ext
     return convertRecursive(pushbackInputStream, new byte[]{});
   }
 
+  protected static byte[] generateWithImmediateValue(
+      CompilationContext compilationContext,
+      byte[] result,
+      Parameter parameter,
+      int idx) {
+    return generateWithExpressionValue(
+        compilationContext, result, ((ImmediateAddressingParameter) parameter).getValue(), idx);
+  }
+
+  protected static byte[] generateWithExpressionValue(
+      CompilationContext compilationContext,
+      byte[] result,
+      ExpressionParameter parameter,
+      int idx) {
+    int value = parameter.getExpressionValue(compilationContext);
+    result[idx] = (byte) (value & 0xff);
+    result[idx + 1] = (byte) ((value >> 8) & 0xff);
+    return result;
+  }
+
 }
