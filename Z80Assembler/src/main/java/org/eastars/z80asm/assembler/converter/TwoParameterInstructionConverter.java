@@ -1,8 +1,6 @@
 package org.eastars.z80asm.assembler.converter;
 
-import lombok.Builder;
 import org.eastars.asm.assember.CompilationContext;
-import org.eastars.z80asm.ast.Z80Instruction;
 import org.eastars.z80asm.ast.instructions.TwoParameterInstruction;
 import org.eastars.z80asm.ast.instructions.twoparam.*;
 import org.eastars.z80asm.ast.parameter.*;
@@ -16,235 +14,409 @@ import static org.eastars.z80asm.assembler.converter.Check.*;
 
 public class TwoParameterInstructionConverter extends AbstractZ80InstructionConverter<TwoParameterInstruction> {
 
-  @Builder
-  record InstructionEntry<T extends Z80Instruction>(Class<? extends T> instruction,
-                                                    List<MaskedOpcode<T>> masks,
-                                                    InstructionAssemblyGenerator<T> generator) {
-    InstructionEntry(
-        Class<? extends T> instruction,
-        List<MaskedOpcode<T>> masks,
-        InstructionAssemblyGenerator<T> generator) {
-      this.instruction = instruction;
-      this.masks = masks;
-      masks.forEach(m -> m.setInstruction(instruction));
-      this.generator = generator;
-    }
-
-  }
-  
-  @FunctionalInterface
-  interface InstructionAssemblyGenerator<T extends Z80Instruction> {
-    
-    byte[] generate(
-        CompilationContext compilationContext,
-        Parameter targetparameter,
-        Parameter sourceparameter,
-        List<MaskedOpcode<T>> masks);
-    
-  }
-
-  private static final List<InstructionEntry<TwoParameterInstruction>> instructionlist = Arrays.asList(
-    new InstructionEntry<TwoParameterInstruction>(ADC.class, Arrays.asList(
-      new MaskedOpcode<>(new byte[] {(byte) 0xf8}, new byte[] {(byte) 0x88}, (r, v) ->
-          r.setTarget(new RegisterParameter(Register.A)).setSource(reverseRegisterRH(v[0] & 0x07))),
-      new MaskedOpcode<>(new byte[] {(byte) 0xff, 0x00}, new byte[] {(byte) 0xce, 0x00}, (r, v) ->
-          r.setTarget(new RegisterParameter(Register.A)).setSource(reverseImmediate8(v[1]))),
-      new MaskedOpcode<>(new byte[] {(byte) 0xff, (byte) 0xcf}, new byte[] {(byte) 0xed, 0x4a}, (r, v) ->
-          r.setTarget(new RegisterPairParameter(RegisterPair.HL))
-              .setSource(reverseRegisterSS((v[1] >> 4) & 0x03))),
-      new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00}, new byte[] {(byte) 0xdd, (byte) 0x8e, 0x00},
-          (r, v) -> r.setTarget(new RegisterParameter(Register.A))
-              .setSource(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
-      ), TwoParameterInstructionConverter::generateADCSBC),
-    new InstructionEntry<TwoParameterInstruction>(ADD.class, Arrays.asList(
-        new MaskedOpcode<>(new byte[] {(byte) 0xcf}, new byte[] {0x09}, (r, v) ->
-            r.setTarget(new RegisterPairParameter(RegisterPair.HL))
-                .setSource(reverseRegisterSS((v[0] >> 4) & 0x03))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xf8}, new byte[] {(byte) 0x80}, (r, v) ->
-            r.setTarget(new RegisterParameter(Register.A)).setSource(reverseRegisterRH(v[0] & 0x07))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xff, 0x00}, new byte[] {(byte) 0xc6, 0x00}, (r, v) ->
-            r.setTarget(new RegisterParameter(Register.A)).setSource(reverseImmediate8(v[1]))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00}, new byte[] {(byte) 0xdd, (byte) 0x86, 0x00},
-            (r, v) -> r.setTarget(new RegisterParameter(Register.A))
-                .setSource(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xcf}, new byte[] {(byte) 0xdd, 0x09}, (r, v) ->
-            r.setTarget(reverseIXIY((v[0] & 0x20) == 0x00))
-                .setSource(reverseRegisterPPRR((v[0] & 0x20) == 0x00, (v[1] >> 4) & 0x03)))
-        ), TwoParameterInstructionConverter::generateADD),
-    new InstructionEntry<TwoParameterInstruction>(BIT.class, Arrays.asList(
-        new MaskedOpcode<>(new byte[] {(byte) 0xff, (byte) 0xc0}, new byte[] {(byte) 0xcb, 0x40}, (r, v) ->
-            r.setTarget(reverseImmediate8((v[1] >> 3) & 0x07)).setSource(reverseRegisterRH(v[1] & 0x07))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00, (byte) 0xc7}, new byte[] {(byte) 0xdd,
-            (byte) 0xcb, 0x00, 0x46}, (r, v) ->
-            r.setTarget(reverseImmediate8((v[3] >> 3) & 0x07))
-                .setSource(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
-        ), TwoParameterInstructionConverter::generateBITRESSET),
-    new InstructionEntry<TwoParameterInstruction>(CALL.class, Arrays.asList(
-        new MaskedOpcode<>(new byte[] {(byte) 0xc7, 0x00, 0x00}, new byte[] {(byte) 0xc4, 0x00, 0x00}, (r, v) ->
-            r.setTarget(reverseCondition((v[0] >> 3) & 0x07)).setSource(reverseImmediate16(v[2], v[1]))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xff, 0x00, 0x00}, new byte[] {(byte) 0xcd, 0x00, 0x00}, (r, v) ->
-            r.setSource(reverseImmediate16(v[2], v[1])))
-        ), TwoParameterInstructionConverter::generateCALL),
-    new InstructionEntry<TwoParameterInstruction>(EX.class, Arrays.asList(
-        new MaskedOpcode<>(new byte[] {(byte) 0xff}, new byte[] {0x08}, (r, v) ->
-            r.setTarget(new RegisterPairParameter(RegisterPair.AF))
-                .setSource(new RegisterPairParameter(RegisterPair.AFMarked))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xff}, new byte[] {(byte) 0xeb}, (r, v) ->
-            r.setTarget(new RegisterPairParameter(RegisterPair.DE))
-                .setSource(new RegisterPairParameter(RegisterPair.HL))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xff}, new byte[] {(byte) 0xe3}, (r, v) ->
-            r.setTarget(new RegisterIndirectAddressingParameter(RegisterPair.SP))
-                .setSource(new RegisterPairParameter(RegisterPair.HL))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff}, new byte[] {(byte) 0xdd, (byte) 0xe3}, (r, v) ->
-            r.setTarget(new RegisterIndirectAddressingParameter(RegisterPair.SP))
-                .setSource(reverseIXIY((v[0] & 0x20) == 0x00)))), (c, t, s, m) -> generateEX(t, s, m)),
-    new InstructionEntry<TwoParameterInstruction>(IN.class, Arrays.asList(
-        new MaskedOpcode<>(new byte[] {(byte) 0xff, 0x00}, new byte[] {(byte) 0xdb, 0x00}, (r, v) ->
-            r.setTarget(new RegisterParameter(Register.A)).setSource(reverseImmediate8(v[1]))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xff, (byte) 0xc7}, new byte[] {(byte) 0xed, 0x40}, (r, v) ->
-            r.setTarget(reverseRegisterR((v[1] >> 3) & 0x07)).setSource(new RegisterParameter(Register.C)))
-        ), TwoParameterInstructionConverter::generateIN),
-    new InstructionEntry<TwoParameterInstruction>(JP.class, Arrays.asList(
-        new MaskedOpcode<>(new byte[] {(byte) 0xff}, new byte[] {(byte) 0xe9}, (r, v) ->
-            r.setSource(new RegisterIndirectAddressingParameter(RegisterPair.HL))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff}, new byte[] {(byte) 0xdd, (byte) 0xe9}, (r, v) ->
-            r.setSource(new RegisterIndirectAddressingParameter((v[0] & 0x20) == 0x00
-                ? RegisterPair.IX : RegisterPair.IY))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xc7, 0x00, 0x00}, new byte[] {(byte) 0xc2, 0x00, 0x00}, (r, v) ->
-            r.setTarget(reverseCondition((v[0] >> 3) & 0x07)).setSource(reverseImmediate16(v[2], v[1]))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xff, 0x00, 0x00}, new byte[] {(byte) 0xc3, 0x00, 0x00}, (r, v) ->
-            r.setSource(reverseImmediate16(v[2], v[1])))
-        ), TwoParameterInstructionConverter::generateJP),
-    new InstructionEntry<TwoParameterInstruction>(JR.class, Arrays.asList(
-        new MaskedOpcode<>(new byte[] {(byte) 0xe7, 0x00}, new byte[] {0x20, 0x00}, (r, v) ->
-            r.setTarget(reverseCondition((v[0] >> 3) & 0x03)).setSource(reverseImmediate8(v[1] + 2))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xff, 0x00}, new byte[] {0x18, 0x00}, (r, v) ->
-            r.setSource(reverseImmediate8(v[1] + 2)))
-        ), TwoParameterInstructionConverter::generateJR),
-    new InstructionEntry<TwoParameterInstruction>(LD.class, Arrays.asList(
-        new MaskedOpcode<>(new byte[] {(byte) 0xff}, new byte[] {0x02}, (r, v) ->
-            r.setTarget(new RegisterIndirectAddressingParameter(RegisterPair.BC))
-                .setSource(new RegisterParameter(Register.A))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xff}, new byte[] {0x12}, (r, v) ->
-            r.setTarget(new RegisterIndirectAddressingParameter(RegisterPair.DE))
-                .setSource(new RegisterParameter(Register.A))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xff}, new byte[] {0x0a}, (r, v) ->
-            r.setTarget(new RegisterParameter(Register.A))
-                .setSource(new RegisterIndirectAddressingParameter(RegisterPair.BC))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xff}, new byte[] {0x1a}, (r, v) ->
-            r.setTarget(new RegisterParameter(Register.A))
-                .setSource(new RegisterIndirectAddressingParameter(RegisterPair.DE))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xc0}, new byte[] {0x40}, (r, v) -> {
-          if ((v[0] & 0x07) == 0x06) {
-            return r.setTarget(reverseRegisterR((v[0] >> 3) & 0x07))
-                .setSource(new RegisterIndirectAddressingParameter(RegisterPair.HL));
-          } else if ((v[0] & 0x38) == 0x30) {
-            return r.setTarget(new RegisterIndirectAddressingParameter(RegisterPair.HL))
-                .setSource(reverseRegisterR(v[0] & 0x07));
-          } else {
-            return r.setTarget(reverseRegisterR((v[0] >> 3) & 0x07))
-                .setSource(reverseRegisterRMarked(v[0] & 0x07));
-          }
-        }),
-        new MaskedOpcode<>(new byte[] {(byte) 0xff}, new byte[] {(byte) 0xf9}, (r, v) ->
-            r.setTarget(new RegisterPairParameter(RegisterPair.SP))
-                .setSource(new RegisterPairParameter(RegisterPair.HL))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xc7, 0x00}, new byte[] {0x06, 0x00}, (r, v) ->
-            r.setTarget(reverseRegisterRH((v[0] >> 3) & 0x07)).setSource(reverseImmediate8(v[1]))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff}, new byte[] {(byte) 0xdd, (byte) 0xf9}, (r, v) ->
-            r.setTarget(new RegisterPairParameter(RegisterPair.SP)).setSource(reverseIXIY((v[0] & 0x20) == 0x00))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xff, (byte) 0xff}, new byte[] {(byte) 0xed, (byte) 0x47}, (r, v) ->
-            r.setTarget(new RegisterParameter(Register.I)).setSource(new RegisterParameter(Register.A))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xff, (byte) 0xff}, new byte[] {(byte) 0xed, (byte) 0x57}, (r, v) ->
-            r.setTarget(new RegisterParameter(Register.A)).setSource(new RegisterParameter(Register.I))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xff, (byte) 0xff}, new byte[] {(byte) 0xed, (byte) 0x4f}, (r, v) ->
-            r.setTarget(new RegisterParameter(Register.R)).setSource(new RegisterParameter(Register.A))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xff, (byte) 0xff}, new byte[] {(byte) 0xed, (byte) 0x5f}, (r, v) ->
-            r.setTarget(new RegisterParameter(Register.A)).setSource(new RegisterParameter(Register.R))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xcf, 0x00, 0x00}, new byte[] {0x01, 0x00, 0x00}, (r, v) ->
-            r.setTarget(reverseRegisterSS((v[0] >> 4) & 0x03)).setSource(reverseImmediate16(v[2], v[1]))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xff, 0x00, 0x00}, new byte[] {0x22, 0x00, 0x00}, (r, v) ->
-            r.setTarget(new ImmediateAddressingParameter((ExpressionParameter) reverseImmediate16(v[2], v[1])))
-                .setSource(new RegisterPairParameter(RegisterPair.HL))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xff, 0x00, 0x00}, new byte[] {0x2a, 0x00, 0x00}, (r, v) ->
-            r.setTarget(new RegisterPairParameter(RegisterPair.HL))
-                .setSource(new ImmediateAddressingParameter((ExpressionParameter) reverseImmediate16(v[2], v[1])))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xff, 0x00, 0x00}, new byte[] {0x32, 0x00, 0x00}, (r, v) ->
-            r.setTarget(new ImmediateAddressingParameter((ExpressionParameter) reverseImmediate16(v[2], v[1])))
-                .setSource(new RegisterParameter(Register.A))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xff, 0x00, 0x00}, new byte[] {0x3a, 0x00, 0x00}, (r, v) ->
-            r.setTarget(new RegisterParameter(Register.A))
-                .setSource(new ImmediateAddressingParameter((ExpressionParameter) reverseImmediate16(v[2], v[1])))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xf8, 0x00}, new byte[] {(byte) 0xdd, 0x70, 0x00}, (r, v) ->
-            r.setTarget(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))
-                .setSource(reverseRegisterR(v[1] & 0x07))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xc7, 0x00}, new byte[] {(byte) 0xdd, 0x46, 0x00}, (r, v) ->
-            r.setTarget(reverseRegisterR((v[1] >> 3) & 0x07))
-                .setSource(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00, 0x00}, new byte[] {(byte) 0xdd, (byte) 0x34,
-            0x00, 0x00}, (r, v) ->
-            r.setTarget(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])).setSource(reverseImmediate8(v[3]))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xff, (byte) 0xcf, 0x00, 0x00}, new byte[] {(byte) 0xed, (byte) 0x43,
-            0x00, 0x00}, (r, v) ->
-            r.setTarget(new ImmediateAddressingParameter((ExpressionParameter) reverseImmediate16(v[3], v[2])))
-                .setSource(reverseRegisterSS((v[1] >> 4) & 0x03))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xff, (byte) 0xcf, 0x00, 0x00}, new byte[] {(byte) 0xed, (byte) 0x4b,
-            0x00, 0x00}, (r, v) ->
-            r.setTarget(reverseRegisterSS((v[1] >> 4) & 0x03))
-                .setSource(new ImmediateAddressingParameter((ExpressionParameter) reverseImmediate16(v[3], v[2])))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00, 0x00}, new byte[] {(byte) 0xdd, (byte) 0x21,
-            0x00, 0x00}, (r, v) ->
-            r.setTarget(reverseIXIY((v[0] & 0x20) == 0x00)).setSource(reverseImmediate16(v[3], v[2]))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00, 0x00}, new byte[] {(byte) 0xdd, (byte) 0x22,
-            0x00, 0x00}, (r, v) ->
-            r.setTarget(new ImmediateAddressingParameter((ExpressionParameter) reverseImmediate16(v[3], v[2])))
-                .setSource(reverseIXIY((v[0] & 0x20) == 0x00))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00, 0x00}, new byte[] {(byte) 0xdd, (byte) 0x2a,
-            0x00, 0x00}, (r, v) ->
-            r.setTarget(reverseIXIY((v[0] & 0x20) == 0x00))
-                .setSource(new ImmediateAddressingParameter((ExpressionParameter) reverseImmediate16(v[3], v[2]))))
-        ), TwoParameterInstructionConverter::generateLD),
-    new InstructionEntry<TwoParameterInstruction>(OUT.class, Arrays.asList(
-        new MaskedOpcode<>(new byte[] {(byte) 0xff, 0x00}, new byte[] {(byte) 0xd3, 0x00}, (r, v) ->
-            r.setTarget(reverseImmediate8(v[1])).setSource(new RegisterParameter(Register.A))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xff, (byte) 0xc7}, new byte[] {(byte) 0xed, 0x41}, (r, v) ->
-            r.setTarget(new RegisterParameter(Register.C)).setSource(reverseRegisterR((v[1] >> 3) & 0x07)))
-        ), TwoParameterInstructionConverter::generateOUT),
-    new InstructionEntry<TwoParameterInstruction>(RES.class, Arrays.asList(
-        new MaskedOpcode<>(new byte[] {(byte) 0xff, (byte) 0xc0}, new byte[] {(byte) 0xcb, (byte) 0x80}, (r, v) ->
-            r.setTarget(reverseImmediate8((v[1] >> 3) & 0x07)).setSource(reverseRegisterRH(v[1] & 0x07))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00, (byte) 0xc7}, new byte[] {(byte) 0xdd,
-            (byte) 0xcb, 0x00, (byte) 0x86}, (r, v) ->
-            r.setTarget(reverseImmediate8((v[3] >> 3) & 0x07))
-                .setSource(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
-        ), TwoParameterInstructionConverter::generateBITRESSET),
-    new InstructionEntry<TwoParameterInstruction>(SBC.class, Arrays.asList(
-        new MaskedOpcode<>(new byte[] {(byte) 0xf8}, new byte[] {(byte) 0x98}, (r, v) ->
-            r.setTarget(new RegisterParameter(Register.A)).setSource(reverseRegisterRH(v[0] & 0x07))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xff, 0x00}, new byte[] {(byte) 0xde, 0x00}, (r, v) ->
-            r.setTarget(new RegisterParameter(Register.A)).setSource(reverseImmediate8(v[1]))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xff, (byte) 0xcf}, new byte[] {(byte) 0xed, 0x42}, (r, v) ->
-            r.setTarget(new RegisterPairParameter(RegisterPair.HL))
-                .setSource(reverseRegisterSS((v[1] >> 4) & 0x03))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00}, new byte[] {(byte) 0xdd, (byte) 0x9e, 0x00},
-            (r, v) -> r.setTarget(new RegisterParameter(Register.A))
-                .setSource(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
-        ), TwoParameterInstructionConverter::generateADCSBC),
-    new InstructionEntry<>(SET.class, Arrays.asList(
-        new MaskedOpcode<>(new byte[] {(byte) 0xff, (byte) 0xc0}, new byte[] {(byte) 0xcb, (byte) 0xc0}, (r, v) ->
-            r.setTarget(reverseImmediate8((v[1] >> 3) & 0x07)).setSource(reverseRegisterRH(v[1] & 0x07))),
-        new MaskedOpcode<>(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00, (byte) 0xc7}, new byte[] {(byte) 0xdd,
-            (byte) 0xcb, 0x00, (byte) 0xc6}, (r, v) ->
-            r.setTarget(reverseImmediate8((v[3] >> 3) & 0x07))
-                .setSource(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2])))
-        ), TwoParameterInstructionConverter::generateBITRESSET));
+  private static final List<InstructionEntry<TwoParameterInstruction,
+      TwoParametersInstructionAssemblyGenerator<TwoParameterInstruction>>> instructionlist = Arrays.asList(
+      InstructionEntry
+          .<TwoParameterInstruction, TwoParametersInstructionAssemblyGenerator<TwoParameterInstruction>>builder()
+          .instruction(ADC.class)
+          .masks(List.of(
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xf8})
+                  .value(new byte[] {(byte) 0x88})
+                  .extractor((r, v) -> r.setTarget(new RegisterParameter(Register.A))
+                      .setSource(reverseRegisterRH(v[0] & 0x07))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff, 0x00})
+                  .value(new byte[] {(byte) 0xce, 0x00})
+                  .extractor((r, v) -> r.setTarget(new RegisterParameter(Register.A))
+                      .setSource(reverseImmediate8(v[1]))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff, (byte) 0xcf})
+                  .value(new byte[] {(byte) 0xed, 0x4a})
+                  .extractor((r, v) -> r.setTarget(new RegisterPairParameter(RegisterPair.HL))
+                      .setSource(reverseRegisterSS((v[1] >> 4) & 0x03))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00})
+                  .value(new byte[] {(byte) 0xdd, (byte) 0x8e, 0x00})
+                  .extractor((r, v) -> r.setTarget(new RegisterParameter(Register.A))
+                      .setSource(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))).build()
+          ))
+          .generator(TwoParameterInstructionConverter::generateADCSBC).build(),
+      InstructionEntry
+          .<TwoParameterInstruction, TwoParametersInstructionAssemblyGenerator<TwoParameterInstruction>>builder()
+          .instruction(ADD.class)
+          .masks(List.of(
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xcf})
+                  .value(new byte[] {0x09})
+                  .extractor((r, v) -> r.setTarget(new RegisterPairParameter(RegisterPair.HL))
+                      .setSource(reverseRegisterSS((v[0] >> 4) & 0x03))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xf8})
+                  .value(new byte[] {(byte) 0x80})
+                  .extractor((r, v) -> r.setTarget(new RegisterParameter(Register.A))
+                      .setSource(reverseRegisterRH(v[0] & 0x07))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff, 0x00})
+                  .value(new byte[] {(byte) 0xc6, 0x00})
+                  .extractor((r, v) -> r.setTarget(new RegisterParameter(Register.A))
+                      .setSource(reverseImmediate8(v[1]))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00})
+                  .value(new byte[] {(byte) 0xdd, (byte) 0x86, 0x00})
+                  .extractor((r, v) -> r.setTarget(new RegisterParameter(Register.A))
+                      .setSource(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xdf, (byte) 0xcf})
+                  .value(new byte[] {(byte) 0xdd, 0x09})
+                  .extractor((r, v) -> r.setTarget(reverseIXIY((v[0] & 0x20) == 0x00))
+                      .setSource(reverseRegisterPPRR((v[0] & 0x20) == 0x00, (v[1] >> 4) & 0x03))).build()
+          ))
+          .generator(TwoParameterInstructionConverter::generateADD).build(),
+      InstructionEntry
+          .<TwoParameterInstruction, TwoParametersInstructionAssemblyGenerator<TwoParameterInstruction>>builder()
+          .instruction(BIT.class)
+          .masks(List.of(
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff, (byte) 0xc0})
+                  .value(new byte[] {(byte) 0xcb, 0x40})
+                  .extractor((r, v) -> r.setTarget(reverseImmediate8((v[1] >> 3) & 0x07))
+                      .setSource(reverseRegisterRH(v[1] & 0x07))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00, (byte) 0xc7})
+                  .value(new byte[] {(byte) 0xdd, (byte) 0xcb, 0x00, 0x46})
+                  .extractor((r, v) -> r.setTarget(reverseImmediate8((v[3] >> 3) & 0x07))
+                      .setSource(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))).build()
+          ))
+          .generator(TwoParameterInstructionConverter::generateBITRESSET).build(),
+      InstructionEntry
+          .<TwoParameterInstruction, TwoParametersInstructionAssemblyGenerator<TwoParameterInstruction>>builder()
+          .instruction(CALL.class)
+          .masks(List.of(
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xc7, 0x00, 0x00})
+                  .value(new byte[] {(byte) 0xc4, 0x00, 0x00})
+                  .extractor((r, v) -> r.setTarget(reverseCondition((v[0] >> 3) & 0x07))
+                      .setSource(reverseImmediate16(v[2], v[1]))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff, 0x00, 0x00})
+                  .value(new byte[] {(byte) 0xcd, 0x00, 0x00})
+                  .extractor((r, v) -> r.setSource(reverseImmediate16(v[2], v[1]))).build()
+          ))
+          .generator(TwoParameterInstructionConverter::generateCALL).build(),
+      InstructionEntry
+          .<TwoParameterInstruction, TwoParametersInstructionAssemblyGenerator<TwoParameterInstruction>>builder()
+          .instruction(EX.class)
+          .masks(List.of(
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff})
+                  .value(new byte[] {0x08})
+                  .extractor((r, v) -> r.setTarget(new RegisterPairParameter(RegisterPair.AF))
+                      .setSource(new RegisterPairParameter(RegisterPair.AFMarked))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff})
+                  .value(new byte[] {(byte) 0xeb})
+                  .extractor((r, v) -> r.setTarget(new RegisterPairParameter(RegisterPair.DE))
+                      .setSource(new RegisterPairParameter(RegisterPair.HL))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff})
+                  .value(new byte[] {(byte) 0xe3})
+                  .extractor((r, v) -> r.setTarget(new RegisterIndirectAddressingParameter(RegisterPair.SP))
+                      .setSource(new RegisterPairParameter(RegisterPair.HL))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xdf, (byte) 0xff})
+                  .value(new byte[] {(byte) 0xdd, (byte) 0xe3})
+                  .extractor((r, v) -> r.setTarget(new RegisterIndirectAddressingParameter(RegisterPair.SP))
+                      .setSource(reverseIXIY((v[0] & 0x20) == 0x00))).build()
+          ))
+          .generator((c, p, m) -> generateEX(p, m)).build(),
+      InstructionEntry
+          .<TwoParameterInstruction, TwoParametersInstructionAssemblyGenerator<TwoParameterInstruction>>builder()
+          .instruction(IN.class)
+          .masks(List.of(
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff, 0x00})
+                  .value(new byte[] {(byte) 0xdb, 0x00})
+                  .extractor((r, v) -> r.setTarget(new RegisterParameter(Register.A))
+                      .setSource(reverseImmediate8(v[1]))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff, (byte) 0xc7})
+                  .value(new byte[] {(byte) 0xed, 0x40})
+                  .extractor((r, v) -> r.setTarget(reverseRegisterR((v[1] >> 3) & 0x07))
+                      .setSource(new RegisterParameter(Register.C))).build()
+          ))
+          .generator(TwoParameterInstructionConverter::generateIN).build(),
+      InstructionEntry
+          .<TwoParameterInstruction, TwoParametersInstructionAssemblyGenerator<TwoParameterInstruction>>builder()
+          .instruction(JP.class)
+          .masks(List.of(
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff})
+                  .value(new byte[] {(byte) 0xe9})
+                  .extractor((r, v) -> r.setSource(new RegisterIndirectAddressingParameter(RegisterPair.HL))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xdf, (byte) 0xff})
+                  .value(new byte[] {(byte) 0xdd, (byte) 0xe9})
+                  .extractor((r, v) ->
+                      r.setSource(new RegisterIndirectAddressingParameter((v[0] & 0x20) == 0x00
+                          ? RegisterPair.IX : RegisterPair.IY))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xc7, 0x00, 0x00})
+                  .value(new byte[] {(byte) 0xc2, 0x00, 0x00})
+                  .extractor((r, v) -> r.setTarget(reverseCondition((v[0] >> 3) & 0x07))
+                      .setSource(reverseImmediate16(v[2], v[1]))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff, 0x00, 0x00})
+                  .value(new byte[] {(byte) 0xc3, 0x00, 0x00})
+                  .extractor((r, v) -> r.setSource(reverseImmediate16(v[2], v[1]))).build()
+          ))
+          .generator(TwoParameterInstructionConverter::generateJP).build(),
+      InstructionEntry
+          .<TwoParameterInstruction, TwoParametersInstructionAssemblyGenerator<TwoParameterInstruction>>builder()
+          .instruction(JR.class)
+          .masks(List.of(
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xe7, 0x00})
+                  .value(new byte[] {0x20, 0x00})
+                  .extractor((r, v) -> r.setTarget(reverseCondition((v[0] >> 3) & 0x03))
+                      .setSource(reverseImmediate8(v[1] + 2))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff, 0x00})
+                  .value(new byte[] {0x18, 0x00})
+                  .extractor((r, v) -> r.setSource(reverseImmediate8(v[1] + 2))).build()
+          ))
+          .generator(TwoParameterInstructionConverter::generateJR).build(),
+      InstructionEntry
+          .<TwoParameterInstruction, TwoParametersInstructionAssemblyGenerator<TwoParameterInstruction>>builder()
+          .instruction(LD.class)
+          .masks(List.of(
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff})
+                  .value(new byte[] {0x02})
+                  .extractor((r, v) -> r.setTarget(new RegisterIndirectAddressingParameter(RegisterPair.BC))
+                      .setSource(new RegisterParameter(Register.A))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff})
+                  .value(new byte[] {0x12})
+                  .extractor((r, v) -> r.setTarget(new RegisterIndirectAddressingParameter(RegisterPair.DE))
+                      .setSource(new RegisterParameter(Register.A))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff})
+                  .value(new byte[] {0x0a})
+                  .extractor((r, v) -> r.setTarget(new RegisterParameter(Register.A))
+                      .setSource(new RegisterIndirectAddressingParameter(RegisterPair.BC))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff})
+                  .value(new byte[] {0x1a})
+                  .extractor((r, v) -> r.setTarget(new RegisterParameter(Register.A))
+                          .setSource(new RegisterIndirectAddressingParameter(RegisterPair.DE))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xc0})
+                  .value(new byte[] {0x40})
+                  .extractor((r, v) -> {
+                    if ((v[0] & 0x07) == 0x06) {
+                      return r.setTarget(reverseRegisterR((v[0] >> 3) & 0x07))
+                          .setSource(new RegisterIndirectAddressingParameter(RegisterPair.HL));
+                    } else if ((v[0] & 0x38) == 0x30) {
+                      return r.setTarget(new RegisterIndirectAddressingParameter(RegisterPair.HL))
+                          .setSource(reverseRegisterR(v[0] & 0x07));
+                    } else {
+                      return r.setTarget(reverseRegisterR((v[0] >> 3) & 0x07))
+                          .setSource(reverseRegisterRMarked(v[0] & 0x07));
+                    }
+                  }).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff})
+                  .value(new byte[] {(byte) 0xf9})
+                  .extractor((r, v) -> r.setTarget(new RegisterPairParameter(RegisterPair.SP))
+                          .setSource(new RegisterPairParameter(RegisterPair.HL))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xc7, 0x00})
+                  .value(new byte[] {0x06, 0x00})
+                  .extractor((r, v) -> r.setTarget(reverseRegisterRH((v[0] >> 3) & 0x07))
+                      .setSource(reverseImmediate8(v[1]))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xdf, (byte) 0xff})
+                  .value(new byte[] {(byte) 0xdd, (byte) 0xf9})
+                  .extractor((r, v) -> r.setTarget(new RegisterPairParameter(RegisterPair.SP))
+                      .setSource(reverseIXIY((v[0] & 0x20) == 0x00))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff, (byte) 0xff})
+                  .value(new byte[] {(byte) 0xed, (byte) 0x47})
+                  .extractor((r, v) -> r.setTarget(new RegisterParameter(Register.I))
+                      .setSource(new RegisterParameter(Register.A))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff, (byte) 0xff})
+                  .value(new byte[] {(byte) 0xed, (byte) 0x57})
+                  .extractor((r, v) -> r.setTarget(new RegisterParameter(Register.A))
+                      .setSource(new RegisterParameter(Register.I))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff, (byte) 0xff})
+                  .value(new byte[] {(byte) 0xed, (byte) 0x4f})
+                  .extractor((r, v) -> r.setTarget(new RegisterParameter(Register.R))
+                      .setSource(new RegisterParameter(Register.A))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff, (byte) 0xff})
+                  .value(new byte[] {(byte) 0xed, (byte) 0x5f})
+                  .extractor((r, v) -> r.setTarget(new RegisterParameter(Register.A))
+                      .setSource(new RegisterParameter(Register.R))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xcf, 0x00, 0x00})
+                  .value(new byte[] {0x01, 0x00, 0x00})
+                  .extractor((r, v) -> r.setTarget(reverseRegisterSS((v[0] >> 4) & 0x03))
+                      .setSource(reverseImmediate16(v[2], v[1]))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff, 0x00, 0x00})
+                  .value(new byte[] {0x22, 0x00, 0x00})
+                  .extractor((r, v) -> r.setTarget(
+                      new ImmediateAddressingParameter((ExpressionParameter) reverseImmediate16(v[2], v[1])))
+                      .setSource(new RegisterPairParameter(RegisterPair.HL))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff, 0x00, 0x00})
+                  .value(new byte[] {0x2a, 0x00, 0x00})
+                  .extractor((r, v) -> r.setTarget(new RegisterPairParameter(RegisterPair.HL))
+                          .setSource(new ImmediateAddressingParameter((ExpressionParameter) reverseImmediate16(v[2],
+                              v[1])))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff, 0x00, 0x00})
+                  .value(new byte[] {0x32, 0x00, 0x00})
+                  .extractor((r, v) -> r.setTarget(
+                      new ImmediateAddressingParameter((ExpressionParameter) reverseImmediate16(v[2], v[1])))
+                      .setSource(new RegisterParameter(Register.A))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff, 0x00, 0x00})
+                  .value(new byte[] {0x3a, 0x00, 0x00})
+                  .extractor((r, v) -> r.setTarget(new RegisterParameter(Register.A))
+                          .setSource(new ImmediateAddressingParameter((ExpressionParameter) reverseImmediate16(v[2],
+                              v[1])))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xdf, (byte) 0xf8, 0x00})
+                  .value(new byte[] {(byte) 0xdd, 0x70, 0x00})
+                  .extractor((r, v) -> r.setTarget(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))
+                          .setSource(reverseRegisterR(v[1] & 0x07))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xdf, (byte) 0xc7, 0x00})
+                  .value(new byte[] {(byte) 0xdd, 0x46, 0x00})
+                  .extractor((r, v) -> r.setTarget(reverseRegisterR((v[1] >> 3) & 0x07))
+                          .setSource(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00, 0x00})
+                  .value(new byte[] {(byte) 0xdd, (byte) 0x34, 0x00, 0x00})
+                  .extractor((r, v) -> r.setTarget(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))
+                      .setSource(reverseImmediate8(v[3]))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff, (byte) 0xcf, 0x00, 0x00})
+                  .value(new byte[] {(byte) 0xed, (byte) 0x43, 0x00, 0x00})
+                  .extractor((r, v) -> r.setTarget(
+                      new ImmediateAddressingParameter((ExpressionParameter) reverseImmediate16(v[3], v[2])))
+                      .setSource(reverseRegisterSS((v[1] >> 4) & 0x03))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff, (byte) 0xcf, 0x00, 0x00})
+                  .value(new byte[] {(byte) 0xed, (byte) 0x4b, 0x00, 0x00})
+                  .extractor((r, v) -> r.setTarget(reverseRegisterSS((v[1] >> 4) & 0x03))
+                          .setSource(new ImmediateAddressingParameter((ExpressionParameter) reverseImmediate16(v[3],
+                              v[2])))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00, 0x00})
+                  .value(new byte[] {(byte) 0xdd, (byte) 0x21, 0x00, 0x00})
+                  .extractor((r, v) -> r.setTarget(reverseIXIY((v[0] & 0x20) == 0x00))
+                      .setSource(reverseImmediate16(v[3], v[2]))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00, 0x00})
+                  .value(new byte[] {(byte) 0xdd, (byte) 0x22, 0x00, 0x00})
+                  .extractor((r, v) -> r.setTarget(
+                      new ImmediateAddressingParameter((ExpressionParameter) reverseImmediate16(v[3], v[2])))
+                      .setSource(reverseIXIY((v[0] & 0x20) == 0x00))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00, 0x00})
+                  .value(new byte[] {(byte) 0xdd, (byte) 0x2a, 0x00, 0x00})
+                  .extractor((r, v) -> r.setTarget(reverseIXIY((v[0] & 0x20) == 0x00))
+                          .setSource(new ImmediateAddressingParameter((ExpressionParameter) reverseImmediate16(v[3],
+                              v[2])))).build()
+          ))
+          .generator(TwoParameterInstructionConverter::generateLD).build(),
+      InstructionEntry
+          .<TwoParameterInstruction, TwoParametersInstructionAssemblyGenerator<TwoParameterInstruction>>builder()
+          .instruction(OUT.class)
+          .masks(List.of(
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff, 0x00})
+                  .value(new byte[] {(byte) 0xd3, 0x00})
+                  .extractor((r, v) -> r.setTarget(reverseImmediate8(v[1]))
+                      .setSource(new RegisterParameter(Register.A))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff, (byte) 0xc7})
+                  .value(new byte[] {(byte) 0xed, 0x41})
+                  .extractor((r, v) -> r.setTarget(new RegisterParameter(Register.C))
+                      .setSource(reverseRegisterR((v[1] >> 3) & 0x07))).build()
+          ))
+          .generator(TwoParameterInstructionConverter::generateOUT).build(),
+      InstructionEntry
+          .<TwoParameterInstruction, TwoParametersInstructionAssemblyGenerator<TwoParameterInstruction>>builder()
+          .instruction(RES.class)
+          .masks(List.of(
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff, (byte) 0xc0})
+                  .value(new byte[] {(byte) 0xcb, (byte) 0x80})
+                  .extractor((r, v) -> r.setTarget(reverseImmediate8((v[1] >> 3) & 0x07))
+                      .setSource(reverseRegisterRH(v[1] & 0x07))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00, (byte) 0xc7})
+                  .value(new byte[] {(byte) 0xdd, (byte) 0xcb, 0x00, (byte) 0x86})
+                  .extractor((r, v) -> r.setTarget(reverseImmediate8((v[3] >> 3) & 0x07))
+                          .setSource(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))).build()
+          ))
+          .generator(TwoParameterInstructionConverter::generateBITRESSET).build(),
+      InstructionEntry
+          .<TwoParameterInstruction, TwoParametersInstructionAssemblyGenerator<TwoParameterInstruction>>builder()
+          .instruction(SBC.class)
+          .masks(List.of(
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xf8})
+                  .value(new byte[] {(byte) 0x98})
+                  .extractor((r, v) -> r.setTarget(new RegisterParameter(Register.A))
+                      .setSource(reverseRegisterRH(v[0] & 0x07))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff, 0x00})
+                  .value(new byte[] {(byte) 0xde, 0x00})
+                  .extractor((r, v) -> r.setTarget(new RegisterParameter(Register.A))
+                      .setSource(reverseImmediate8(v[1]))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff, (byte) 0xcf})
+                  .value(new byte[] {(byte) 0xed, 0x42})
+                  .extractor((r, v) -> r.setTarget(new RegisterPairParameter(RegisterPair.HL))
+                      .setSource(reverseRegisterSS((v[1] >> 4) & 0x03))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00})
+                  .value(new byte[] {(byte) 0xdd, (byte) 0x9e, 0x00})
+                  .extractor((r, v) -> r.setTarget(new RegisterParameter(Register.A))
+                      .setSource(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))).build()
+          ))
+          .generator(TwoParameterInstructionConverter::generateADCSBC).build(),
+      InstructionEntry
+          .<TwoParameterInstruction, TwoParametersInstructionAssemblyGenerator<TwoParameterInstruction>>builder()
+          .instruction(SET.class)
+          .masks(List.of(
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xff, (byte) 0xc0})
+                  .value(new byte[] {(byte) 0xcb, (byte) 0xc0})
+                  .extractor((r, v) -> r.setTarget(reverseImmediate8((v[1] >> 3) & 0x07))
+                      .setSource(reverseRegisterRH(v[1] & 0x07))).build(),
+              MaskedOpcode.<TwoParameterInstruction>builder()
+                  .mask(new byte[] {(byte) 0xdf, (byte) 0xff, 0x00, (byte) 0xc7})
+                  .value(new byte[] {(byte) 0xdd, (byte) 0xcb, 0x00, (byte) 0xc6})
+                  .extractor((r, v) -> r.setTarget(reverseImmediate8((v[3] >> 3) & 0x07))
+                      .setSource(reverseIndexedAddressing((v[0] & 0x20) == 0x00, v[2]))).build()
+          ))
+          .generator(TwoParameterInstructionConverter::generateBITRESSET).build());
   
   private static final Map<
-      Class<? extends TwoParameterInstruction>, InstructionEntry<TwoParameterInstruction>> instructions =
-      instructionlist.stream().collect(Collectors.toMap(e -> e.instruction, e -> e));
+      Class<? extends TwoParameterInstruction>, InstructionEntry<TwoParameterInstruction,
+      TwoParametersInstructionAssemblyGenerator<TwoParameterInstruction>>> instructions =
+      instructionlist.stream().collect(Collectors.toMap(InstructionEntry::instruction, e -> e));
   
   private static final Map<Integer, MaskedOpcodeMap<TwoParameterInstruction>> reverse =
-      instructionlist.stream().flatMap(e -> e.masks.stream()).collect(Collectors.groupingBy(
+      instructionlist.stream().flatMap(e -> e.masks().stream()).collect(Collectors.groupingBy(
           m -> m.getMask().length,
           Collectors.toMap(
               m -> new OpcodeMask<>(m.getMask(), m.getValue(), m.getExtractor()),
@@ -262,35 +434,36 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
   @Override
   public byte[] convert(CompilationContext compilationContext, TwoParameterInstruction instruction) {
     byte[] result = null;
-    InstructionEntry<TwoParameterInstruction> entry = instructions.get(instruction.getClass());
-    if (entry != null && entry.generator != null) {
-      result = entry.generator
-          .generate(compilationContext, instruction.getTarget(), instruction.getSource(), entry.masks);
+    InstructionEntry<TwoParameterInstruction, TwoParametersInstructionAssemblyGenerator<TwoParameterInstruction>>
+        entry = instructions.get(instruction.getClass());
+    if (entry != null && entry.generator() != null) {
+      result = entry.generator().generate(
+          compilationContext, new TwoParameters(instruction.getTarget(), instruction.getSource()), entry.masks());
     }
     return result;
   }
 
   private static byte[] generateADCSBC(
       CompilationContext compilationContext,
-      Parameter targetparameter,
-      Parameter sourceparameter,
+      TwoParameters twoParameters,
       List<MaskedOpcode<TwoParameterInstruction>> masks) {
     byte[] result = null;
-    
-    if (checkRegisterParameter(targetparameter, Register.A)) {
-      int sourceIndex = getRegisterRHIndex(sourceparameter);
+
+    Parameter targetParameter = twoParameters.target();
+    if (checkRegisterParameter(targetParameter, Register.A)) {
+      int sourceIndex = getRegisterRHIndex(twoParameters.source());
       if (sourceIndex != -1) {
         result = selectMask(masks.get(0));
         result[0] |= (byte) (sourceIndex & 0x07);
-      } else if (sourceparameter instanceof ExpressionParameter) {
+      } else if (twoParameters.source() instanceof ExpressionParameter) {
         result = selectMask(masks.get(1));
-        result[1] = (byte) ((ExpressionParameter) sourceparameter).getExpressionValue(compilationContext);
-      } else if (sourceparameter instanceof IndexedAddressingParameter) {
+        result[1] = (byte) ((ExpressionParameter) twoParameters.source()).getExpressionValue(compilationContext);
+      } else if (twoParameters.source() instanceof IndexedAddressingParameter) {
         result = generateIndexedAddressing(
-            compilationContext, (IndexedAddressingParameter) sourceparameter, masks.get(3).getValue());
+            compilationContext, (IndexedAddressingParameter) twoParameters.source(), masks.get(3).getValue());
       }
-    } else if (checkRegisterPairParameter(targetparameter, RegisterPair.HL)) {
-      int sourceIndex = getRegisterSSIndex(sourceparameter);
+    } else if (checkRegisterPairParameter(targetParameter, RegisterPair.HL)) {
+      int sourceIndex = getRegisterSSIndex(twoParameters.source());
       if (sourceIndex != -1) {
         result = selectMask(masks.get(2));
         result[1] |= (byte) (sourceIndex << 4);
@@ -302,21 +475,21 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
   
   private static byte[] generateBITRESSET(
       CompilationContext compilationContext,
-      Parameter targetparameter,
-      Parameter sourceparameter,
+      TwoParameters twoParameters,
       List<MaskedOpcode<TwoParameterInstruction>> masks) {
     byte[] result = null;
-    
+
+    Parameter targetparameter = twoParameters.target();
     if (targetparameter instanceof ExpressionParameter) {
       int value = ((ExpressionParameter) targetparameter).getExpressionValue(compilationContext);
       if (value >= 0 && value <= 7) {
-        int sourceIndex = getRegisterRHIndex(sourceparameter);
+        int sourceIndex = getRegisterRHIndex(twoParameters.source());
         if (sourceIndex != -1) {
           result = selectMask(masks.get(0));
           result[1] |= (byte) ((value << 3) | sourceIndex);
-        } else if (sourceparameter instanceof IndexedAddressingParameter) {
+        } else if (twoParameters.source() instanceof IndexedAddressingParameter) {
           result = generateIndexedAddressing(
-              compilationContext, (IndexedAddressingParameter) sourceparameter, masks.get(1).getValue());
+              compilationContext, (IndexedAddressingParameter) twoParameters.source(), masks.get(1).getValue());
           if (result != null) {
             result[3] |= (byte) (value << 3);
           }
@@ -329,11 +502,12 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
   
   private static byte[] generateCALL(
       CompilationContext compilationContext,
-      Parameter targetparameter,
-      Parameter sourceparameter,
+      TwoParameters twoParameters,
       List<MaskedOpcode<TwoParameterInstruction>> masks) {
     byte[] result = null;
-    
+
+    Parameter targetparameter = twoParameters.target();
+    Parameter sourceparameter = twoParameters.source();
     if (sourceparameter instanceof ExpressionParameter) {
       if (targetparameter instanceof ConditionParameter) {
         result = generateWithExpressionValue(
@@ -351,11 +525,12 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
   
   private static byte[] generateJP(
       CompilationContext compilationContext,
-      Parameter targetparameter,
-      Parameter sourceparameter,
+      TwoParameters twoParameters,
       List<MaskedOpcode<TwoParameterInstruction>> masks) {
     byte[] result = null;
-    
+
+    Parameter targetparameter = twoParameters.target();
+    Parameter sourceparameter = twoParameters.source();
     if (targetparameter == null) {
       if (sourceparameter instanceof RegisterIndirectAddressingParameter registerIndirectAddressingParameter) {
         RegisterPair registerPair = registerIndirectAddressingParameter.getRegisterPair();
@@ -381,11 +556,12 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
   
   private static byte[] generateJR(
       CompilationContext compilationContext,
-      Parameter targetParameter,
-      Parameter sourceParameter,
+      TwoParameters twoParameters,
       List<MaskedOpcode<TwoParameterInstruction>> masks) {
     byte[] result = null;
-    
+
+    Parameter targetParameter = twoParameters.target();
+    Parameter sourceParameter = twoParameters.source();
     if (targetParameter instanceof ConditionParameter
         && sourceParameter instanceof ExpressionParameter) {
       Condition condition = ((ConditionParameter) targetParameter).getCondition();
@@ -407,18 +583,16 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
   
   private static byte[] generateIN(
       CompilationContext compilationContext,
-      Parameter targetparameter,
-      Parameter sourceparameter,
+      TwoParameters twoParameters,
       List<MaskedOpcode<TwoParameterInstruction>> masks) {
-    return generateINOUT(compilationContext, targetparameter, sourceparameter, masks);
+    return generateINOUT(compilationContext, twoParameters.target(), twoParameters.source(), masks);
   }
   
   private static byte[] generateOUT(
       CompilationContext compilationContext,
-      Parameter targetparameter,
-      Parameter sourceparameter,
+      TwoParameters twoParameters,
       List<MaskedOpcode<TwoParameterInstruction>> masks) {
-    return generateINOUT(compilationContext, sourceparameter, targetparameter, masks);
+    return generateINOUT(compilationContext, twoParameters.source(), twoParameters.target(), masks);
   }
 
   private static byte[] generateINOUT(
@@ -443,11 +617,12 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
   }
   
   private static byte[] generateEX(
-      Parameter targetparameter,
-      Parameter sourceparameter,
+      TwoParameters twoParameters,
       List<MaskedOpcode<TwoParameterInstruction>> masks) {
     byte[] result = null;
 
+    Parameter targetparameter = twoParameters.target();
+    Parameter sourceparameter = twoParameters.source();
     if (checkRegisterPairParameter(targetparameter, RegisterPair.AF)
         && checkRegisterPairParameter(sourceparameter, RegisterPair.AFMarked)) {
       result = selectMask(masks.get(0));
@@ -470,11 +645,12 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
   
   private static byte[] generateADD(
       CompilationContext compilationContext,
-      Parameter targetparameter,
-      Parameter sourceparameter,
+      TwoParameters twoParameters,
       List<MaskedOpcode<TwoParameterInstruction>> masks) {
     byte[] result = null;
-    
+
+    Parameter targetparameter = twoParameters.target();
+    Parameter sourceparameter = twoParameters.source();
     int sourceIndex = getRegisterSSIndex(sourceparameter);
     if (checkRegisterPairParameter(targetparameter, RegisterPair.HL)
         && sourceIndex != -1) {
@@ -508,11 +684,12 @@ public class TwoParameterInstructionConverter extends AbstractZ80InstructionConv
   
   private static byte[] generateLD(
       CompilationContext compilationContext,
-      Parameter targetparameter,
-      Parameter sourceparameter,
+      TwoParameters twoParameters,
       List<MaskedOpcode<TwoParameterInstruction>> masks) {
     byte[] result = null;
-    
+
+    Parameter targetparameter = twoParameters.target();
+    Parameter sourceparameter = twoParameters.source();
     int registerIndex = -1;
     int markedRegisterIndex = -1;
     if (checkRegisterIndirectAddressing(targetparameter, RegisterPair.BC)
