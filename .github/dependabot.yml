@@ -21,3 +21,7 @@ updates:
       - "wilddog1979"
     labels:
       - "gradle update"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
