@@ -25,3 +25,5 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    reviewers:
+      - "wilddog1979"
