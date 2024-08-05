@@ -11,10 +11,10 @@ repositories {
 }
 
 dependencies {
-  antlr 'org.antlr:antlr4:4.13.1'
+  antlr 'org.antlr:antlr4:4.13.2'
 
   implementation project(':Assembler')
-  implementation 'org.antlr:antlr4-runtime:4.13.1'
+  implementation 'org.antlr:antlr4-runtime:4.13.2'
 
   compileOnly 'org.projectlombok:lombok:1.18.34'
   annotationProcessor 'org.projectlombok:lombok:1.18.34'
