@@ -8,7 +8,7 @@ updates:
   - package-ecosystem: "gradle" # See documentation for possible values
     directory: "/Assembler" # Location of package manifests
     schedule:
-      interval: "weekly"
+      interval: "daily"
     reviewers:
       - "wilddog1979"
     labels:
@@ -16,7 +16,7 @@ updates:
   - package-ecosystem: "gradle" # See documentation for possible values
     directory: "/Z80Assembler" # Location of package manifests
     schedule:
-      interval: "weekly"
+      interval: "daily"
     reviewers:
       - "wilddog1979"
     labels:
@@ -24,6 +24,6 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "daily"
     reviewers:
       - "wilddog1979"
