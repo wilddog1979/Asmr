@@ -16,8 +16,8 @@ dependencies {
   implementation project(':Assembler')
   implementation 'org.antlr:antlr4-runtime:4.13.2'
 
-  compileOnly 'org.projectlombok:lombok:1.18.42'
-  annotationProcessor 'org.projectlombok:lombok:1.18.42'
+  compileOnly 'org.projectlombok:lombok:1.18.48'
+  annotationProcessor 'org.projectlombok:lombok:1.18.48'
 
   testImplementation 'org.junit.jupiter:junit-jupiter:6.0.3'
 }
